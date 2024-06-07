@@ -23,7 +23,7 @@ public class EmotionManager : MonoBehaviour
     {
         // if (emotion == currentEmotion && emotion == "idle")
         // 记一下时，5秒钟内不再重复播放动画
-        if (emotion == currentEmotion && Time.time - lastTime < 5){
+        if (emotion == currentEmotion && Time.time - lastTime < 10){
             return;
         }
         currentEmotion = emotion;

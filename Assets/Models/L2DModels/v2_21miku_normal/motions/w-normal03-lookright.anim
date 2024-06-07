@@ -5945,7 +5945,7 @@ AnimationClip:
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
-    intParameter: -507610
+    intParameter: 44548
     messageOptions: 1
   - time: 0.283
     functionName: 
