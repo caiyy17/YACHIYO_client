@@ -2670,6 +2670,10 @@ MonoBehaviour:
   scenes:
   - SampleScene3D
   - SampleScene3DMobile
+  - SampleScene3DVRM
+  - SampleScene3DVRMMiku
+  - SampleScene3DLive2D
+  - SampleScene3DLive2DMiku
 --- !u!4 &2093208405
 Transform:
   m_ObjectHideFlags: 0

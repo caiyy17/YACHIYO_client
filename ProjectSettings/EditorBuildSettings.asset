@@ -14,12 +14,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SampleScene3DMobile.unity
     guid: ab05214867e5ac742a0bd8c82fca85f9
-  - enabled: 0
-    path: Assets/Scenes/SampleSceneLive2D.unity
-    guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 0
+  - enabled: 1
+    path: Assets/Scenes/SampleScene3DVRM.unity
+    guid: 41a91ef10c70cd644a514332d0bacde7
+  - enabled: 1
     path: Assets/Scenes/SampleScene3DVRMMiku.unity
     guid: 261fddcef292859489371ff2f3302fec
+  - enabled: 1
+    path: Assets/Scenes/SampleSceneLive2D.unity
+    guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/SampleSceneLive2DMiku.unity
+    guid: 0d7fdae6f43a7cb49a72872d5aac3127
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 3efae91c5c58e0f43b60ff898c4b8641,
       type: 2}
