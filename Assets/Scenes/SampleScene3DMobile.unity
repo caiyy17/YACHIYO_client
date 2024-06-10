@@ -999,7 +999,7 @@ GameObject:
   - component: {fileID: 915216007}
   - component: {fileID: 915216006}
   - component: {fileID: 915216005}
-  - component: {fileID: 915216008}
+  - component: {fileID: 915216009}
   m_Layer: 5
   m_Name: Stop
   m_TagString: Untagged
@@ -1109,7 +1109,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 915216003}
   m_CullTransparentMesh: 1
---- !u!114 &915216008
+--- !u!114 &915216009
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1118,9 +1118,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 915216003}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce7a4c52548715643b5e0b8c9e108160, type: 3}
+  m_Script: {fileID: 11500000, guid: 6d54531977ecb194c95e2d3aa7a5d72a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_ControlPath: <Gamepad>/buttonWest
 --- !u!1 &1089522195
 GameObject:
   m_ObjectHideFlags: 0
@@ -1204,7 +1205,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1837920295}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9945671
+  m_Size: 0.87672544
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1348,7 +1349,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0036482036}
+  m_AnchoredPosition: {x: 0, y: 27.33798}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1204024548
@@ -1815,8 +1816,9 @@ GameObject:
   - component: {fileID: 1623963060}
   - component: {fileID: 1623963062}
   - component: {fileID: 1623963068}
-  - component: {fileID: 1623963070}
   - component: {fileID: 1623963071}
+  - component: {fileID: 1623963073}
+  - component: {fileID: 1623963072}
   m_Layer: 0
   m_Name: YYAssistantManager
   m_TagString: Untagged
@@ -2080,21 +2082,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99cfb9b69f7b8a94a8222aac7d23053c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1623963070
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1623963053}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92b77505e4fd3104c943d9993be2dc18, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  recordButton: {fileID: 1986099061}
-  stopButton: {fileID: 915216008}
-  exitButton: {fileID: 0}
 --- !u!114 &1623963071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2111,8 +2098,87 @@ MonoBehaviour:
   audioManager: {fileID: 0}
   dataFetcher: {fileID: 0}
   emotionManager: {fileID: 0}
-  keyMapper: {fileID: 1623963070}
+  keyMapper: {fileID: 1623963072}
   addr: http://localhost:5050
+--- !u!114 &1623963072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1623963053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a483e652a986bdb459023cb291eab636, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1623963073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1623963053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 5122c45bc6fc2db4cad76417135010c5,
+    type: 3}
+  m_NotificationBehavior: 2
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1623963072}
+        m_TargetAssemblyTypeName: ISKeyMapper, Assembly-CSharp
+        m_MethodName: OnRecord
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 34f4f1bc-ea8b-47d6-b510-75343eba3d77
+    m_ActionName: 'Assistant/record[/Keyboard/space]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1623963072}
+        m_TargetAssemblyTypeName: ISKeyMapper, Assembly-CSharp
+        m_MethodName: OnStop
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: fada87fa-1f45-4265-984f-24c0be06bc03
+    m_ActionName: 'Assistant/stop[/Keyboard/n]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 3deb28f0-aa1a-45d6-aa03-81614f6055b1
+    m_ActionName: 'Assistant/exit[/Keyboard/escape]'
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Assistant
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1 &1837920294
 GameObject:
   m_ObjectHideFlags: 0
@@ -2799,7 +2865,7 @@ GameObject:
   - component: {fileID: 1986099060}
   - component: {fileID: 1986099059}
   - component: {fileID: 1986099058}
-  - component: {fileID: 1986099061}
+  - component: {fileID: 1986099062}
   m_Layer: 5
   m_Name: Record
   m_TagString: Untagged
@@ -2909,7 +2975,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1986099056}
   m_CullTransparentMesh: 1
---- !u!114 &1986099061
+--- !u!114 &1986099062
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2918,9 +2984,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1986099056}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce7a4c52548715643b5e0b8c9e108160, type: 3}
+  m_Script: {fileID: 11500000, guid: 6d54531977ecb194c95e2d3aa7a5d72a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_ControlPath: <Gamepad>/buttonSouth
 --- !u!4 &7891388071633538013
 Transform:
   m_ObjectHideFlags: 0
