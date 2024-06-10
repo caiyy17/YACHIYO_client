@@ -5,18 +5,18 @@ public class ISKeyMapper : KeyMapper
     public void OnRecord(InputAction.CallbackContext context)
     {
         Debug.Log("Record button pressed");
-        recordButtonPressed = context.performed;
+        recordButtonPressed = context.started;
         recordButtonReleased = context.canceled;
     }
 
     public void OnStop(InputAction.CallbackContext context)
     {
-        stopButtonPressed = context.performed;
+        stopButtonPressed = context.started;
     }
 
     public void OnExit(InputAction.CallbackContext context)
     {
-        exitButtonPressed = context.performed;
+        exitButtonPressed = context.started;
     }
     public override bool ButtonRecordPressed()
     {
