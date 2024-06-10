@@ -31,16 +31,6 @@ public class AudioRecorder : MonoBehaviour
 
     void Update()
     {
-        // 按下M键开始录音
-        if(Input.GetKeyDown(KeyCode.M) && !isRecording)
-        {
-            StartRecording();
-        }
-        // 松开M键结束录音
-        if(Input.GetKeyUp(KeyCode.M) && isRecording)
-        {
-            StopRecordingAndSave();
-        }
     }
 
     public void StartRecording()

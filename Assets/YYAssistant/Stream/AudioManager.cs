@@ -18,6 +18,7 @@ public class AudioManager : MonoBehaviour
     public bool isAudioLoadingOrPlaying = false;
 
     public bool StopPlayingFlag = false;
+    public bool isAnswering = false;
 
     void Start()
     {
@@ -28,22 +29,27 @@ public class AudioManager : MonoBehaviour
 
     public void QueueAudio(int index, string text, string emotion, string audio_base64)
     {
-        if(!StopPlayingFlag)
-        {
-            // 将base64字符串转换为byte数组
-            byte[] audioData = System.Convert.FromBase64String(audio_base64);
-            // 将byte的wav存入clip
-            // 使用coroutine保存clip
-            StartCoroutine(WavUtility.ToAudioClip(audioData, (clip) => {
+        // 将base64字符串转换为byte数组
+        byte[] audioData = System.Convert.FromBase64String(audio_base64);
+        // 将byte的wav存入clip
+        // 使用coroutine保存clip
+        StartCoroutine(WavUtility.ToAudioClip(audioData, (clip) => {
+            if(isAnswering){
                 audioQueue.Enqueue(clip);
                 emotionQueue.Enqueue(emotion);
                 textQueue.Enqueue(text);
-            }));
-        }
+            }
+        }));
     }
 
     void Update()
     {
+        if (StopPlayingFlag)
+        {
+            ResetAll();
+            StopPlayingFlag = false;
+            return;
+        }
         if (!audioSource.isPlaying && audioQueue.Count > 0)
         {
             AudioClip clip = audioQueue.Dequeue();
@@ -59,16 +65,6 @@ public class AudioManager : MonoBehaviour
         else
         {
             isAudioLoadingOrPlaying = false;
-        }
-    }
-
-    void LateUpdate()
-    {
-        if (StopPlayingFlag)
-        {
-            ResetAll();
-            StopPlayingFlag = false;
-            return;
         }
     }
 
@@ -89,6 +85,7 @@ public class AudioManager : MonoBehaviour
         contentLoader.ClearImage();
         contentLoader.ClearText();
         isAudioLoadingOrPlaying = false;
+        isAnswering = false;
     }
     
 }

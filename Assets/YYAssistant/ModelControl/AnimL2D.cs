@@ -71,6 +71,8 @@ public class AnimL2D : MonoBehaviour
     public void SetExpression(string expression)
     {
         // Debug.Log("Set expression: " + expression);
-        expressionController.CurrentExpressionIndex = (int)expression[0] - '0';
+        int index;
+        int.TryParse(expression, out index);
+        expressionController.CurrentExpressionIndex = index;
     }
 }

@@ -125,6 +125,7 @@ public class YYAssistant : MonoBehaviour
 
     IEnumerator answer_coroutine(){
         yield return new WaitUntil(() => recorder.isDataReady == true);
+        audioManager.isAnswering = true;
         UnityEngine.Debug.Log("Send data to server");
         yield return StartCoroutine(dataFetcher.GetDataCoroutine(recorder.audioData));
         yield return new WaitForSeconds(0.1f);
@@ -132,6 +133,7 @@ public class YYAssistant : MonoBehaviour
         while (audioManager.isAudioLoadingOrPlaying){
             yield return new WaitForSeconds(0.1f);
         }
+        audioManager.isAnswering = false;
         UnityEngine.Debug.Log("Finished answer");
         mode = Mode.idle;
         yield return null;
