@@ -55,6 +55,11 @@ public class GameStart : MonoBehaviour
         PlayerPrefs.SetString("systemMessageInput", system_message);
         PlayerPrefs.SetInt("clearHistory", clear ? 1 : 0);
         PlayerPrefs.SetInt("sceneIndex", sceneIndex);
+
+        urlInput.text = url;
+        systemMessageInput.text = system_message;
+        clearHistory.isOn = clear;
+        sceneDropdown.value = sceneIndex;
     }
 
     private void OnStartGameButtonClicked()
