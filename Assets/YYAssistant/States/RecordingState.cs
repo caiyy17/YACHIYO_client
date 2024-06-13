@@ -3,9 +3,12 @@ using System.Collections;
 
 public class RecordingState : IAssistantState
 {
+    private float lastTime;
     bool isWaitingData = false;
+    float deltaTime = 0.2f;
     public void EnterState(YYStateManager manager)
     {
+        lastTime = Time.time;
         isWaitingData = false;
         Debug.Log("Entering Recording State");
     }
@@ -33,6 +36,11 @@ public class RecordingState : IAssistantState
             manager.audioRecorder.StopRecordingAndSave();
             manager.audioManager.ResetAll();
             isWaitingData = true;
+            if(Time.time - lastTime < deltaTime){
+                Debug.Log("Recording time is too short, please record again");
+                manager.SwitchState(manager.IdleState);
+                return;
+            }
             manager.StartManagedCoroutine(WaitDataReady(manager));
         }
         else if (manager.keyMapper.ButtonStopPressed()){

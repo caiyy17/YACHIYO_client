@@ -90,6 +90,17 @@ public static class WavUtility
 
         int end = i;
 
+        if (start >= end)
+        {
+            return new WavFormat()
+            {
+                samples = new float[0],
+                samplesCount = 0,
+                channels = wav.channels,
+                frequency = wav.frequency
+            };
+        }
+
         var trimmedSamples = new float[end - start];
         Array.Copy(samples, start, trimmedSamples, 0, trimmedSamples.Length);
 
