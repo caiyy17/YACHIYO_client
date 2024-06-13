@@ -4,19 +4,19 @@ public class ISKeyMapper : KeyMapper
 {
     public void OnRecord(InputAction.CallbackContext context)
     {
-        Debug.Log("Record button pressed");
-        recordButtonPressed = context.started;
+        // Debug.Log("Record button pressed");
+        recordButtonPressed = context.performed;
         recordButtonReleased = context.canceled;
     }
 
     public void OnStop(InputAction.CallbackContext context)
     {
-        stopButtonPressed = context.started;
+        stopButtonPressed = context.performed;
     }
 
     public void OnExit(InputAction.CallbackContext context)
     {
-        exitButtonPressed = context.started;
+        exitButtonPressed = context.performed;
     }
     public override bool ButtonRecordPressed()
     {

@@ -13,19 +13,139 @@ MonoBehaviour:
   m_Name: EmotionDictGanyu
   m_EditorClassIdentifier: 
   motionList:
-  - key: neutral
-    values:
-    - tri210
-  - key: joy
-    values:
-    - tri210
   - key: idle
     values:
     - triIdling
+    - tri2
+    - tri3
+    - tri4
   - key: listening
     values:
     - triIdling
   - key: thinking
     values:
     - triIdling
+  - key: 2
+    values:
+    - tri2
+  - key: 3
+    values:
+    - tri3
+  - key: 4
+    values:
+    - tri4
+  - key: 6
+    values:
+    - tri6
+  - key: 7
+    values:
+    - tri7
+  - key: 8
+    values:
+    - tri8
+  - key: 27
+    values:
+    - tri27
+  - key: 30
+    values:
+    - tri30
+  - key: 33
+    values:
+    - tri33
+  - key: 37
+    values:
+    - tri37
+  - key: 39
+    values:
+    - tri39
+  - key: 40
+    values:
+    - tri40
+  - key: 65
+    values:
+    - tri65
+  - key: 74
+    values:
+    - tri74
+  - key: 80
+    values:
+    - tri80
+  - key: 87
+    values:
+    - tri87
+  - key: 88
+    values:
+    - tri88
+  - key: 89
+    values:
+    - tri89
+  - key: 92
+    values:
+    - tri92
+  - key: 93
+    values:
+    - tri93
+  - key: 95
+    values:
+    - tri95
+  - key: 96
+    values:
+    - tri96
+  - key: 97
+    values:
+    - tri97
+  - key: 98
+    values:
+    - tri98
+  - key: 108
+    values:
+    - tri108
+  - key: 110
+    values:
+    - tri110
+  - key: 111
+    values:
+    - tri111
+  - key: 112
+    values:
+    - tri112
+  - key: 113
+    values:
+    - tri113
+  - key: 115
+    values:
+    - tri115
+  - key: 116
+    values:
+    - tri116
+  - key: 117
+    values:
+    - tri117
+  - key: 118
+    values:
+    - tri118
+  - key: 131
+    values:
+    - tri131
+  - key: 132
+    values:
+    - tri132
+  - key: 133
+    values:
+    - tri133
+  - key: 150
+    values:
+    - tri150
+  - key: 156
+    values:
+    - tri156
+  - key: 157
+    values:
+    - tri157
+  - key: 160
+    values:
+    - tri160
+  - key: 161
+    values:
+    - tri161
   expressionList: []

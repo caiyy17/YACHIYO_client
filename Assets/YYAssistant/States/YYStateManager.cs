@@ -18,7 +18,6 @@ public class YYStateManager : MonoBehaviour
     [HideInInspector]
     public EmotionManager emotionManager;
     public KeyMapper keyMapper;
-    public string addr = "http://localhost:5050";
 
     public IAssistantState CurrentState { get; private set; }
     public readonly IdleState IdleState = new IdleState();
@@ -32,8 +31,6 @@ public class YYStateManager : MonoBehaviour
         audioManager = GetComponent<AudioManager>();
         dataFetcher = GetComponent<DataFetcher>();
         emotionManager = GetComponent<EmotionManager>();
-        addr = PlayerPrefs.GetString("urlInput", addr);
-        dataFetcher.SetUrl(addr);
 
         CurrentState = IdleState;
         CurrentState.EnterState(this);

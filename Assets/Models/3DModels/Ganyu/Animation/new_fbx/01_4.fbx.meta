@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 3108ace43f1a045a786fa99f75b18ad1
 ModelImporter:
-  serializedVersion: 20300
+  serializedVersion: 22200
   internalIDToNameTable: []
   externalObjects: {}
   materials:
@@ -14,9 +14,8 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: "\nClip '01_4|mc_skeleton|Scene' has import animation
       warnings that might lower retargeting quality:\nNote: Activate translation
@@ -49,8 +48,8 @@ ModelImporter:
       hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
       loopBlendPositionXZ: 0
       keepOriginalOrientation: 0
       keepOriginalPositionY: 1
@@ -72,10 +71,12 @@ ModelImporter:
     addColliders: 0
     useSRGBMaterialColor: 1
     sortHierarchyByName: 1
+    importPhysicalCameras: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
+    nodeNameCollisionStrategy: 0
     fileIdsGeneration: 2
     swapUVChannels: 0
     generateSecondaryUV: 0
@@ -87,6 +88,7 @@ ModelImporter:
     skinWeightsMode: 0
     maxBonesPerVertex: 4
     minBoneWeight: 0.001
+    optimizeBones: 1
     meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
@@ -97,6 +99,7 @@ ModelImporter:
     secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -595,7 +598,8 @@ ModelImporter:
     - name: RightForeArm_Twist2
       parentName: RightForeArm
       position: {x: 0.0000000010058283, y: 0.001451067, z: 0.0000000032130627}
-      rotation: {x: -0.0000004610048, y: -0.00000050850224, z: 0.0000000037252907, w: 1}
+      rotation: {x: -0.0000004610048, y: -0.00000050850224, z: 0.0000000037252907,
+        w: 1}
       scale: {x: 0.9999999, y: 0.9999999, z: 0.99999964}
     - name: RightForeArm_Twist2_end
       parentName: RightForeArm_Twist2
@@ -1005,7 +1009,8 @@ ModelImporter:
     - name: LeftHandRing4
       parentName: LeftHandRing3
       position: {x: 0.0000000018719584, y: 0.000228043, z: -0.0000000042002646}
-      rotation: {x: 0.000000003725291, y: -0.00000081397604, z: -0.00000011548401, w: 1}
+      rotation: {x: 0.000000003725291, y: -0.00000081397604, z: -0.00000011548401,
+        w: 1}
       scale: {x: 1, y: 0.99999976, z: 0.99999976}
     - name: LeftHandRing4_end
       parentName: LeftHandRing4
@@ -1035,7 +1040,8 @@ ModelImporter:
     - name: LeftArm_Twist2
       parentName: LeftArm
       position: {x: 5.7742e-10, y: 0.001497564, z: 0.0000000029057263}
-      rotation: {x: -0.0000020265575, y: -0.00000044703478, z: 0.000000096857555, w: 1}
+      rotation: {x: -0.0000020265575, y: -0.00000044703478, z: 0.000000096857555,
+        w: 1}
       scale: {x: 0.9999998, y: 0.9999999, z: 1.0000005}
     - name: LeftArm_Twist2_end
       parentName: LeftArm_Twist2
@@ -1130,7 +1136,8 @@ ModelImporter:
     - name: LeftUpLeg_Twist1
       parentName: LeftUpLeg
       position: {x: 4.0046869e-10, y: 0.0013943772, z: -3.306195e-10}
-      rotation: {x: -0.000000025145702, y: -0.0000007727757, z: -0.00000000896398, w: 1}
+      rotation: {x: -0.000000025145702, y: -0.0000007727757, z: -0.00000000896398,
+        w: 1}
       scale: {x: 0.99999994, y: 1, z: 1.0000005}
     - name: LeftUpLeg_Twist1_end
       parentName: LeftUpLeg_Twist1
@@ -1140,7 +1147,8 @@ ModelImporter:
     - name: LeftUpLeg_Twist2
       parentName: LeftUpLeg
       position: {x: 1.9557773e-10, y: 0.0027887537, z: 8.381903e-11}
-      rotation: {x: 0.000000023632307, y: -0.0000007673368, z: 0.000000008265484, w: 1}
+      rotation: {x: 0.000000023632307, y: -0.0000007673368, z: 0.000000008265484,
+        w: 1}
       scale: {x: 1.0000006, y: 1.0000002, z: 1.0000001}
     - name: LeftUpLeg_Twist2_end
       parentName: LeftUpLeg_Twist2
@@ -1170,7 +1178,8 @@ ModelImporter:
     - name: RightToeEnd
       parentName: RightToeBase
       position: {x: 2.3748725e-10, y: 0.0006318372, z: -0.0000000016325793}
-      rotation: {x: -0.000000102678264, y: 0.00000053923554, z: -0.00000018929124, w: 1}
+      rotation: {x: -0.000000102678264, y: 0.00000053923554, z: -0.00000018929124,
+        w: 1}
       scale: {x: 1.0000004, y: 1.0000004, z: 1.0000006}
     - name: RightToeEnd_end
       parentName: RightToeEnd
@@ -1180,7 +1189,8 @@ ModelImporter:
     - name: RightLeg_Twist0
       parentName: RightLeg
       position: {x: -3.0733643e-10, y: -0.0000000028684735, z: 5.7742e-10}
-      rotation: {x: -0.000000076368444, y: 0.00000007392371, z: 0.00000009313223, w: 1}
+      rotation: {x: -0.000000076368444, y: 0.00000007392371, z: 0.00000009313223,
+        w: 1}
       scale: {x: 1.0000005, y: 1.0000001, z: 1.0000001}
     - name: RightLeg_Twist0_end
       parentName: RightLeg_Twist0
@@ -1220,7 +1230,8 @@ ModelImporter:
     - name: RightUpLeg_Twist1
       parentName: RightUpLeg
       position: {x: -8.4837665e-10, y: 0.0013943774, z: -7.4505804e-11}
-      rotation: {x: -0.000000038649876, y: 0.0000006313152, z: -0.00000035517587, w: 1}
+      rotation: {x: -0.000000038649876, y: 0.0000006313152, z: -0.00000035517587,
+        w: 1}
       scale: {x: 1.0000001, y: 1, z: 1.0000002}
     - name: RightUpLeg_Twist1_end
       parentName: RightUpLeg_Twist1
@@ -1230,7 +1241,8 @@ ModelImporter:
     - name: RightUpLeg_Twist2
       parentName: RightUpLeg
       position: {x: -4.3044565e-10, y: 0.0027887577, z: -3.4458936e-10}
-      rotation: {x: -0.00000014010585, y: 0.00000031193474, z: -0.00000030355292, w: 1}
+      rotation: {x: -0.00000014010585, y: 0.00000031193474, z: -0.00000030355292,
+        w: 1}
       scale: {x: 1.0000005, y: 0.9999999, z: 1.0000002}
     - name: RightUpLeg_Twist2_end
       parentName: RightUpLeg_Twist2
@@ -1255,6 +1267,7 @@ ModelImporter:
   humanoidOversampling: 1
   avatarSetup: 1
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 0
   remapMaterialsIfMaterialImportModeIsNone: 0
   additionalBone: 0
   userData: 

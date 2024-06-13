@@ -22,7 +22,6 @@ public class YYAssistant : MonoBehaviour
     AudioManager audioManager;
     DataFetcher dataFetcher;
     EmotionManager emotionManager;
-    public string addr = "http://localhost:5050";
 
     public IAssistantState CurrentState { get; private set; }
 
@@ -32,14 +31,6 @@ public class YYAssistant : MonoBehaviour
         audioManager = GetComponent<AudioManager>();
         dataFetcher = GetComponent<DataFetcher>();
         emotionManager = GetComponent<EmotionManager>();
-        SetUrl(addr);
-    }
-
-    public void SetUrl(string url)
-    {
-        addr = url;
-        dataFetcher.SetUrl(url);
-        UnityEngine.Debug.Log("URL changed to: " + addr);
     }
 
     void Update()

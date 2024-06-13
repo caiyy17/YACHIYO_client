@@ -9,11 +9,14 @@ EditorBuildSettings:
     path: Assets/Scenes/GameStart.unity
     guid: f1e731d6b4fdee54c88a41e5ae19c55a
   - enabled: 1
-    path: Assets/Scenes/SampleScene3D.unity
-    guid: 371d51ffc2f1c1249893bdeb930d24e0
+    path: Assets/Scenes/SampleScene3DMobilePortrait.unity
+    guid: c92a1cb6cba33974eb138db0d64f46f3
   - enabled: 1
     path: Assets/Scenes/SampleScene3DMobile.unity
     guid: ab05214867e5ac742a0bd8c82fca85f9
+  - enabled: 1
+    path: Assets/Scenes/SampleScene3D.unity
+    guid: 371d51ffc2f1c1249893bdeb930d24e0
   - enabled: 1
     path: Assets/Scenes/SampleScene3DVRM.unity
     guid: 41a91ef10c70cd644a514332d0bacde7
