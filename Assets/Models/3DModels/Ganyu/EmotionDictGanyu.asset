@@ -15,16 +15,16 @@ MonoBehaviour:
   motionList:
   - key: idle
     values:
-    - triIdling
-    - tri2
+    - tri0
     - tri3
     - tri4
+    - tri2
   - key: listening
     values:
-    - triIdling
+    - tri0
   - key: thinking
     values:
-    - triIdling
+    - tri0
   - key: 2
     values:
     - tri2

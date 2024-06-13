@@ -12,6 +12,7 @@ public class EmotionManager : MonoBehaviour
     public StringEvent expressionEvent;
     private string currentEmotion;
     private float lastTime;
+    public float emotionInterval = 10.0f;
 
     public void Start()
     {
@@ -22,8 +23,11 @@ public class EmotionManager : MonoBehaviour
     public void SetMotionAndExpression(string emotion)
     {
         // if (emotion == currentEmotion && emotion == "idle")
-        // 记一下时，5秒钟内不再重复播放动画
-        if (emotion == currentEmotion && Time.time - lastTime < 5){
+        // 记一下时，一段时间内不再重复播放动画
+        if (emotion == currentEmotion && Time.time - lastTime < emotionInterval){
+            return;
+        }
+        if ((emotion == "idle" || emotion == "neutral") && Time.time - lastTime < emotionInterval){
             return;
         }
         currentEmotion = emotion;
