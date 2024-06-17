@@ -32,15 +32,15 @@ public class RecordingState : IAssistantState
                 return;
             }
             Debug.Log("Stop recording and process");
-            manager.emotionManager.SetMotionAndExpression("thinking");
             manager.audioRecorder.StopRecordingAndSave();
-            manager.audioManager.ResetAll();
-            isWaitingData = true;
             if(Time.time - lastTime < deltaTime){
                 Debug.Log("Recording time is too short, please record again");
                 manager.SwitchState(manager.IdleState);
                 return;
             }
+            manager.emotionManager.SetMotionAndExpression("thinking");
+            manager.audioManager.ResetAll();
+            isWaitingData = true;
             manager.StartManagedCoroutine(WaitDataReady(manager));
         }
         else if (manager.keyMapper.ButtonStopPressed()){
