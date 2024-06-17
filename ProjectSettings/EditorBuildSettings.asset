@@ -29,6 +29,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SampleSceneLive2DMiku.unity
     guid: 0d7fdae6f43a7cb49a72872d5aac3127
+  - enabled: 1
+    path: Assets/Scenes/SampleScene2DSeq.unity
+    guid: 4d89059fd4e90d6418258b2dea933382
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 3efae91c5c58e0f43b60ff898c4b8641,
       type: 2}

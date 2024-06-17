@@ -28,7 +28,7 @@ public class ThinkingState : IAssistantState
     IEnumerator asking_coroutine(YYStateManager manager){
         Debug.Log("Send data to server");
         manager.audioManager.isAnswering = true;
-        yield return manager.StartManagedCoroutine(manager.dataFetcher.GetDataCoroutine(manager.audioRecorder.audioData));
+        yield return manager.StartManagedCoroutine(manager.dataFetcher.GetDataCoroutine(manager.audioRecorder.audioData, manager.dataFetcher.userId));
         yield return new WaitForSeconds(0.1f);
         
         while (manager.audioManager.isAudioLoadingOrPlaying){

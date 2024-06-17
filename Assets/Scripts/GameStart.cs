@@ -14,6 +14,7 @@ public class GameStart : MonoBehaviour
 
     public TMP_Dropdown sceneDropdown;
     public TMP_InputField urlInput;
+    public TMP_InputField userIdInput;
     public TMP_InputField systemMessageInput;
     //UI panal
     public GameObject settingPanel;
@@ -26,6 +27,7 @@ public class GameStart : MonoBehaviour
     private void Start()
     {
         urlInput.text = PlayerPrefs.GetString("urlInput", url);
+        userIdInput.text = PlayerPrefs.GetString("userId", "0");
         systemMessageInput.text = PlayerPrefs.GetString("systemMessageInput", system_message);
         clearHistory.isOn = PlayerPrefs.GetInt("clearHistory", clear ? 1 : 0) == 1;
         // 添加按钮点击事件监听器
@@ -66,6 +68,7 @@ public class GameStart : MonoBehaviour
     {
         // 获取用户输入的参数
         PlayerPrefs.SetString("urlInput", urlInput.text);
+        PlayerPrefs.SetString("userId", userIdInput.text);
         PlayerPrefs.SetString("systemMessageInput", systemMessageInput.text);
         PlayerPrefs.SetInt("clearHistory", clearHistory.isOn ? 1 : 0);
         PlayerPrefs.SetInt("sceneIndex", sceneDropdown.value);
