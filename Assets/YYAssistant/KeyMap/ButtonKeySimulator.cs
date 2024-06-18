@@ -31,11 +31,13 @@ public class ButtonKeySimulator : MonoBehaviour
 
     public void OnPointerDown(PointerEventData data)
     {
+        Debug.Log("Button Down");
         isButtonHeld = true;
     }
 
     public void OnPointerUp(PointerEventData data)
     {
+        Debug.Log("Button Up");
         isButtonHeld = false;
     }
 
