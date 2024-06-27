@@ -4,7 +4,7 @@ public class ISKeyMapper : KeyMapper
 {
     public void OnRecord(InputAction.CallbackContext context)
     {
-        Debug.Log("1" + context.performed + "2" + context.canceled + "3" + context.started + "4" + context.phase);
+        // Debug.Log("1" + context.performed + "2" + context.canceled + "3" + context.started + "4" + context.phase);
         // Debug.Log("Record button pressed");
         recordButtonPressed = context.performed;
         recordButtonReleased = context.canceled;
