@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class Anim3D : MonoBehaviour
 {
-    public Animator anim;
-    private List<int> triggerHashes;
+    private Animator anim;
+    private List<int> triggerHashes = new List<int>();
     public SkinnedMeshRenderer skinnedMeshRenderer;
     //List of KeyCode and their corresponding motion trigger, serialized for Unity Editor
     public List<KeyCode> motionKeyCodes;
@@ -19,6 +19,7 @@ public class Anim3D : MonoBehaviour
     void Start()
     {
         Application.targetFrameRate = 30;
+        anim = GetComponent<Animator>();
         if (anim == null)
         {
             anim = new Animator();
@@ -66,9 +67,13 @@ public class Anim3D : MonoBehaviour
 
     public void SetMotion(string motion)
     {
-        // Debug.Log("Set motion: " + motion);
-        ResetAllTriggers();
-        anim.SetTrigger(motion);
+        // 如果当前组件是激活的
+        if (gameObject.activeSelf)
+        {
+            // Debug.Log("Set motion: " + motion);
+            ResetAllTriggers();
+            anim.SetTrigger(motion);
+        }
     }
 
     public void SetExpression(string expression)

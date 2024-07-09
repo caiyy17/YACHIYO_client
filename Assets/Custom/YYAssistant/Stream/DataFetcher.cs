@@ -7,7 +7,7 @@ public class DataFetcher : MonoBehaviour
 {
     public StringEvent segmentEvent;
     public bool cancellationToken = false; // 添加中断标志
-    public string url = "http://localhost:5050";
+    public string url = "";
     bool started = false;
     public string userId;
     void Start()

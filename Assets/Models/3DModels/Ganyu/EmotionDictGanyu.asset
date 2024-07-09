@@ -21,7 +21,7 @@ MonoBehaviour:
     - tri2
   - key: listening
     values:
-    - tri0
+    - tri3
   - key: thinking
     values:
     - tri0

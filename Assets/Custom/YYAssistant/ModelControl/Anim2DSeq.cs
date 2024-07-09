@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class Anim2DSeq : MonoBehaviour
 {
-    public Animator animator;
-    private List<int> triggerHashes;
+    private Animator animator;
+    private List<int> triggerHashes = new List<int>();
     public SkinnedMeshRenderer skinnedMeshRenderer;
     //List of KeyCode and their corresponding motion trigger, serialized for Unity Editor
     public List<KeyCode> motionKeyCodes;
@@ -19,6 +19,7 @@ public class Anim2DSeq : MonoBehaviour
     void Start()
     {
         Application.targetFrameRate = 30;
+        animator = GetComponent<Animator>();
         if (animator == null)
         {
             animator = new Animator();
@@ -66,9 +67,12 @@ public class Anim2DSeq : MonoBehaviour
 
     public void SetMotion(string motion)
     {
-        // Debug.Log("Set motion: " + motion);
-        ResetAllTriggers();
-        animator.SetTrigger(motion);
+        if (gameObject.activeSelf)
+        {
+            // Debug.Log("Set motion: " + motion);
+            ResetAllTriggers();
+            animator.SetTrigger(motion);
+        }
     }
 
     public void SetExpression(string expression)

@@ -28,8 +28,14 @@ public class GameStart : MonoBehaviour
 
     public GameObject mainScreen;
     public GameObject settingPanel;
+    public GameObject comfirmPanel;
+    public GameObject resetPanel;
     public Button openSetting;
     public Button closeSetting;
+    public Button confirmYes;
+    public Button confirmNot;
+    public Button resetYes;
+    public Button resetNot;
 
     public TMP_Text versionText;
 
@@ -63,13 +69,29 @@ public class GameStart : MonoBehaviour
         systemMessageInput.text = PlayerPrefs.GetString("systemMessageInput", system_message);
         clearHistory.isOn = PlayerPrefs.GetInt("clearHistory", clear_history ? 1 : 0) == 1;
 
+        if(userIdInput.text == "0"){
+            //generate a UUID
+            user_id = System.Guid.NewGuid().ToString();
+            userIdInput.text = user_id;
+        }
+
         // 添加按钮点击事件监听器
         startGame.onClick.AddListener(OnStartGameButtonClicked);
         openSetting.onClick.AddListener(OnOpenSettingButtonClicked);
         closeSetting.onClick.AddListener(OnCloseSettingButtonClicked);
         resetDefault.onClick.AddListener(OnResetDefaultButtonClicked);
+        confirmYes.onClick.AddListener(OnConfirmYesButtonClicked);
+        confirmNot.onClick.AddListener(OnConfirmNotButtonClicked);
+        resetYes.onClick.AddListener(OnResetYesButtonClicked);
+        resetNot.onClick.AddListener(OnResetNotButtonClicked);
 
         sceneLoader = GetComponent<SceneLoaderWithProgress>();
+
+        PlayerPrefs.SetString("urlInput", urlInput.text);
+        PlayerPrefs.SetString("userId", userIdInput.text);
+        PlayerPrefs.SetInt("sceneIndex", sceneDropdown.value);
+        PlayerPrefs.SetString("systemMessageInput", systemMessageInput.text);
+        PlayerPrefs.SetInt("clearHistory", clearHistory.isOn ? 1 : 0);
     }
     private void OnOpenSettingButtonClicked()
     {
@@ -82,10 +104,47 @@ public class GameStart : MonoBehaviour
     {
         // 关闭设置界面
         settingPanel.SetActive(false);
+        if (urlInput.text != PlayerPrefs.GetString("urlInput", server_url) ||
+            userIdInput.text != PlayerPrefs.GetString("userId", user_id) ||
+            sceneDropdown.value != PlayerPrefs.GetInt("sceneIndex", scene_id) ||
+            systemMessageInput.text != PlayerPrefs.GetString("systemMessageInput", system_message) ||
+            clearHistory.isOn != (PlayerPrefs.GetInt("clearHistory", clear_history ? 1 : 0) == 1)){
+            comfirmPanel.SetActive(true);
+            }
+        else{
+            mainScreen.SetActive(true);
+        }
+    }
+
+    private void OnConfirmYesButtonClicked()
+    {
+        PlayerPrefs.SetString("urlInput", urlInput.text);
+        PlayerPrefs.SetString("userId", userIdInput.text);
+        PlayerPrefs.SetInt("sceneIndex", sceneDropdown.value);
+        PlayerPrefs.SetString("systemMessageInput", systemMessageInput.text);
+        PlayerPrefs.SetInt("clearHistory", clearHistory.isOn ? 1 : 0);
+        // 关闭设置界面
+        comfirmPanel.SetActive(false);
         mainScreen.SetActive(true);
     }
 
+    private void OnConfirmNotButtonClicked()
+    {
+        urlInput.text = PlayerPrefs.GetString("urlInput", server_url);
+        userIdInput.text = PlayerPrefs.GetString("userId", user_id);
+        sceneDropdown.value = PlayerPrefs.GetInt("sceneIndex", scene_id);
+        systemMessageInput.text = PlayerPrefs.GetString("systemMessageInput", system_message);
+        clearHistory.isOn = PlayerPrefs.GetInt("clearHistory", clear_history ? 1 : 0) == 1;
+        // 关闭设置界面
+        comfirmPanel.SetActive(false);
+        mainScreen.SetActive(true);
+    }
     private void OnResetDefaultButtonClicked()
+    {
+        resetPanel.SetActive(true);
+        settingPanel.SetActive(false);
+    }
+    private void OnResetYesButtonClicked()
     {
         PlayerPrefs.SetString("urlInput", server_url);
         PlayerPrefs.SetString("userId", user_id);
@@ -98,18 +157,27 @@ public class GameStart : MonoBehaviour
         systemMessageInput.text = system_message;
         clearHistory.isOn = clear_history;
         sceneDropdown.value = scene_id;
+
+        if(userIdInput.text == "0"){
+            //generate a UUID
+            user_id = System.Guid.NewGuid().ToString();
+            userIdInput.text = user_id;
+        }
+        PlayerPrefs.SetString("userId", userIdInput.text);
+
+        resetPanel.SetActive(false);
+        settingPanel.SetActive(true);
+    }
+
+    private void OnResetNotButtonClicked()
+    {
+        resetPanel.SetActive(false);
+        settingPanel.SetActive(true);
     }
 
     private void OnStartGameButtonClicked()
     {
-        // 获取用户输入的参数
-        PlayerPrefs.SetString("urlInput", urlInput.text);
-        PlayerPrefs.SetString("userId", userIdInput.text);
-        PlayerPrefs.SetInt("sceneIndex", sceneDropdown.value);
-        PlayerPrefs.SetString("systemMessageInput", systemMessageInput.text);
-        PlayerPrefs.SetInt("clearHistory", clearHistory.isOn ? 1 : 0);
-        
-        string scene = scenes[sceneDropdown.value];
+        string scene = scenes[PlayerPrefs.GetInt("sceneIndex", 0)];
         // 加载游戏场景，把其他交互禁用
         mainScreen.SetActive(false);
         settingPanel.SetActive(false);

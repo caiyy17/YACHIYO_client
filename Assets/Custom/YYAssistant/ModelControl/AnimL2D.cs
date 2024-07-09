@@ -25,7 +25,11 @@ public class AnimL2D : MonoBehaviour
         anim = GetComponent<Animator>();
         model = GetComponent<CubismModel>();
         expressionController = GetComponent<Live2D.Cubism.Framework.Expression.CubismExpressionController>();
-    
+
+        if (anim == null)
+        {
+            anim = new Animator();
+        }
     }
 
     // Update is called once per frame
@@ -64,15 +68,19 @@ public class AnimL2D : MonoBehaviour
 
     public void SetMotion(string motion)
     {
-        // Debug.Log("Set motion: " + motion);
-        anim.SetTrigger(motion);
+        if (gameObject.activeSelf)
+        {
+            anim.SetTrigger(motion);
+        }
     }
 
     public void SetExpression(string expression)
     {
-        // Debug.Log("Set expression: " + expression);
-        int index;
-        int.TryParse(expression, out index);
-        expressionController.CurrentExpressionIndex = index;
+        if (gameObject.activeSelf)
+        {
+            int index;
+            int.TryParse(expression, out index);
+            expressionController.CurrentExpressionIndex = index;
+        }
     }
 }
