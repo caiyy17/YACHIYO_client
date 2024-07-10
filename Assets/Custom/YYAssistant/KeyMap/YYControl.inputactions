@@ -31,6 +31,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "click",
+                    "type": "Button",
+                    "id": "63c32f2f-d0ac-4eb1-9e3c-6d945d71609c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -40,7 +49,7 @@
                     "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
-                    "groups": "PC",
+                    "groups": "Custom",
                     "action": "record",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -51,7 +60,7 @@
                     "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
-                    "groups": "PC",
+                    "groups": "Custom",
                     "action": "record",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -62,7 +71,7 @@
                     "path": "<Keyboard>/n",
                     "interactions": "",
                     "processors": "",
-                    "groups": "PC",
+                    "groups": "Custom",
                     "action": "stop",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -73,7 +82,7 @@
                     "path": "<Gamepad>/buttonWest",
                     "interactions": "",
                     "processors": "",
-                    "groups": "PC",
+                    "groups": "Custom",
                     "action": "stop",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -84,8 +93,30 @@
                     "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
-                    "groups": "PC",
+                    "groups": "Custom",
                     "action": "exit",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2ffc33b7-0480-4b69-a52f-b0c5f6c4523f",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Custom",
+                    "action": "click",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e99d4548-46af-4dd8-b04e-5dd51df6b50d",
+                    "path": "<Touchscreen>/primaryTouch/tap",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Custom",
+                    "action": "click",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -94,8 +125,8 @@
     ],
     "controlSchemes": [
         {
-            "name": "PC",
-            "bindingGroup": "PC",
+            "name": "Custom",
+            "bindingGroup": "Custom",
             "devices": [
                 {
                     "devicePath": "<Keyboard>",
@@ -115,17 +146,6 @@
                 {
                     "devicePath": "<Touchscreen>",
                     "isOptional": true,
-                    "isOR": false
-                }
-            ]
-        },
-        {
-            "name": "TouchScreen",
-            "bindingGroup": "TouchScreen",
-            "devices": [
-                {
-                    "devicePath": "<Touchscreen>",
-                    "isOptional": false,
                     "isOR": false
                 }
             ]

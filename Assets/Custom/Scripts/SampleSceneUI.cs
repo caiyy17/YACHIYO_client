@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class SampleSceneUI : MonoBehaviour
 {
     //Model selection
+    public Transform modelParent;
     public List<GameObject> modelList;
     public Button nextModel;
     public Button prevModel;
@@ -51,6 +52,7 @@ public class SampleSceneUI : MonoBehaviour
 
     void NextModel()
     {
+        modelParent.rotation = Quaternion.identity;
         modelList[currentModelIndex].SetActive(false);
         currentModelIndex++;
         if (currentModelIndex >= modelList.Count)
@@ -62,6 +64,7 @@ public class SampleSceneUI : MonoBehaviour
 
     void PrevModel()
     {
+        modelParent.rotation = Quaternion.identity;
         modelList[currentModelIndex].SetActive(false);
         currentModelIndex--;
         if (currentModelIndex < 0)
@@ -104,12 +107,16 @@ public class SampleSceneUI : MonoBehaviour
 
     void ShowSetting()
     {
+        // disable character collider
+        modelParent.GetComponent<BoxCollider>().enabled = false;
         MainScreen.SetActive(false);
         SettingPanel.SetActive(true);
     }
 
     void CloseSettingPanel()
     {
+        // enable character collider
+        modelParent.GetComponent<BoxCollider>().enabled = true;
         SettingPanel.SetActive(false);
         MainScreen.SetActive(true);
     }
