@@ -31,35 +31,6 @@ public class Anim3D : MonoBehaviour
         CacheTriggerHashes();
     }
 
-    // Update is called once per frame
-    
-    void LateUpdate()
-    {
-        PlayAnim();
-        FaceExpression();
-    }
-    void PlayAnim()
-    {
-        for (int i = 0; i < motionKeyCodes.Count; i++)
-        {
-            if (Input.GetKeyDown(motionKeyCodes[i]))
-            {
-                anim.SetTrigger(motionTriggers[i]);
-            }
-        }
-    }
-
-    void FaceExpression()
-    {
-        for (int i = 0; i < expressionKeyCodes.Count; i++)
-        {
-            if (Input.GetKeyDown(expressionKeyCodes[i]))
-            {
-                skinnedMeshRenderer.SetBlendShapeWeight(expressionIndexes[i], 100);
-            }
-        }
-    }
-    
     public void MouthControl(float value)
     {
         skinnedMeshRenderer.SetBlendShapeWeight(mouthIndex, value * 100);
@@ -68,7 +39,7 @@ public class Anim3D : MonoBehaviour
     public void SetMotion(string motion)
     {
         // 如果当前组件是激活的
-        if (gameObject.activeSelf)
+        if (gameObject.activeInHierarchy)
         {
             // Debug.Log("Set motion: " + motion);
             ResetAllTriggers();

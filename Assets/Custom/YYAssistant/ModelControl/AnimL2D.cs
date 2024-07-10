@@ -31,35 +31,6 @@ public class AnimL2D : MonoBehaviour
             anim = new Animator();
         }
     }
-
-    // Update is called once per frame
-    
-    void LateUpdate()
-    {
-        PlayAnim();
-        FaceExpression();
-    }
-    void PlayAnim()
-    {
-        for (int i = 0; i < motionKeyCodes.Count; i++)
-        {
-            if (Input.GetKeyDown(motionKeyCodes[i]))
-            {
-                anim.SetTrigger(motionTriggers[i]);
-            }
-        }
-    }
-
-    void FaceExpression()
-    {
-        for (int i = 0; i < expressionKeyCodes.Count; i++)
-        {
-            if (Input.GetKeyDown(expressionKeyCodes[i]))
-            {
-                expressionController.CurrentExpressionIndex = expressionIndexes[i];
-            }
-        }
-    }
     
     public void MouthControl(float value)
     {
@@ -68,7 +39,7 @@ public class AnimL2D : MonoBehaviour
 
     public void SetMotion(string motion)
     {
-        if (gameObject.activeSelf)
+        if (gameObject.activeInHierarchy)
         {
             anim.SetTrigger(motion);
         }
@@ -76,7 +47,7 @@ public class AnimL2D : MonoBehaviour
 
     public void SetExpression(string expression)
     {
-        if (gameObject.activeSelf)
+        if (gameObject.activeInHierarchy)
         {
             int index;
             int.TryParse(expression, out index);

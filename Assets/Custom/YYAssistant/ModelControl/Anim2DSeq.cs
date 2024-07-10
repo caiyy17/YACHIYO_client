@@ -30,35 +30,6 @@ public class Anim2DSeq : MonoBehaviour
         }
         CacheTriggerHashes();
     }
-
-    // Update is called once per frame
-    
-    void LateUpdate()
-    {
-        PlayAnim();
-        FaceExpression();
-    }
-    void PlayAnim()
-    {
-        for (int i = 0; i < motionKeyCodes.Count; i++)
-        {
-            if (Input.GetKeyDown(motionKeyCodes[i]))
-            {
-                animator.SetTrigger(motionTriggers[i]);
-            }
-        }
-    }
-
-    void FaceExpression()
-    {
-        for (int i = 0; i < expressionKeyCodes.Count; i++)
-        {
-            if (Input.GetKeyDown(expressionKeyCodes[i]))
-            {
-                skinnedMeshRenderer.SetBlendShapeWeight(expressionIndexes[i], 100);
-            }
-        }
-    }
     
     public void MouthControl(float value)
     {
@@ -67,7 +38,7 @@ public class Anim2DSeq : MonoBehaviour
 
     public void SetMotion(string motion)
     {
-        if (gameObject.activeSelf)
+        if (gameObject.activeInHierarchy)
         {
             // Debug.Log("Set motion: " + motion);
             ResetAllTriggers();
