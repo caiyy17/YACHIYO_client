@@ -17423,13 +17423,13 @@ GameObject:
   - component: {fileID: 3331671974770813486}
   - component: {fileID: 3566008986768026179}
   - component: {fileID: 8452782695937358669}
-  - component: {fileID: 2729317825438630085}
-  - component: {fileID: 3407753574866123022}
-  - component: {fileID: 4695059961176771378}
+  - component: {fileID: 8435618902308739996}
   - component: {fileID: 3142908710104728751}
   - component: {fileID: 5305345129522182460}
   - component: {fileID: 4998383409234966263}
-  - component: {fileID: 8435618902308739996}
+  - component: {fileID: 2729317825438630085}
+  - component: {fileID: 3407753574866123022}
+  - component: {fileID: 4695059961176771378}
   m_Layer: 0
   m_Name: YYAssistantManager
   m_TagString: Untagged
@@ -17464,8 +17464,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca3b1d03b8200344a8783c91ed64e4e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isAudioLoadingOrPlaying: 0
   StopPlayingFlag: 0
+  isAudioWaitingOrPlaying: 0
   isAnswering: 0
 --- !u!114 &5457034829225772474
 MonoBehaviour:
