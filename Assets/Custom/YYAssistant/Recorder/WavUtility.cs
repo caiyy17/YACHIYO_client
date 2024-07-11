@@ -146,64 +146,8 @@ public static class WavUtility
                 float[] audioFloats = new float[audioClip.samples * audioClip.channels];
                 int sampleCount = 0;
 
-                // 根据 bit depth 转换字节到 float
-                for (int i = 0; i < dataSize; i += bitDepth / 8)
-                {
-                    float sample = 0;
-                    switch (bitDepth)
-                    {
-                        case 16:
-                            sample = BitConverter.ToInt16(audioData, i) / 32768f;
-                            break;
-                        case 8:
-                            sample = (audioData[i] - 128) / 128f;
-                            break;
-                        default:
-                            throw new Exception("Unsupported WAV bit depth: " + bitDepth);
-                    }
-                    audioFloats[sampleCount++] = sample;
-                }
-                audioClip.SetData(audioFloats, 0);
-
-                // 模拟耗时操作，实际中可以去掉这一行
                 yield return null;
 
-                // 完成后通过回调返回 AudioClip
-                onComplete?.Invoke(audioClip);
-            }
-        }
-    }
-    public static AudioClip ToAudioClip2(byte[] wavBytes, string name = "audioClip")
-    {
-        // 使用内存流读取字节
-        using (MemoryStream stream = new MemoryStream(wavBytes))
-        {
-            using (BinaryReader reader = new BinaryReader(stream))
-            {
-                // 读取头部
-                byte[] riff = reader.ReadBytes(4);
-                int size = reader.ReadInt32();
-                byte[] wave = reader.ReadBytes(4);
-                byte[] fmt = reader.ReadBytes(4);
-                int fmtSize = reader.ReadInt32();
-                int fmtCode = reader.ReadInt16();
-                int channels = reader.ReadInt16();
-                int sampleRate = reader.ReadInt32();
-                int byteRate = reader.ReadInt32();
-                int fmtBlockAlign = reader.ReadInt16();
-                int bitDepth = reader.ReadInt16();
-
-                byte[] data = reader.ReadBytes(4);
-                int dataSize = reader.ReadInt32();
-
-                // 读取数据
-                byte[] audioData = reader.ReadBytes(dataSize);
-
-                // 创建 AudioClip
-                AudioClip audioClip = AudioClip.Create(name, dataSize / (bitDepth / 8) / channels, channels, sampleRate, false);
-                float[] audioFloats = new float[audioClip.samples * audioClip.channels];
-                int sampleCount = 0;
-
                 // 根据 bit depth 转换字节到 float
                 for (int i = 0; i < dataSize; i += bitDepth / 8)
                 {
@@ -222,8 +166,8 @@ public static class WavUtility
                     audioFloats[sampleCount++] = sample;
                 }
                 audioClip.SetData(audioFloats, 0);
-
-                return audioClip;
+                // 完成后通过回调返回 AudioClip
+                onComplete?.Invoke(audioClip);
             }
         }
     }

@@ -8,24 +8,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameStart.unity
     guid: f1e731d6b4fdee54c88a41e5ae19c55a
-  - enabled: 0
-    path: Assets/Scenes/SampleScene2DSeq.unity
-    guid: f6c45bce01557f94b8dc62c30754740f
-  - enabled: 0
-    path: Assets/Scenes/SampleScene2DSeqLisa.unity
-    guid: 5bb4884b0fd3ca146a50b9788ebb0ea7
   - enabled: 1
     path: Assets/Scenes/SampleScene3D.unity
     guid: ab05214867e5ac742a0bd8c82fca85f9
-  - enabled: 0
-    path: Assets/Scenes/SampleScene3DPortrait.unity
-    guid: 857ed27e6e31b9949897b0f69c4d1163
-  - enabled: 0
-    path: Assets/Scenes/SampleScene3DVRM.unity
-    guid: 576f99ec77846d24780b9e151dc3673f
-  - enabled: 0
-    path: Assets/Scenes/SampleSceneLive2D.unity
-    guid: 9fe0562ff59659c459c45f39fad994d4
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 3efae91c5c58e0f43b60ff898c4b8641,
       type: 2}

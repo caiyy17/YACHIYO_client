@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System.IO;
 using System.Collections;
+using System.Threading;
 
 [RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(EmotionManager))]
@@ -15,10 +16,12 @@ public class AudioManager : MonoBehaviour
     Queue<string> textQueue = new Queue<string>();
     EmotionManager emotionManager;
     ContentLoader contentLoader;
-    public bool isAudioLoadingOrPlaying = false;
-
     public bool StopPlayingFlag = false;
+    public bool isAudioWaitingOrPlaying = false;
     public bool isAnswering = false;
+
+    AudioClip clip;
+    byte[] audioData;
 
     void Start()
     {
@@ -30,15 +33,13 @@ public class AudioManager : MonoBehaviour
     public void QueueAudio(int index, string text, string emotion, string audio_base64)
     {
         // 将base64字符串转换为byte数组
-        byte[] audioData = System.Convert.FromBase64String(audio_base64);
+        audioData = System.Convert.FromBase64String(audio_base64);
         // 将byte的wav存入clip
         // 使用coroutine保存clip
         StartCoroutine(WavUtility.ToAudioClip(audioData, (clip) => {
-            if(isAnswering){
-                audioQueue.Enqueue(clip);
-                emotionQueue.Enqueue(emotion);
-                textQueue.Enqueue(text);
-            }
+            audioQueue.Enqueue(clip);
+            emotionQueue.Enqueue(emotion);
+            textQueue.Enqueue(text);
         }));
     }
 
@@ -47,7 +48,6 @@ public class AudioManager : MonoBehaviour
         if (StopPlayingFlag)
         {
             ResetAll();
-            StopPlayingFlag = false;
             return;
         }
         if (!audioSource.isPlaying && audioQueue.Count > 0)
@@ -60,11 +60,11 @@ public class AudioManager : MonoBehaviour
         
         if (audioSource.isPlaying || audioQueue.Count > 0)
         {
-            isAudioLoadingOrPlaying = true;
+            isAudioWaitingOrPlaying = true;
         }
         else
         {
-            isAudioLoadingOrPlaying = false;
+            isAudioWaitingOrPlaying = false;
         }
     }
 
@@ -78,14 +78,15 @@ public class AudioManager : MonoBehaviour
 
     public void ResetAll()
     {
+        StopAllCoroutines();
         audioQueue.Clear();
         emotionQueue.Clear();
         textQueue.Clear();
         audioSource.Stop();
         contentLoader.ClearImage();
         contentLoader.ClearText();
-        isAudioLoadingOrPlaying = false;
+        StopPlayingFlag = false;
+        isAudioWaitingOrPlaying = false;
         isAnswering = false;
     }
-    
 }

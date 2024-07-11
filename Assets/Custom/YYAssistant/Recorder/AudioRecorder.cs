@@ -5,11 +5,14 @@ using System.IO;
 public class AudioRecorder : MonoBehaviour
 {
     private AudioClip recording;
+    [HideInInspector]
     public bool isRecording = false;
+    [HideInInspector]
     public bool isDataReady = false;
-    private string microphone;
+    [HideInInspector]
     public byte[] audioData = null;
     private int sampleRate = 16000;
+    private string microphone;
 
     void Start()
     {

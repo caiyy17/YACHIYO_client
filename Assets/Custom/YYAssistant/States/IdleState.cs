@@ -1,20 +1,21 @@
 using UnityEngine;
 using System.Collections;
 
-public class IdleState : IAssistantState
+public class IdleState : YYState
 {
-    public void EnterState(YYStateManager manager)
+    public override void EnterState(YYStateManager manager)
     {
-        Debug.Log("Entering Idle State");
+        base.EnterState(manager);
     }
 
-    public void ExitState(YYStateManager manager)
+    public override void ExitState()
     {
-        Debug.Log("Exiting Idle State");
+        base.ExitState();
     }
 
-    public void UpdateState(YYStateManager manager)
+    public override void UpdateState()
     {
+        base.UpdateState();
         // Idle状态下的更新逻辑
         manager.emotionManager.SetMotionAndExpression("idle");
         if(manager.keyMapper.ButtonRecordPressed())
@@ -23,9 +24,6 @@ public class IdleState : IAssistantState
                 UnityEngine.Debug.LogError("Recorder is already recording, please stop it first");
                 return;
             }
-            Debug.Log("Start recording");
-            manager.emotionManager.SetMotionAndExpression("listening");
-            manager.audioRecorder.StartRecording();
             manager.SwitchState(manager.RecordingState);
         }
         if (manager.keyMapper.ButtonStopPressed()){

@@ -1,22 +1,24 @@
 using UnityEngine;
 using System.Collections;
 
-public class ThinkingState : IAssistantState
+public class AnsweringState : YYState
 {
-    public void EnterState(YYStateManager manager)
+    public override void EnterState(YYStateManager manager)
     {
-        Debug.Log("Entering Thinking State");
-        manager.StartManagedCoroutine(asking_coroutine(manager));
+        base.EnterState(manager);
+        manager.emotionManager.SetMotionAndExpression("thinking");
+        manager.StartCoroutine(asking_coroutine());
     }
 
-    public void ExitState(YYStateManager manager)
+    public override void ExitState()
     {
-        Debug.Log("Exiting Thinking State");
+        base.ExitState();
     }
 
-    public void UpdateState(YYStateManager manager)
+    public override void UpdateState()
     {
-        // Thinking状态下的更新逻辑
+        base.UpdateState();
+        // Answering状态下的更新逻辑
         if (manager.keyMapper.ButtonStopPressed()){
             Debug.Log("Stop fetching");
             manager.dataFetcher.StopFetching();
@@ -25,13 +27,13 @@ public class ThinkingState : IAssistantState
         }
     }
 
-    IEnumerator asking_coroutine(YYStateManager manager){
+    IEnumerator asking_coroutine(){
         Debug.Log("Send data to server");
         manager.audioManager.isAnswering = true;
-        yield return manager.StartManagedCoroutine(manager.dataFetcher.GetDataCoroutine(manager.audioRecorder.audioData, manager.dataFetcher.userId));
+        yield return manager.StartCoroutine(manager.dataFetcher.GetDataCoroutine(manager.audioRecorder.audioData, manager.dataFetcher.userId));
         yield return new WaitForSeconds(0.1f);
         
-        while (manager.audioManager.isAudioLoadingOrPlaying){
+        while (manager.audioManager.isAudioWaitingOrPlaying){
             yield return new WaitForSeconds(0.1f);
         }
         manager.audioManager.isAnswering = false;

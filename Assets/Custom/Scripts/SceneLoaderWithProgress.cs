@@ -28,7 +28,7 @@ public class SceneLoaderWithProgress : MonoBehaviour
         operation.allowSceneActivation = false;
 
         // 初始化任务的总权重
-        float initializationWeight = 0.8f;
+        float initializationWeight = 0.6f;
         // 场景加载的总权重
         float loadingWeight = 1 - initializationWeight;
 
@@ -39,7 +39,7 @@ public class SceneLoaderWithProgress : MonoBehaviour
         while (!operation.isDone)
         {
             // operation.progress is between 0.0f and 0.9f
-            float loadingProgress = Mathf.Clamp01(operation.progress / 0.9f) * loadingWeight;
+            float loadingProgress = Mathf.Clamp01(operation.progress) * loadingWeight;
             progressBar.value = initializationWeight + loadingProgress;
 
             // 显示进度百分比
@@ -51,15 +51,6 @@ public class SceneLoaderWithProgress : MonoBehaviour
             // 如果加载进度达到90%，就认为加载完成
             if (operation.progress >= 0.9f)
             {
-                // 更新进度条为100%
-                progressBar.value = 1f;
-
-                // 显示进度百分比为100%
-                if (progressText != null)
-                {
-                    progressText.text = "100%";
-                }
-
                 // 允许场景激活
                 operation.allowSceneActivation = true;
             }
@@ -75,7 +66,7 @@ public class SceneLoaderWithProgress : MonoBehaviour
         for (int i = 0; i < steps; i++)
         {
             // 模拟每个步骤的耗时（这里使用WaitForSeconds）
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.2f);
 
             // 更新进度条（假设每个步骤占初始化总进度的相应比例）
             if (progressBar != null)

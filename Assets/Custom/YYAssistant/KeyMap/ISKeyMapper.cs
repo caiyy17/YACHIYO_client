@@ -2,40 +2,32 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 public class ISKeyMapper : KeyMapper
 {
-    public void OnRecord(InputAction.CallbackContext context)
+    private PlayerInput playerInput;
+    private InputAction recordButton, stopButton, exitButton;
+    private void Awake()
     {
-        // Debug.Log("1" + context.performed + "2" + context.canceled + "3" + context.started + "4" + context.phase);
-        // Debug.Log("Record button pressed");
-        recordButtonPressed = context.performed;
-        recordButtonReleased = context.canceled;
-    }
-
-    public void OnStop(InputAction.CallbackContext context)
-    {
-        stopButtonPressed = context.performed;
-    }
-
-    public void OnExit(InputAction.CallbackContext context)
-    {
-        exitButtonPressed = context.performed;
+        playerInput = GetComponent<PlayerInput>();
+        recordButton = playerInput.actions.FindAction("record");
+        stopButton = playerInput.actions.FindAction("stop");
+        exitButton = playerInput.actions.FindAction("exit");
     }
     public override bool ButtonRecordPressed()
     {
-        return recordButtonPressed;
+        return recordButton.WasPerformedThisFrame();
     }
 
     public override bool ButtonRecordReleased()
     {
-        return recordButtonReleased;
+        return recordButton.WasReleasedThisFrame();
     }
 
     public override bool ButtonStopPressed()
     {
-        return stopButtonPressed;
+        return stopButton.WasPerformedThisFrame();
     }
 
     public override bool ButtonExitPressed()
     {
-        return exitButtonPressed;
+        return exitButton.WasPerformedThisFrame();
     }
 }

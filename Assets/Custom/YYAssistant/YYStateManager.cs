@@ -20,11 +20,11 @@ public class YYStateManager : MonoBehaviour
     public KeyMapper keyMapper;
 
     public IAssistantState CurrentState { get; private set; }
-    public readonly IdleState IdleState = new IdleState();
-    public readonly RecordingState RecordingState = new RecordingState();
-    public readonly ThinkingState ThinkingState = new ThinkingState();
-    public readonly AnsweringState AnsweringState = new AnsweringState();
+    public readonly IAssistantState IdleState = new IdleState();
+    public readonly IAssistantState RecordingState = new RecordingState();
+    public readonly IAssistantState AnsweringState = new AnsweringState();
     // Start is called before the first frame update
+
     void Start()
     {
         audioRecorder = GetComponent<AudioRecorder>();
@@ -39,18 +39,13 @@ public class YYStateManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CurrentState.UpdateState(this);
+        CurrentState.UpdateState();
     }
 
     public void SwitchState(IAssistantState newState)
     {
-        CurrentState.ExitState(this);
+        CurrentState.ExitState();
         CurrentState = newState;
         CurrentState.EnterState(this);
-    }
-
-    public Coroutine StartManagedCoroutine(IEnumerator coroutine)
-    {
-        return StartCoroutine(coroutine);
     }
 }
