@@ -4,7 +4,6 @@ using System.Collections;
 public class RecordingState : YYState
 {
     private float startTime;
-    bool isWaitingData = false;
     float deltaTime = 0.2f;
     public override void EnterState(YYStateManager manager)
     {
@@ -13,7 +12,6 @@ public class RecordingState : YYState
         this.manager.emotionManager.SetMotionAndExpression("listening");
         this.manager.audioRecorder.StartRecording();
         startTime = Time.time;
-        isWaitingData = false;
     }
 
     public override void ExitState()
@@ -25,10 +23,7 @@ public class RecordingState : YYState
     {
         base.UpdateState();
         // Recording状态下的更新逻辑
-        if (isWaitingData){
-            return;
-        }
-        else if (manager.keyMapper.ButtonRecordReleased())
+        if (manager.keyMapper.ButtonRecordReleased())
         {
             if(!manager.audioRecorder.isRecording){
                 Debug.LogError("Recorder is not recording, please start it first");
@@ -43,7 +38,6 @@ public class RecordingState : YYState
                 return;
             }
             manager.audioManager.ResetAll();
-            isWaitingData = true;
             manager.StartCoroutine(WaitDataReady());
         }
         else if (manager.keyMapper.ButtonStopPressed()){

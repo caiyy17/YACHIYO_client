@@ -20,9 +20,9 @@ public class YYStateManager : MonoBehaviour
     public KeyMapper keyMapper;
 
     public IAssistantState CurrentState { get; private set; }
-    public readonly IAssistantState IdleState = new IdleState();
-    public readonly IAssistantState RecordingState = new RecordingState();
-    public readonly IAssistantState AnsweringState = new AnsweringState();
+    public IAssistantState IdleState = new IdleState();
+    public IAssistantState RecordingState = new RecordingState();
+    public IAssistantState AnsweringState = new AnsweringState();
     // Start is called before the first frame update
 
     void Start()
@@ -31,7 +31,10 @@ public class YYStateManager : MonoBehaviour
         audioManager = GetComponent<AudioManager>();
         dataFetcher = GetComponent<DataFetcher>();
         emotionManager = GetComponent<EmotionManager>();
+    }
 
+    void OnEnable()
+    {
         CurrentState = IdleState;
         CurrentState.EnterState(this);
     }

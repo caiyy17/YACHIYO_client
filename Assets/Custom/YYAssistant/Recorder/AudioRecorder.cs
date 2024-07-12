@@ -16,6 +16,7 @@ public class AudioRecorder : MonoBehaviour
 
     void Start()
     {
+        isRecording = false;
         // 获取默认麦克风
         if (Microphone.devices.Length > 0)
         {

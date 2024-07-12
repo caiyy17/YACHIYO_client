@@ -283,6 +283,7 @@ RectTransform:
   - {fileID: 825840812}
   - {fileID: 1316513164}
   - {fileID: 411768340}
+  - {fileID: 1612264312}
   - {fileID: 824183244}
   - {fileID: 488703251}
   m_Father: {fileID: 15105303}
@@ -952,7 +953,7 @@ MonoBehaviour:
   m_text: INPUT YOUR SYSTEM MESSAGE HERE
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 44978a6a094fa574795dcf898ad561c9, type: 2}
-  m_sharedMaterial: {fileID: 2598747645600797329, guid: 747a0ee3ec363834faef55558564c5d0,
+  m_sharedMaterial: {fileID: 5785890223584780946, guid: 44978a6a094fa574795dcf898ad561c9,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -3942,7 +3943,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &824183244
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4818,8 +4819,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1612264312}
+  m_Children: []
   m_Father: {fileID: 921340933}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
@@ -6465,7 +6465,7 @@ GameObject:
   - component: {fileID: 1612264314}
   - component: {fileID: 1612264313}
   m_Layer: 5
-  m_Name: System Message
+  m_Name: System Message Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6484,12 +6484,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2118073933}
-  m_Father: {fileID: 1102140424}
+  m_Father: {fileID: 12671600}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 783, y: 600}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -400, y: 100}
+  m_SizeDelta: {x: 783, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1612264313
 MonoBehaviour:
@@ -6587,7 +6587,7 @@ MonoBehaviour:
   m_ResetOnDeActivation: 1
   m_KeepTextSelectionVisible: 0
   m_RestoreOriginalTextOnEscape: 1
-  m_isRichTextEditingAllowed: 0
+  m_isRichTextEditingAllowed: 1
   m_LineLimit: 0
   isAlert: 0
   m_InputValidator: {fileID: 0}
@@ -7470,7 +7470,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
+  m_overflowMode: 4
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
@@ -8810,7 +8810,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72d21f4f324e71c4b95ee182985c38d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  settingsData: {fileID: 11400000, guid: 592370d0a7ec71544910ff834d66e2c7, type: 2}
+  settingsData: {fileID: 11400000, guid: da6c0c60fe634ea4389e93537dca02f5, type: 2}
   server_url: 
   user_id: 
   scene_id: 0

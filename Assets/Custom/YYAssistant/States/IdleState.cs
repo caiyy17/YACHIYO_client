@@ -21,12 +21,12 @@ public class IdleState : YYState
         if(manager.keyMapper.ButtonRecordPressed())
         {
             if(manager.audioRecorder.isRecording){
-                UnityEngine.Debug.LogError("Recorder is already recording, please stop it first");
-                return;
+                UnityEngine.Debug.LogError("Recorder is already recording, stop it first");
+                manager.audioRecorder.StopRecordingAndSave();
             }
             manager.SwitchState(manager.RecordingState);
         }
-        if (manager.keyMapper.ButtonStopPressed()){
+        else if (manager.keyMapper.ButtonStopPressed()){
             UnityEngine.Debug.Log("Clear all");
             manager.audioManager.ResetAll();
         }

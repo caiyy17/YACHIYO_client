@@ -11,7 +11,7 @@ public class Rotatable : MonoBehaviour
 	[SerializeField] private bool inverted;
 	private Vector2 rotation;
 	private bool rotateAllowed;
-	private void Awake() 
+	private void Start()
     {
         cam = Camera.main.transform;
         pressed.Enable();
