@@ -16864,11 +16864,61 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e89d569574b58448b7cb2e6be01d5ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugger: {fileID: 1111174662}
   audioRecorder: {fileID: 0}
   audioManager: {fileID: 0}
   dataFetcher: {fileID: 0}
   emotionManager: {fileID: 0}
-  keyMapper: {fileID: 4695059961176771378}
+  recordButton:
+    m_Name: Record Button
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: c795b416-9339-4615-afe6-62fea04b88b1
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 579cacd1-a575-4c9e-b015-eba70d6d6574
+      m_Path: <Keyboard>/space
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Record Button
+      m_Flags: 0
+    - m_Name: 
+      m_Id: 02ef290c-00d8-4e27-b240-9b5fc4ac5961
+      m_Path: <Gamepad>/buttonSouth
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Record Button
+      m_Flags: 0
+    m_Flags: 1
+  stopButton:
+    m_Name: Stop Button
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: c57fcb28-0d04-41f5-8773-f2671bc22fd8
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 9ce9cb03-816a-4821-ae94-ac729546d152
+      m_Path: <Keyboard>/n
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Stop Button
+      m_Flags: 0
+    - m_Name: 
+      m_Id: ca6d87b4-d2ed-4d6c-a836-ad8206e0886f
+      m_Path: <Gamepad>/buttonWest
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Stop Button
+      m_Flags: 0
+    m_Flags: 1
 --- !u!82 &3142908710104728751
 AudioSource:
   m_ObjectHideFlags: 0
@@ -16981,53 +17031,6 @@ MonoBehaviour:
   isRecording: 0
   isDataReady: 0
   audioData: 
---- !u!114 &3407753574866123022
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5109295921711183585}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: 5122c45bc6fc2db4cad76417135010c5,
-    type: 3}
-  m_NotificationBehavior: 0
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents:
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 34f4f1bc-ea8b-47d6-b510-75343eba3d77
-    m_ActionName: 'Assistant/record[/Keyboard/space]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: fada87fa-1f45-4265-984f-24c0be06bc03
-    m_ActionName: 'Assistant/stop[/Keyboard/n]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 3deb28f0-aa1a-45d6-aa03-81614f6055b1
-    m_ActionName: 'Assistant/exit[/Keyboard/escape]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 63c32f2f-d0ac-4eb1-9e3c-6d945d71609c
-    m_ActionName: 'Assistant/click[/Mouse/leftButton]'
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
-  m_DefaultActionMap: Assistant
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
 --- !u!114 &3566008986768026179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17518,19 +17521,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 4373060573322486920}
   m_SourcePrefab: {fileID: 100100000, guid: efc424652590b4b35b7ddf1132fb7257, type: 3}
---- !u!114 &4695059961176771378
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5109295921711183585}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a483e652a986bdb459023cb291eab636, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  text: {fileID: 1111174662}
 --- !u!114 &4998383409234966263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17566,8 +17556,6 @@ GameObject:
   - component: {fileID: 5305345129522182460}
   - component: {fileID: 4998383409234966263}
   - component: {fileID: 2729317825438630085}
-  - component: {fileID: 3407753574866123022}
-  - component: {fileID: 4695059961176771378}
   m_Layer: 0
   m_Name: YYAssistantManager
   m_TagString: Untagged

@@ -19,7 +19,7 @@ public class AnsweringState : YYState
     {
         base.UpdateState();
         // Answering状态下的更新逻辑
-        if (manager.keyMapper.ButtonStopPressed()){
+        if (manager.stopButton.WasReleasedThisFrame()){
             Debug.Log("Stop fetching");
             manager.dataFetcher.StopFetching();
             manager.audioManager.StopPlayingFlag = true;

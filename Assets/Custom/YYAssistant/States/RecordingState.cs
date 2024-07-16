@@ -8,6 +8,7 @@ public class RecordingState : YYState
     public override void EnterState(YYStateManager manager)
     {
         base.EnterState(manager);
+        this.manager.debugger.text = "Start Recording";
         Debug.Log("Start recording");
         this.manager.emotionManager.SetMotionAndExpression("listening");
         this.manager.audioRecorder.StartRecording();
@@ -21,10 +22,12 @@ public class RecordingState : YYState
 
     public override void UpdateState()
     {
+        manager.debugger.text = "Updating Recording State";
         base.UpdateState();
         // Recording状态下的更新逻辑
-        if (manager.keyMapper.ButtonRecordReleased())
+        if (manager.recordButton.WasReleasedThisFrame())
         {
+            manager.debugger.text = "Stop Recording";
             if(!manager.audioRecorder.isRecording){
                 Debug.LogError("Recorder is not recording, please start it first");
                 manager.SwitchState(manager.IdleState);
@@ -40,7 +43,7 @@ public class RecordingState : YYState
             manager.audioManager.ResetAll();
             manager.StartCoroutine(WaitDataReady());
         }
-        else if (manager.keyMapper.ButtonStopPressed()){
+        else if (manager.stopButton.WasPerformedThisFrame()){
             Debug.Log("Clear all");
             manager.audioRecorder.StopRecordingAndSave();
             manager.SwitchState(manager.IdleState);

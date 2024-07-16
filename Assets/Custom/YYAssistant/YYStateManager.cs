@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using TMPro;
 
 [RequireComponent(typeof(AudioRecorder))]
 [RequireComponent(typeof(AudioManager))]
@@ -9,6 +12,7 @@ using UnityEngine.Networking;
 [RequireComponent(typeof(EmotionManager))]
 public class YYStateManager : MonoBehaviour
 {
+    public TextMeshProUGUI debugger;
     [HideInInspector]
     public AudioRecorder audioRecorder;
     [HideInInspector]
@@ -17,12 +21,13 @@ public class YYStateManager : MonoBehaviour
     public DataFetcher dataFetcher;
     [HideInInspector]
     public EmotionManager emotionManager;
-    public KeyMapper keyMapper;
+
+    [SerializeField] public InputAction recordButton, stopButton;
 
     public IAssistantState CurrentState { get; private set; }
-    public IAssistantState IdleState = new IdleState();
-    public IAssistantState RecordingState = new RecordingState();
-    public IAssistantState AnsweringState = new AnsweringState();
+    public readonly IAssistantState IdleState = new IdleState();
+    public readonly IAssistantState RecordingState = new RecordingState();
+    public readonly IAssistantState AnsweringState = new AnsweringState();
     // Start is called before the first frame update
 
     void Start()
@@ -31,12 +36,15 @@ public class YYStateManager : MonoBehaviour
         audioManager = GetComponent<AudioManager>();
         dataFetcher = GetComponent<DataFetcher>();
         emotionManager = GetComponent<EmotionManager>();
+        CurrentState = IdleState;
+        CurrentState.EnterState(this);
+
+        recordButton.Enable();
+        stopButton.Enable();
     }
 
     void OnEnable()
     {
-        CurrentState = IdleState;
-        CurrentState.EnterState(this);
     }
 
     // Update is called once per frame
