@@ -8,6 +8,7 @@ public class SceneLoaderWithProgress : MonoBehaviour
 {
     public Slider progressBar;
     public TMP_Text progressText;
+    public Preparation preparation;
 
     // 开始加载场景的协程
     public void LoadScene(string sceneName)
@@ -30,7 +31,7 @@ public class SceneLoaderWithProgress : MonoBehaviour
         // 初始化任务的总权重
         float initializationWeight = 0.6f;
         // 场景加载的总权重
-        float loadingWeight = 1 - initializationWeight;
+        float loadingWeight = 0.9f - initializationWeight;
 
         // 执行初始化任务
         yield return StartCoroutine(PerformInitializationTasks(initializationWeight));
@@ -61,26 +62,10 @@ public class SceneLoaderWithProgress : MonoBehaviour
 
     private IEnumerator PerformInitializationTasks(float weight)
     {
-        // 模拟一个初始化任务，分为多个步骤
-        int steps = 5;
-        for (int i = 0; i < steps; i++)
+        if (preparation != null)
         {
-            // 模拟每个步骤的耗时（这里使用WaitForSeconds）
-            yield return new WaitForSeconds(0.2f);
-
-            // 更新进度条（假设每个步骤占初始化总进度的相应比例）
-            if (progressBar != null)
-            {
-                progressBar.value += weight / steps;
-            }
-
-            // 更新进度文本
-            if (progressText != null)
-            {
-                progressText.text = (progressBar.value * 100).ToString("F2") + "%";
-            }
+            yield return preparation.AssistantInit(progressBar, progressText, weight);
         }
-
         // 所有初始化任务完成
         yield return null;
     }

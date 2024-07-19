@@ -1019,7 +1019,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &101594189
@@ -8791,6 +8791,7 @@ GameObject:
   - component: {fileID: 2093208406}
   - component: {fileID: 2093208404}
   - component: {fileID: 2093208407}
+  - component: {fileID: 2093208408}
   m_Layer: 0
   m_Name: GameStart
   m_TagString: Untagged
@@ -8813,13 +8814,14 @@ MonoBehaviour:
   settingsData: {fileID: 11400000, guid: da6c0c60fe634ea4389e93537dca02f5, type: 2}
   server_url: 
   user_id: 
-  scene_id: 0
+  char_id: 0
+  scene_name: 
   system_message: 
   clear_history: 1
-  scenes: []
+  chars: []
   urlInput: {fileID: 790387248}
   userIdInput: {fileID: 1873701834}
-  sceneDropdown: {fileID: 1316513165}
+  charDropDown: {fileID: 1316513165}
   systemMessageInput: {fileID: 1612264313}
   clearHistory: {fileID: 488703252}
   startGame: {fileID: 658698621}
@@ -8864,6 +8866,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   progressBar: {fileID: 2002203427}
   progressText: {fileID: 1754485213}
+  preparation: {fileID: 2093208408}
 --- !u!82 &2093208407
 AudioSource:
   m_ObjectHideFlags: 0
@@ -8961,6 +8964,20 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &2093208408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2093208403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c953264edb562b46947f2c9ee0b0bfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  url: 
+  userId: 
 --- !u!1 &2098005894
 GameObject:
   m_ObjectHideFlags: 0

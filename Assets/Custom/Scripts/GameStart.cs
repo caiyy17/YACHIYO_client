@@ -11,15 +11,16 @@ public class GameStart : MonoBehaviour
     public GameSettingsData settingsData;
     public string server_url;
     public string user_id;
-    public int scene_id;
+    public int char_id;
+    public string scene_name;
     public string system_message;
     public bool clear_history = true;
-    public List<string> scenes = new List<string>();
+    public List<string> chars = new List<string>();
 
     [Header("UI Elements")]
     public TMP_InputField urlInput;
     public TMP_InputField userIdInput;
-    public TMP_Dropdown sceneDropdown;
+    public TMP_Dropdown charDropDown;
     public TMP_InputField systemMessageInput;
     public Toggle clearHistory;
 
@@ -49,23 +50,22 @@ public class GameStart : MonoBehaviour
         // 从ScriptableObject中读取用户设置
         server_url = settingsData.server_url;
         user_id = settingsData.user_id;
-        scenes = settingsData.scenes;
-        string scene_name = settingsData.scene_name;
-        //如果scenes中有scene_name，则返回scene_name的索引，否则返回0
-        scene_id = scenes.IndexOf(scene_name);
-        if (scene_id == -1)
+        chars = new List<string>();
+        chars.Add("default");
+        foreach (CharacterSettingsData charData in settingsData.chars)
         {
-            scene_id = 0;
+            chars.Add(charData.character_name);
         }
+        scene_name = settingsData.scene_name;
         system_message = settingsData.system_message;
         clear_history = settingsData.clear_history;
 
         // 从PlayerPrefs中读取用户设置
         urlInput.text = PlayerPrefs.GetString("urlInput", server_url);
         userIdInput.text = PlayerPrefs.GetString("userId", user_id);
-        sceneDropdown.ClearOptions();
-        sceneDropdown.AddOptions(scenes);
-        sceneDropdown.value = PlayerPrefs.GetInt("sceneIndex", scene_id);
+        charDropDown.ClearOptions();
+        charDropDown.AddOptions(chars);
+        charDropDown.value = PlayerPrefs.GetInt("charIndex", char_id);
         systemMessageInput.text = PlayerPrefs.GetString("systemMessageInput", system_message);
         clearHistory.isOn = PlayerPrefs.GetInt("clearHistory", clear_history ? 1 : 0) == 1;
 
@@ -73,6 +73,11 @@ public class GameStart : MonoBehaviour
             //generate a UUID
             user_id = System.Guid.NewGuid().ToString();
             userIdInput.text = user_id;
+        }
+
+        if(charDropDown.value > charDropDown.options.Count - 1){
+            char_id = 0;
+            charDropDown.value = char_id;
         }
 
         // 添加按钮点击事件监听器
@@ -84,14 +89,32 @@ public class GameStart : MonoBehaviour
         confirmNot.onClick.AddListener(OnConfirmNotButtonClicked);
         resetYes.onClick.AddListener(OnResetYesButtonClicked);
         resetNot.onClick.AddListener(OnResetNotButtonClicked);
+        charDropDown.onValueChanged.AddListener(delegate {
+            OnCharDropDownValueChanged(charDropDown);
+        });
 
         sceneLoader = GetComponent<SceneLoaderWithProgress>();
 
         PlayerPrefs.SetString("urlInput", urlInput.text);
         PlayerPrefs.SetString("userId", userIdInput.text);
-        PlayerPrefs.SetInt("sceneIndex", sceneDropdown.value);
+        PlayerPrefs.SetInt("charIndex", charDropDown.value);
         PlayerPrefs.SetString("systemMessageInput", systemMessageInput.text);
         PlayerPrefs.SetInt("clearHistory", clearHistory.isOn ? 1 : 0);
+    }
+
+    private void OnCharDropDownValueChanged(TMP_Dropdown change)
+    {
+        char_id = change.value;
+        if (char_id == 0)
+        {
+            scene_name = settingsData.scene_name;
+            systemMessageInput.text = PlayerPrefs.GetString("systemMessageInput", system_message);
+        }
+        else
+        {
+            scene_name = settingsData.chars[char_id - 1].scene_name;
+            systemMessageInput.text = settingsData.chars[char_id - 1].system_message;
+        }
     }
     private void OnOpenSettingButtonClicked()
     {
@@ -106,7 +129,7 @@ public class GameStart : MonoBehaviour
         settingPanel.SetActive(false);
         if (urlInput.text != PlayerPrefs.GetString("urlInput", server_url) ||
             userIdInput.text != PlayerPrefs.GetString("userId", user_id) ||
-            sceneDropdown.value != PlayerPrefs.GetInt("sceneIndex", scene_id) ||
+            charDropDown.value != PlayerPrefs.GetInt("charIndex", char_id) ||
             systemMessageInput.text != PlayerPrefs.GetString("systemMessageInput", system_message) ||
             clearHistory.isOn != (PlayerPrefs.GetInt("clearHistory", clear_history ? 1 : 0) == 1)){
             comfirmPanel.SetActive(true);
@@ -120,7 +143,7 @@ public class GameStart : MonoBehaviour
     {
         PlayerPrefs.SetString("urlInput", urlInput.text);
         PlayerPrefs.SetString("userId", userIdInput.text);
-        PlayerPrefs.SetInt("sceneIndex", sceneDropdown.value);
+        PlayerPrefs.SetInt("charIndex", charDropDown.value);
         PlayerPrefs.SetString("systemMessageInput", systemMessageInput.text);
         PlayerPrefs.SetInt("clearHistory", clearHistory.isOn ? 1 : 0);
         // 关闭设置界面
@@ -132,7 +155,7 @@ public class GameStart : MonoBehaviour
     {
         urlInput.text = PlayerPrefs.GetString("urlInput", server_url);
         userIdInput.text = PlayerPrefs.GetString("userId", user_id);
-        sceneDropdown.value = PlayerPrefs.GetInt("sceneIndex", scene_id);
+        charDropDown.value = PlayerPrefs.GetInt("charIndex", char_id);
         systemMessageInput.text = PlayerPrefs.GetString("systemMessageInput", system_message);
         clearHistory.isOn = PlayerPrefs.GetInt("clearHistory", clear_history ? 1 : 0) == 1;
         // 关闭设置界面
@@ -150,13 +173,13 @@ public class GameStart : MonoBehaviour
         PlayerPrefs.SetString("userId", user_id);
         PlayerPrefs.SetString("systemMessageInput", system_message);
         PlayerPrefs.SetInt("clearHistory", clear_history ? 1 : 0);
-        PlayerPrefs.SetInt("sceneIndex", scene_id);
+        PlayerPrefs.SetInt("charIndex", char_id);
 
         urlInput.text = server_url;
         userIdInput.text = user_id;
         systemMessageInput.text = system_message;
         clearHistory.isOn = clear_history;
-        sceneDropdown.value = scene_id;
+        charDropDown.value = char_id;
 
         if(userIdInput.text == "0"){
             //generate a UUID
@@ -177,7 +200,23 @@ public class GameStart : MonoBehaviour
 
     private void OnStartGameButtonClicked()
     {
-        string scene = scenes[PlayerPrefs.GetInt("sceneIndex", 0)];
+        string scene = scene_name;
+
+        int current_id = PlayerPrefs.GetInt("charIndex", char_id);
+        if(current_id == 0){
+            PlayerPrefs.SetString("character_voice", "");
+            PlayerPrefs.SetString("character_model", "");
+            PlayerPrefs.SetString("character_config", "");
+        }
+        else{
+            Debug.Log("current_id: " + current_id);
+            Debug.Log("character_voice: " + settingsData.chars[current_id - 1].character_voice);
+            Debug.Log("character_model: " + settingsData.chars[current_id - 1].character_model);
+            Debug.Log("character_config: " + settingsData.chars[current_id - 1].character_config);
+            PlayerPrefs.SetString("character_voice", settingsData.chars[current_id - 1].character_voice);
+            PlayerPrefs.SetString("character_model", settingsData.chars[current_id - 1].character_model);
+            PlayerPrefs.SetString("character_config", settingsData.chars[current_id - 1].character_config);
+        }
         // 加载游戏场景，把其他交互禁用
         mainScreen.SetActive(false);
         settingPanel.SetActive(false);
