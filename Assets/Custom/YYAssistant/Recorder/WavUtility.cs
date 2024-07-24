@@ -171,4 +171,6 @@ public static class WavUtility
             }
         }
     }
+
+    public static AudioClip emptyClip = AudioClip.Create("empty", 1, 1, 16000, false);
 }

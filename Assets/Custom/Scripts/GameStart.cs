@@ -13,6 +13,7 @@ public class GameStart : MonoBehaviour
     public string user_id;
     public int char_id;
     public string scene_name;
+    [TextArea(1, 1000)]
     public string system_message;
     public bool clear_history = true;
     public List<string> chars = new List<string>();

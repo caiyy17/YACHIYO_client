@@ -9,5 +9,6 @@ public class CharacterSettingsData : ScriptableObject
     public string character_model = "";
     public string character_config = "";
     public string scene_name = "SampleScene3D";
+    [TextArea(1, 1000)]
     public string system_message = "你是一个人工智能助手，你可以回答一些问题，也可以帮助用户完成一些任务。";
 }

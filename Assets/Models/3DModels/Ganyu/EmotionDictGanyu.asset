@@ -14,141 +14,186 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   motionList:
   - key: idle
+    layer: -10
     values:
     - tri0
     - tri3
     - tri4
     - tri2
   - key: listening
+    layer: -8
     values:
     - tri3
   - key: thinking
+    layer: -5
     values:
     - tri0
   - key: 2
+    layer: -1
     values:
     - tri2
   - key: 3
+    layer: -1
     values:
     - tri3
   - key: 4
+    layer: -1
     values:
     - tri4
   - key: 6
+    layer: 0
     values:
     - tri6
   - key: 7
+    layer: 5
     values:
     - tri7
   - key: 8
+    layer: 0
     values:
     - tri8
   - key: 27
+    layer: 0
     values:
     - tri27
   - key: 30
+    layer: 0
     values:
     - tri30
   - key: 33
+    layer: 0
     values:
     - tri33
   - key: 37
+    layer: 0
     values:
     - tri37
   - key: 39
+    layer: 0
     values:
     - tri39
   - key: 40
+    layer: 0
     values:
     - tri40
   - key: 65
+    layer: 0
     values:
     - tri65
   - key: 74
+    layer: 0
     values:
     - tri74
   - key: 80
+    layer: 0
     values:
     - tri80
   - key: 87
+    layer: 0
     values:
     - tri87
   - key: 88
+    layer: 0
     values:
     - tri88
   - key: 89
+    layer: 0
     values:
     - tri89
   - key: 92
+    layer: 5
     values:
     - tri92
   - key: 93
+    layer: 0
     values:
     - tri93
   - key: 95
+    layer: 0
     values:
     - tri95
   - key: 96
+    layer: 0
     values:
     - tri96
   - key: 97
+    layer: 0
     values:
     - tri97
   - key: 98
+    layer: 0
     values:
     - tri98
   - key: 108
+    layer: 0
     values:
     - tri108
   - key: 110
+    layer: 0
     values:
     - tri110
   - key: 111
+    layer: 0
     values:
     - tri111
   - key: 112
+    layer: 5
     values:
     - tri112
   - key: 113
+    layer: 0
     values:
     - tri113
   - key: 115
+    layer: 0
     values:
     - tri115
   - key: 116
+    layer: 0
     values:
     - tri116
   - key: 117
+    layer: 0
     values:
     - tri117
   - key: 118
+    layer: 0
     values:
     - tri118
   - key: 131
+    layer: 0
     values:
     - tri131
   - key: 132
+    layer: 0
     values:
     - tri132
   - key: 133
+    layer: 0
     values:
     - tri133
   - key: 150
+    layer: 10
     values:
     - tri150
   - key: 156
+    layer: 0
     values:
     - tri156
   - key: 157
+    layer: 0
     values:
     - tri157
   - key: 160
+    layer: 0
     values:
     - tri160
   - key: 161
+    layer: 0
     values:
     - tri161
   - key: 153
+    layer: 0
     values:
     - tri153
   expressionList: []

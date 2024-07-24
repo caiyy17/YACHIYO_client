@@ -32,15 +32,24 @@ public class AudioManager : MonoBehaviour
 
     public void QueueAudio(int index, string text, string emotion, string audio_base64)
     {
-        // 将base64字符串转换为byte数组
-        audioData = System.Convert.FromBase64String(audio_base64);
-        // 将byte的wav存入clip
-        // 使用coroutine保存clip
-        StartCoroutine(WavUtility.ToAudioClip(audioData, (clip) => {
-            audioQueue.Enqueue(clip);
+        if(audio_base64 == "")
+        {
+            audioQueue.Enqueue(WavUtility.emptyClip);
             emotionQueue.Enqueue(emotion);
             textQueue.Enqueue(text);
-        }));
+        }
+        else{
+            // 将base64字符串转换为byte数组
+            audioData = System.Convert.FromBase64String(audio_base64);
+            // 将byte的wav存入clip
+            // 使用coroutine保存clip
+            StartCoroutine(WavUtility.ToAudioClip(audioData, (clip) => {
+                audioQueue.Enqueue(clip);
+                emotionQueue.Enqueue(emotion);
+                textQueue.Enqueue(text);
+            }));
+        }
+        
     }
 
     void Update()

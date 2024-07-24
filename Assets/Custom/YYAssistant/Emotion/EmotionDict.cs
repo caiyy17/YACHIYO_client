@@ -9,6 +9,7 @@ public class EmotionDict : ScriptableObject
     public class EmotionEntry
     {
         public string key;
+        public int layer = 0;
         public List<string> values;
     }
 
@@ -40,21 +41,27 @@ public class EmotionDict : ScriptableObject
         new EmotionEntry() { key = "idle", values = new List<string> { "1" } }
     };
 
-    public Dictionary<string, List<string>> motionDict;
-    public Dictionary<string, List<string>> expressionDict;
+    public class EmotionItem
+    {
+        public int layer = 0;
+        public List<string> values;
+    }
+
+    public Dictionary<string, EmotionItem> motionDict;
+    public Dictionary<string, EmotionItem> expressionDict;
 
     public void Initialize()
     {
-        motionDict = new Dictionary<string, List<string>>();
+        motionDict = new Dictionary<string, EmotionItem>();
         foreach (var entry in motionList)
         {
-            motionDict[entry.key] = entry.values;
+            motionDict[entry.key] = new EmotionItem() { layer = entry.layer, values = entry.values };
         }
 
-        expressionDict = new Dictionary<string, List<string>>();
+        expressionDict = new Dictionary<string, EmotionItem>();
         foreach (var entry in expressionList)
         {
-            expressionDict[entry.key] = entry.values;
+            expressionDict[entry.key] = new EmotionItem() { layer = entry.layer, values = entry.values };
         }
     }
 }

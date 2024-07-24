@@ -17192,7 +17192,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  emotionInterval: 10
+  emotionInterval: 3
 --- !u!114 &4373060573322486920
 MonoBehaviour:
   m_ObjectHideFlags: 0

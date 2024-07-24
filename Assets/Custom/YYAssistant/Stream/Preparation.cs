@@ -14,10 +14,9 @@ public class Preparation : MonoBehaviour
     {
     }
 
-    public IEnumerator ClearHistory(string userId)
+    public IEnumerator CustomWebRequest(string url, string json, string name)
     {
-        UnityWebRequest webRequest = new UnityWebRequest(url + "/clear", "POST");
-        string json = "{\"id\":\"" + userId + "\"}";
+        UnityWebRequest webRequest = new UnityWebRequest(url, "POST");
         byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
         webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
         webRequest.downloadHandler = new DownloadHandlerBuffer();
@@ -27,7 +26,7 @@ public class Preparation : MonoBehaviour
 
         if (webRequest.result != UnityWebRequest.Result.Success)
         {
-            Debug.Log("Clear history error: " + webRequest.error);
+            Debug.Log(name + " error: " + webRequest.error);
         }
         else
         {
@@ -35,80 +34,30 @@ public class Preparation : MonoBehaviour
         }
     }
 
+    public IEnumerator ClearHistory(string userId)
+    {
+        string json = "{\"id\":\"" + userId + "\"}";
+        yield return StartCoroutine(CustomWebRequest(url + "/clear", json, "Clear history"));
+    }
+
     public IEnumerator HealthCheck()
     {
-        UnityWebRequest webRequest = new UnityWebRequest(url + "/heartbeat", "POST");
-        string json = "{}";
-        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
-        webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
-        webRequest.downloadHandler = new DownloadHandlerBuffer();
-        webRequest.SetRequestHeader("Content-Type", "application/json");
-
-        yield return webRequest.SendWebRequest();
-
-        if (webRequest.result != UnityWebRequest.Result.Success)
-        {
-            Debug.Log("Health check error: " + webRequest.error);
-        }
-        else
-        {
-            Debug.Log("Response: " + webRequest.downloadHandler.text);
-        }
-
+        string json = "{\"id\":\"" + userId + "\"}";
+        yield return StartCoroutine(CustomWebRequest(url + "/heartbeat", json, "Health check"));
     }
 
     private IEnumerator SetSystemMessage(string systemPrompt, string userId)
     {
         // Create a JSON object
         string json = JsonUtility.ToJson(new SystemPromptData(systemPrompt, userId));
-
-        // Create a UnityWebRequest for POST
-        using (UnityWebRequest webRequest = new UnityWebRequest(url + "/set_system_prompt", "POST"))
-        {
-            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
-            webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            webRequest.downloadHandler = new DownloadHandlerBuffer();
-            webRequest.SetRequestHeader("Content-Type", "application/json");
-
-            // Send the request and wait for a response
-            yield return webRequest.SendWebRequest();
-
-            if (webRequest.result != UnityWebRequest.Result.Success)
-            {
-                Debug.Log("Set system message error: " + webRequest.error);
-            }
-            else
-            {
-                Debug.Log("Response: " + webRequest.downloadHandler.text);
-            }
-        }
+        yield return StartCoroutine(CustomWebRequest(url + "/set_system_prompt", json, "Set system message"));
     }
 
     private IEnumerator SetTTSModel(string characterVoice, string characterModel, string characterConfig, string userId)
     {
         // Create a JSON object
         string json = JsonUtility.ToJson(new TTSModelData(characterVoice, characterModel, characterConfig, userId));
-
-        // Create a UnityWebRequest for POST
-        using (UnityWebRequest webRequest = new UnityWebRequest(url + "/set_model", "POST"))
-        {
-            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
-            webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            webRequest.downloadHandler = new DownloadHandlerBuffer();
-            webRequest.SetRequestHeader("Content-Type", "application/json");
-
-            // Send the request and wait for a response
-            yield return webRequest.SendWebRequest();
-
-            if (webRequest.result != UnityWebRequest.Result.Success)
-            {
-                Debug.Log("Set TTS model error: " + webRequest.error);
-            }
-            else
-            {
-                Debug.Log("Response: " + webRequest.downloadHandler.text);
-            }
-        }
+        yield return StartCoroutine(CustomWebRequest(url + "/set_model", json, "Set TTS model"));
     }
 
     public IEnumerator AssistantInit(Slider progressBar, TMP_Text progressText, float weight)

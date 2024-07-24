@@ -4046,7 +4046,7 @@ GameObject:
   - component: {fileID: 825840814}
   - component: {fileID: 825840813}
   m_Layer: 5
-  m_Name: Scene
+  m_Name: Character
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4091,7 +4091,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Scene
+  m_text: Preset
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 44978a6a094fa574795dcf898ad561c9, type: 2}
   m_sharedMaterial: {fileID: 5785890223584780946, guid: 44978a6a094fa574795dcf898ad561c9,
@@ -5367,7 +5367,7 @@ GameObject:
   - component: {fileID: 1316513166}
   - component: {fileID: 1316513165}
   m_Layer: 5
-  m_Name: SceneDropdown
+  m_Name: CharDropdown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
