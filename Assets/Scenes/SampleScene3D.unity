@@ -366,8 +366,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1228976300}
   m_HandleRect: {fileID: 1228976299}
   m_Direction: 0
-  m_Value: 0
-  m_Size: 0.99999994
+  m_Value: 1
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -7710,7 +7710,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1837920296}
   m_HandleRect: {fileID: 1837920295}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0.9999982
   m_Size: 0.9574999
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -14620,6 +14620,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AABB.m_Extent.z
       value: 0.061580285
+      objectReference: {fileID: 0}
+    - target: {fileID: -4297446187249348513, guid: f4b5e32b0fd93464388fd56985a84b30,
+        type: 3}
+      propertyPath: UpdateType
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -1728013695380148634, guid: f4b5e32b0fd93464388fd56985a84b30,
         type: 3}
