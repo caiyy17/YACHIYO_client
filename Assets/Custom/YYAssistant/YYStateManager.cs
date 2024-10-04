@@ -6,15 +6,13 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using TMPro;
 
-[RequireComponent(typeof(AudioRecorder))]
 [RequireComponent(typeof(AudioManager))]
 [RequireComponent(typeof(DataFetcher))]
 [RequireComponent(typeof(EmotionManager))]
 public class YYStateManager : MonoBehaviour
 {
     public TextMeshProUGUI debugger;
-    [HideInInspector]
-    public AudioRecorder audioRecorder;
+    public ServiceRecorder recordService;
     [HideInInspector]
     public AudioManager audioManager;
     [HideInInspector]
@@ -32,7 +30,6 @@ public class YYStateManager : MonoBehaviour
 
     void Start()
     {
-        audioRecorder = GetComponent<AudioRecorder>();
         audioManager = GetComponent<AudioManager>();
         dataFetcher = GetComponent<DataFetcher>();
         emotionManager = GetComponent<EmotionManager>();

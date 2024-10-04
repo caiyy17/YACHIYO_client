@@ -20,11 +20,14 @@ public class IdleState : YYState
         manager.emotionManager.SetMotionAndExpression("idle");
         if(manager.recordButton.WasPerformedThisFrame())
         {
-            if(manager.audioRecorder.isRecording){
+            if(manager.recordService.isRecording){
                 UnityEngine.Debug.LogError("Recorder is already recording, stop it first");
-                manager.audioRecorder.StopRecordingAndSave();
+                manager.recordService.StopRecording();
             }
-            manager.SwitchState(manager.RecordingState);
+            else{
+                manager.SwitchState(manager.RecordingState);
+            }
+            
         }
         else if (manager.stopButton.WasPerformedThisFrame()){
             UnityEngine.Debug.Log("Clear all");

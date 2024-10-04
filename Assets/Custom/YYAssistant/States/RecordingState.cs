@@ -9,9 +9,9 @@ public class RecordingState : YYState
     {
         base.EnterState(manager);
         this.manager.debugger.text = "Start Recording";
-        Debug.Log("Start recording");
+        Debug.Log("Start Recording");
         this.manager.emotionManager.SetMotionAndExpression("listening");
-        this.manager.audioRecorder.StartRecording();
+        this.manager.recordService.StartRecording();
         startTime = Time.time;
     }
 
@@ -27,14 +27,14 @@ public class RecordingState : YYState
         // Recording状态下的更新逻辑
         if (manager.recordButton.WasReleasedThisFrame())
         {
-            manager.debugger.text = "Stop Recording";
-            if(!manager.audioRecorder.isRecording){
+            if(!manager.recordService.isRecording){
                 Debug.LogError("Recorder is not recording, please start it first");
                 manager.SwitchState(manager.IdleState);
                 return;
             }
+            manager.debugger.text = "Stop recording and process";
             Debug.Log("Stop recording and process");
-            manager.audioRecorder.StopRecordingAndSave();
+            manager.recordService.StopRecording();
             if(Time.time - startTime < deltaTime){
                 Debug.Log("Recording time is too short, please record again");
                 manager.SwitchState(manager.IdleState);
@@ -45,14 +45,14 @@ public class RecordingState : YYState
         }
         else if (manager.stopButton.WasPerformedThisFrame()){
             Debug.Log("Clear all");
-            manager.audioRecorder.StopRecordingAndSave();
+            manager.recordService.StopRecording();
             manager.SwitchState(manager.IdleState);
         }
     }
 
     IEnumerator WaitDataReady()
     {
-        yield return new WaitUntil(() => manager.audioRecorder.isDataReady);
+        yield return new WaitUntil(() => manager.recordService.isDataReady);
         manager.SwitchState(manager.AnsweringState);
     }
 }
