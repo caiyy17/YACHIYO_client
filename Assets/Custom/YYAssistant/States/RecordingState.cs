@@ -4,14 +4,14 @@ using System.Collections;
 public class RecordingState : YYState
 {
     private float startTime;
-    float deltaTime = 0.2f;
+    float deltaTime = 0.7f;
     public override void EnterState(YYStateManager manager)
     {
         base.EnterState(manager);
         this.manager.debugger.text = "Start Recording";
         Debug.Log("Start Recording");
         this.manager.emotionManager.SetMotionAndExpression("listening");
-        this.manager.recordService.StartRecording();
+        this.manager.recordService.StartRecording(-0.3f);
         startTime = Time.time;
     }
 
@@ -25,7 +25,7 @@ public class RecordingState : YYState
         manager.debugger.text = "Updating Recording State";
         base.UpdateState();
         // Recording状态下的更新逻辑
-        if (manager.recordButton.WasReleasedThisFrame())
+        if (manager.recordButton.WasReleasedThisFrame() || manager.voiceDetector.IsEnding())
         {
             if(!manager.recordService.isRecording){
                 Debug.LogError("Recorder is not recording, please start it first");

@@ -12,13 +12,14 @@ using TMPro;
 public class YYStateManager : MonoBehaviour
 {
     public TextMeshProUGUI debugger;
-    public ServiceRecorder recordService;
     [HideInInspector]
     public AudioManager audioManager;
     [HideInInspector]
     public DataFetcher dataFetcher;
     [HideInInspector]
     public EmotionManager emotionManager;
+    public ServiceRecorder recordService;
+    public VoiceDetector voiceDetector;
 
     [SerializeField] public InputAction recordButton, stopButton;
 

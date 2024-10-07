@@ -26,15 +26,15 @@ public class ServiceRecorder : MonoBehaviour
     {
     }
 
-    public void StartRecording()
+    public void StartRecording(float offset = 0)
     {
-        startSample = MicrophoneManager.Instance.GetCurrentSamplePosition();
+        startSample = MicrophoneManager.Instance.GetCurrentSamplePosition() + (int)(offset * sampleRate);
         isRecording = true;
     }
 
-    public void StopRecording()
+    public void StopRecording(float offset = 0)
     {
-        endSample = MicrophoneManager.Instance.GetCurrentSamplePosition();
+        endSample = MicrophoneManager.Instance.GetCurrentSamplePosition() + (int)(offset * sampleRate);
         isRecording = false;
         isDataReady = false;
         ProcessAudioData();

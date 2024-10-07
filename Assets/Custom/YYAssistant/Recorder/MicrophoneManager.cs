@@ -58,6 +58,10 @@ public class MicrophoneManager : MonoBehaviour
 
     public float[] GetAudioData(int startSample, int endSample)
     {
+        // make startSample and endSample in the range of audioBuffer
+        startSample = ((startSample) % audioBuffer.Length + audioBuffer.Length) % audioBuffer.Length;
+        endSample = ((endSample) % audioBuffer.Length + audioBuffer.Length) % audioBuffer.Length;
+
         microphoneClip.GetData(audioBuffer, 0);
         int length;
         if (startSample < endSample){
@@ -80,6 +84,11 @@ public class MicrophoneManager : MonoBehaviour
             System.Array.Copy(audioBuffer, 0, data, firstPartLength, endSample);
         }
         return data;
+    }
+
+    public float[] GetAudioDataLength(int startSample, int length){
+        int endSample = startSample + length;
+        return GetAudioData(startSample, endSample);
     }
 
     public int GetCurrentSamplePosition()

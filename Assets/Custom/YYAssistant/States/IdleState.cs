@@ -18,7 +18,7 @@ public class IdleState : YYState
         base.UpdateState();
         // Idle状态下的更新逻辑
         manager.emotionManager.SetMotionAndExpression("idle");
-        if(manager.recordButton.WasPerformedThisFrame())
+        if(manager.recordButton.WasPerformedThisFrame() || manager.voiceDetector.IsSpeaking())
         {
             if(manager.recordService.isRecording){
                 UnityEngine.Debug.LogError("Recorder is already recording, stop it first");
@@ -27,7 +27,6 @@ public class IdleState : YYState
             else{
                 manager.SwitchState(manager.RecordingState);
             }
-            
         }
         else if (manager.stopButton.WasPerformedThisFrame()){
             UnityEngine.Debug.Log("Clear all");
