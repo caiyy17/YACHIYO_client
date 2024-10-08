@@ -34,7 +34,6 @@ public class SampleSceneUI : MonoBehaviour
     public Button CloseSetting;
     public Button HomeButton;
 
-    public Toggle VADToggle;
     public Slider SpeakingThresholdLow;
     public Slider SpeakingThresholdHigh;
     public Slider Display;
@@ -51,6 +50,31 @@ public class SampleSceneUI : MonoBehaviour
         SettingButton.onClick.AddListener(ShowSetting);
         CloseSetting.onClick.AddListener(CloseSettingPanel);
         HomeButton.onClick.AddListener(ReturnHome);
+
+        bool useBGM = PlayerPrefs.GetInt("useBGM", 1) == 1;
+        bgm.Play();
+        if (useBGM)
+        {
+            playBGM.GetComponent<DynamicUI>().enabled = true;
+        }
+        else
+        {
+            bgm.Pause();
+            playBGM.GetComponent<DynamicUI>().enabled = false;
+            playBGM.GetComponent<Image>().sprite = pauseTexture;
+        }
+
+        bool isHideUI = PlayerPrefs.GetInt("hideUI", 0) == 1;
+        if (isHideUI)
+        {
+            uiPanel.SetActive(false);
+            hideUI.GetComponent<Image>().sprite = buttonOffTexture;
+        }
+        else
+        {
+            uiPanel.SetActive(true);
+            hideUI.GetComponent<Image>().sprite = buttonOnTexture;
+        }
     }
 
     // Update is called once per frame
@@ -108,7 +132,7 @@ public class SampleSceneUI : MonoBehaviour
         }
         else
         {
-            bgm.Play();
+            bgm.UnPause();
             //enable DynamicUI
             playBGM.GetComponent<DynamicUI>().enabled = true;
         }
@@ -122,24 +146,12 @@ public class SampleSceneUI : MonoBehaviour
         SettingPanel.SetActive(true);
 
         // set VAD toggle
-        voiceDetector.SetVAD(false);
-        VADToggle.isOn = voiceDetector.useVAD;
-        // in log
         SpeakingThresholdLow.value = ToLog(voiceDetector.silenceThreshold);
         SpeakingThresholdHigh.value = ToLog(voiceDetector.speakingThreshold);
     }
 
     void CloseSettingPanel()
     {
-        // set VAD toggle
-        voiceDetector.SetVAD(true);
-        voiceDetector.useVAD = VADToggle.isOn;
-        voiceDetector.silenceThreshold = ToExp(SpeakingThresholdLow.value);
-        voiceDetector.speakingThreshold = ToExp(SpeakingThresholdHigh.value);
-        PlayerPrefs.SetInt("useVAD", voiceDetector.useVAD ? 1 : 0);
-        PlayerPrefs.SetFloat("silenceThreshold", voiceDetector.silenceThreshold);
-        PlayerPrefs.SetFloat("speakingThreshold", voiceDetector.speakingThreshold);
-
         // enable character collider
         modelParent.GetComponent<BoxCollider>().enabled = true;
         SettingPanel.SetActive(false);

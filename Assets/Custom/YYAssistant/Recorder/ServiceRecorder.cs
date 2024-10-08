@@ -10,6 +10,7 @@ public class ServiceRecorder : MonoBehaviour
     public string serviceName = "default";
 
     public int sampleRate = 16000;
+    public float maxRecordingTime = 60f;
     private float[] audioData = null;
     public byte[] wavData = null;
 

@@ -26,7 +26,7 @@ public class RecordingState : YYState
         manager.debugger.text = "Updating Recording State";
         base.UpdateState();
         // Recording状态下的更新逻辑
-        if (manager.recordButton.WasReleasedThisFrame() || manager.voiceDetector.IsEnding())
+        if (manager.recordButton.WasReleasedThisFrame() || manager.voiceDetector.IsEnding() || Time.time - startTime > manager.recordService.maxRecordingTime)
         {
             if(!manager.recordService.isRecording){
                 Debug.LogError("Recorder is not recording, please start it first");

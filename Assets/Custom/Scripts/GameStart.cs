@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System.Collections.Generic;
+using System;
 
 [RequireComponent(typeof(SceneLoaderWithProgress))]
 public class GameStart : MonoBehaviour
@@ -45,6 +46,26 @@ public class GameStart : MonoBehaviour
     public GameObject errorPanel;
     public TMP_Text errorText;
     public Button closeError;
+
+    public bool hideUI = false;
+    public bool useBGM = true;
+    public bool useVAD = false;
+
+    public float speakingThreshold = 0.01f;
+    public float silenceThreshold = 0.001f;
+
+    public Button openAppSetting;
+    public GameObject AppSettingPanel;
+    public Button closeAppSetting;
+    public Toggle hideUIToggle;
+    public Toggle useBGMToggle;
+    public Toggle useVADToggle;
+    public Slider speakingThresholdSlider;
+    public Slider silenceThresholdSlider;
+    public Slider Display;
+
+    public VoiceDetector voiceDetector;
+    public AudioSource bgm;
     
     private void Start()
     {
@@ -72,6 +93,16 @@ public class GameStart : MonoBehaviour
         charDropDown.value = PlayerPrefs.GetInt("charIndex", char_id);
         systemMessageInput.text = PlayerPrefs.GetString("systemMessageInput", system_message);
         clearHistory.isOn = PlayerPrefs.GetInt("clearHistory", clear_history ? 1 : 0) == 1;
+        // AppSettings
+        hideUI = PlayerPrefs.GetInt("hideUI", hideUI ? 1 : 0) == 1;
+        useBGM = PlayerPrefs.GetInt("useBGM", useBGM ? 1 : 0) == 1;
+        useVAD = PlayerPrefs.GetInt("useVAD", useVAD ? 1 : 0) == 1;
+        speakingThreshold = PlayerPrefs.GetFloat("speakingThreshold", speakingThreshold);
+        silenceThreshold = PlayerPrefs.GetFloat("silenceThreshold", silenceThreshold);
+        bgm.Play();
+        if(!useBGM){
+            bgm.Pause();
+        }
 
         if(userIdInput.text == "0"){
             //generate a UUID
@@ -96,6 +127,43 @@ public class GameStart : MonoBehaviour
         charDropDown.onValueChanged.AddListener(delegate {
             OnCharDropDownValueChanged(charDropDown);
         });
+        // AppSettings
+        closeError.onClick.AddListener(() => {
+            errorPanel.SetActive(false);
+        });
+
+        openAppSetting.onClick.AddListener(() => {
+            hideUIToggle.isOn = hideUI;
+            useBGMToggle.isOn = useBGM;
+            useVADToggle.isOn = useVAD;
+            speakingThresholdSlider.value = ToLog(speakingThreshold);
+            silenceThresholdSlider.value = ToLog(silenceThreshold);
+            AppSettingPanel.SetActive(true);
+        });
+        closeAppSetting.onClick.AddListener(() => {
+            hideUI = hideUIToggle.isOn;
+            useBGM = useBGMToggle.isOn;
+            useVAD = useVADToggle.isOn;
+            speakingThreshold = ToExp(speakingThresholdSlider.value);
+            silenceThreshold = ToExp(silenceThresholdSlider.value);
+
+            PlayerPrefs.SetInt("hideUI", hideUI ? 1 : 0);
+            PlayerPrefs.SetInt("useBGM", useBGM ? 1 : 0);
+            PlayerPrefs.SetInt("useVAD", useVAD ? 1 : 0);
+            PlayerPrefs.SetFloat("speakingThreshold", speakingThreshold);
+            PlayerPrefs.SetFloat("silenceThreshold", silenceThreshold);
+
+            if(useBGM){
+                if(!bgm.isPlaying){
+                    bgm.UnPause();
+                }
+            }
+            else{
+                bgm.Pause();
+            }
+
+            AppSettingPanel.SetActive(false);
+        });
 
         sceneLoader = GetComponent<SceneLoaderWithProgress>();
 
@@ -104,10 +172,12 @@ public class GameStart : MonoBehaviour
         PlayerPrefs.SetInt("charIndex", charDropDown.value);
         PlayerPrefs.SetString("systemMessageInput", systemMessageInput.text);
         PlayerPrefs.SetInt("clearHistory", clearHistory.isOn ? 1 : 0);
-
-        closeError.onClick.AddListener(() => {
-            errorPanel.SetActive(false);
-        });
+        // AppSettings
+        PlayerPrefs.SetInt("hideUI", hideUI ? 1 : 0);
+        PlayerPrefs.SetInt("useBGM", useBGM ? 1 : 0);
+        PlayerPrefs.SetInt("useVAD", useVAD ? 1 : 0);
+        PlayerPrefs.SetFloat("speakingThreshold", speakingThreshold);
+        PlayerPrefs.SetFloat("silenceThreshold", silenceThreshold);
     }
 
     private void OnCharDropDownValueChanged(TMP_Dropdown change)
@@ -239,5 +309,19 @@ public class GameStart : MonoBehaviour
         errorPanel.SetActive(true);
         errorText.text = errorMessage;
         Debug.Log("return to main screen");
+    }
+
+    float ToLog(float value)
+    {
+        return Math.Clamp((Mathf.Log10(value) + 5) / 5, 0, 1);
+    }
+
+    float ToExp(float value)
+    {
+        return Mathf.Pow(10, value * 5 - 5);
+    }
+
+    void Update(){
+        Display.value = ToLog(voiceDetector.currentLoudness);
     }
 }
