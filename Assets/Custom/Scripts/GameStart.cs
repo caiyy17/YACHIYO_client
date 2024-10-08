@@ -42,6 +42,9 @@ public class GameStart : MonoBehaviour
     public TMP_Text versionText;
 
     SceneLoaderWithProgress sceneLoader;
+    public GameObject errorPanel;
+    public TMP_Text errorText;
+    public Button closeError;
     
     private void Start()
     {
@@ -101,6 +104,10 @@ public class GameStart : MonoBehaviour
         PlayerPrefs.SetInt("charIndex", charDropDown.value);
         PlayerPrefs.SetString("systemMessageInput", systemMessageInput.text);
         PlayerPrefs.SetInt("clearHistory", clearHistory.isOn ? 1 : 0);
+
+        closeError.onClick.AddListener(() => {
+            errorPanel.SetActive(false);
+        });
     }
 
     private void OnCharDropDownValueChanged(TMP_Dropdown change)
@@ -222,5 +229,15 @@ public class GameStart : MonoBehaviour
         mainScreen.SetActive(false);
         settingPanel.SetActive(false);
         sceneLoader.LoadScene(scene);
+    }
+
+    public void OnStartGameError(string errorMessage)
+    {
+        // 如果加载场景失败，显示错误信息
+        mainScreen.SetActive(true);
+        settingPanel.SetActive(false);
+        errorPanel.SetActive(true);
+        errorText.text = errorMessage;
+        Debug.Log("return to main screen");
     }
 }

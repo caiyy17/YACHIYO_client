@@ -14,7 +14,7 @@ public class ServiceRecorder : MonoBehaviour
     public byte[] wavData = null;
 
     public bool isRecording = false;
-    public bool isDataReady = false;
+    public bool isDataReady = true;
 
     private void Start()
     {

@@ -28,6 +28,7 @@ public class AnsweringState : YYState
     }
 
     IEnumerator asking_coroutine(){
+        yield return new WaitUntil(() => manager.recordService.isDataReady);
         Debug.Log("Send data to server");
         manager.audioManager.isAnswering = true;
         yield return manager.StartCoroutine(manager.dataFetcher.GetDataCoroutine(manager.recordService.wavData, manager.dataFetcher.userId));

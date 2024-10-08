@@ -18,6 +18,7 @@ public class RecordingState : YYState
     public override void ExitState()
     {
         base.ExitState();
+        manager.voiceDetector.SetVAD(false);
     }
 
     public override void UpdateState()
@@ -41,18 +42,13 @@ public class RecordingState : YYState
                 return;
             }
             manager.audioManager.ResetAll();
-            manager.StartCoroutine(WaitDataReady());
+            manager.SwitchState(manager.AnsweringState);
         }
         else if (manager.stopButton.WasPerformedThisFrame()){
             Debug.Log("Clear all");
+            manager.StopAllCoroutines();
             manager.recordService.StopRecording();
             manager.SwitchState(manager.IdleState);
         }
-    }
-
-    IEnumerator WaitDataReady()
-    {
-        yield return new WaitUntil(() => manager.recordService.isDataReady);
-        manager.SwitchState(manager.AnsweringState);
     }
 }

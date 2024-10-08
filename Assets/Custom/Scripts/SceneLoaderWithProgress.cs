@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.Events;
 using TMPro;
 
 public class SceneLoaderWithProgress : MonoBehaviour
@@ -9,6 +10,19 @@ public class SceneLoaderWithProgress : MonoBehaviour
     public Slider progressBar;
     public TMP_Text progressText;
     public Preparation preparation;
+    public UnityEvent<string> onErrorMessage;
+
+    void Update()
+    {
+        if (preparation.errorOccurred)
+        {
+            StopAllCoroutines();
+            Debug.LogError(preparation.errorMessage);
+            progressBar.gameObject.SetActive(false);
+            onErrorMessage.Invoke(preparation.errorMessage);
+            preparation.errorOccurred = false;
+        }
+    }
 
     // 开始加载场景的协程
     public void LoadScene(string sceneName)
@@ -22,12 +36,6 @@ public class SceneLoaderWithProgress : MonoBehaviour
 
     private IEnumerator LoadSceneAsyncWithCombinedProgress(string sceneName)
     {
-        // 开始异步加载场景
-        AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
-
-        // 在场景加载完成之前，不允许自动切换场景
-        operation.allowSceneActivation = false;
-
         // 初始化任务的总权重
         float initializationWeight = 0.6f;
         // 场景加载的总权重
@@ -35,6 +43,11 @@ public class SceneLoaderWithProgress : MonoBehaviour
 
         // 执行初始化任务
         yield return StartCoroutine(PerformInitializationTasks(initializationWeight));
+
+        // 开始异步加载场景
+        AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
+        // 在场景加载完成之前，不允许自动切换场景
+        operation.allowSceneActivation = false;
 
         // 更新进度条
         while (!operation.isDone)

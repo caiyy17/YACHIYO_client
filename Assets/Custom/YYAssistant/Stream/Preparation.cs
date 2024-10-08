@@ -10,6 +10,9 @@ public class Preparation : MonoBehaviour
 {
     public string url = "";
     public string userId;
+
+    public bool errorOccurred = false;
+    public string errorMessage = "";
     void Start()
     {
     }
@@ -27,6 +30,8 @@ public class Preparation : MonoBehaviour
         if (webRequest.result != UnityWebRequest.Result.Success)
         {
             Debug.Log(name + " error: " + webRequest.error);
+            errorOccurred = true;
+            errorMessage = name + " error: " + webRequest.error;
         }
         else
         {
@@ -62,6 +67,8 @@ public class Preparation : MonoBehaviour
 
     public IEnumerator AssistantInit(Slider progressBar, TMP_Text progressText, float weight)
     {
+        errorOccurred = false;
+        errorMessage = "";
         float initializationWeight = progressBar.value;
         url = PlayerPrefs.GetString("urlInput", url);
         userId = PlayerPrefs.GetString("userId", "0");

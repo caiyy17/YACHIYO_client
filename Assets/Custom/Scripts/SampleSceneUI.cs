@@ -32,6 +32,13 @@ public class SampleSceneUI : MonoBehaviour
     public Button CloseSetting;
     public Button HomeButton;
 
+    public Toggle VADToggle;
+    public Slider SpeakingThresholdLow;
+    public Slider SpeakingThresholdHigh;
+    public Slider Display;
+
+    public VoiceDetector voiceDetector;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -111,10 +118,22 @@ public class SampleSceneUI : MonoBehaviour
         modelParent.GetComponent<BoxCollider>().enabled = false;
         MainScreen.SetActive(false);
         SettingPanel.SetActive(true);
+
+        // set VAD toggle
+        voiceDetector.SetVAD(false);
+        VADToggle.isOn = voiceDetector.useVAD;
+        SpeakingThresholdLow.value = voiceDetector.silenceThreshold;
+        SpeakingThresholdHigh.value = voiceDetector.speakingThreshold;
     }
 
     void CloseSettingPanel()
     {
+        // set VAD toggle
+        voiceDetector.SetVAD(true);
+        voiceDetector.useVAD = VADToggle.isOn;
+        voiceDetector.silenceThreshold = SpeakingThresholdLow.value;
+        voiceDetector.speakingThreshold = SpeakingThresholdHigh.value;
+
         // enable character collider
         modelParent.GetComponent<BoxCollider>().enabled = true;
         SettingPanel.SetActive(false);

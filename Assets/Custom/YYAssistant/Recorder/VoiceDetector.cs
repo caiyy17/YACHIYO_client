@@ -5,6 +5,7 @@ using System.Threading;
 public class VoiceDetector : MonoBehaviour
 {
     public bool useVAD = true;
+    public bool activateVAD = false;
     private int startSample;
     private int endSample;
     private float[] audioData = null;
@@ -12,13 +13,16 @@ public class VoiceDetector : MonoBehaviour
     public float speakingThreshold = 0.01f;
     public float silenceThreshold = 0.001f;
     public float timeWindow = 0.5f;
-    private bool isSpeaking = false;
-    private bool isEnding = false;
+    public bool isSpeaking = false;
+    public bool isEnding = false;
 
     public string serviceName = "vad";
     public int sampleRate = 16000;
 
+    public GameObject VADEnabledIndicator;
     public GameObject VADIndicator;
+    public float currentLoudness = 0;
+    
 
     private void Start()
     {
@@ -32,20 +36,43 @@ public class VoiceDetector : MonoBehaviour
         {
             startSample = MicrophoneManager.Instance.GetCurrentSamplePosition() - (int)(sampleRate * timeWindow);
             endSample = MicrophoneManager.Instance.GetCurrentSamplePosition();
-            float loudness = GetCurrentLoudness();
-            Debug.Log("Loudness: " + loudness);
-            if (loudness > speakingThreshold)
-            {
-                isSpeaking = true;
-                isEnding = false;
-                VADIndicator.SetActive(true);
+            currentLoudness = GetCurrentLoudness();
+            // Debug.Log("Loudness: " + currentLoudness);
+            if(!isSpeaking){
+                if (currentLoudness > speakingThreshold)
+                {
+                    isSpeaking = true;
+                    isEnding = false;
+                }
             }
-            else if (loudness < silenceThreshold)
+            else if (currentLoudness < silenceThreshold)
             {
                 isSpeaking = false;
                 isEnding = true;
+            }
+
+            if(activateVAD){
+                if(isSpeaking){
+                    VADEnabledIndicator.SetActive(true);
+                    VADIndicator.SetActive(true);
+                }
+                else{
+                    VADEnabledIndicator.SetActive(true);
+                    VADIndicator.SetActive(false);
+                }
+            }
+            else{
+                VADEnabledIndicator.SetActive(false);
                 VADIndicator.SetActive(false);
             }
+
+        }
+        else
+        {
+            isSpeaking = false;
+            isEnding = false;
+            VADEnabledIndicator.SetActive(false);
+            VADIndicator.SetActive(false);
         }
     }
 
@@ -65,11 +92,16 @@ public class VoiceDetector : MonoBehaviour
 
     public bool IsSpeaking()
     {
-        return isSpeaking;
+        return isSpeaking && activateVAD;
     }
 
     public bool IsEnding()
     {
-        return isEnding;
+        return isEnding && activateVAD;
+    }
+    
+    public void SetVAD(bool value)
+    {
+        activateVAD = value;
     }
 }
