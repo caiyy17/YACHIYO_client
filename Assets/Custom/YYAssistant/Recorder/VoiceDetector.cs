@@ -14,7 +14,7 @@ public class VoiceDetector : MonoBehaviour
     public float silenceThreshold = 0.001f;
     public float timeWindow = 0.5f;
     public bool isSpeaking = false;
-    public bool isEnding = false;
+    public bool isEnding = true;
 
     public string serviceName = "vad";
     public int sampleRate = 16000;
@@ -28,6 +28,10 @@ public class VoiceDetector : MonoBehaviour
     {
         sampleRate = MicrophoneManager.Instance.sampleRate;
         WavUtility.WavFormat wav = WavUtility.Load(WavUtility.emptyClip);
+
+        useVAD = PlayerPrefs.GetInt("useVAD", useVAD ? 1 : 0) == 1;
+        silenceThreshold = PlayerPrefs.GetFloat("silenceThreshold", silenceThreshold);
+        speakingThreshold = PlayerPrefs.GetFloat("speakingThreshold", speakingThreshold);
     }
 
     void Update()

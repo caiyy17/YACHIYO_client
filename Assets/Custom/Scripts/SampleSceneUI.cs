@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
+
 
 public class SampleSceneUI : MonoBehaviour
 {
@@ -54,7 +56,7 @@ public class SampleSceneUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        Display.value = ToLog(voiceDetector.currentLoudness);
     }
 
     void NextModel()
@@ -122,8 +124,9 @@ public class SampleSceneUI : MonoBehaviour
         // set VAD toggle
         voiceDetector.SetVAD(false);
         VADToggle.isOn = voiceDetector.useVAD;
-        SpeakingThresholdLow.value = voiceDetector.silenceThreshold;
-        SpeakingThresholdHigh.value = voiceDetector.speakingThreshold;
+        // in log
+        SpeakingThresholdLow.value = ToLog(voiceDetector.silenceThreshold);
+        SpeakingThresholdHigh.value = ToLog(voiceDetector.speakingThreshold);
     }
 
     void CloseSettingPanel()
@@ -131,8 +134,11 @@ public class SampleSceneUI : MonoBehaviour
         // set VAD toggle
         voiceDetector.SetVAD(true);
         voiceDetector.useVAD = VADToggle.isOn;
-        voiceDetector.silenceThreshold = SpeakingThresholdLow.value;
-        voiceDetector.speakingThreshold = SpeakingThresholdHigh.value;
+        voiceDetector.silenceThreshold = ToExp(SpeakingThresholdLow.value);
+        voiceDetector.speakingThreshold = ToExp(SpeakingThresholdHigh.value);
+        PlayerPrefs.SetInt("useVAD", voiceDetector.useVAD ? 1 : 0);
+        PlayerPrefs.SetFloat("silenceThreshold", voiceDetector.silenceThreshold);
+        PlayerPrefs.SetFloat("speakingThreshold", voiceDetector.speakingThreshold);
 
         // enable character collider
         modelParent.GetComponent<BoxCollider>().enabled = true;
@@ -143,5 +149,15 @@ public class SampleSceneUI : MonoBehaviour
     void ReturnHome()
     {
         SceneManager.LoadScene(0, LoadSceneMode.Single);
+    }
+
+    float ToLog(float value)
+    {
+        return Math.Clamp((Mathf.Log10(value) + 5) / 5, 0, 1);
+    }
+
+    float ToExp(float value)
+    {
+        return Mathf.Pow(10, value * 5 - 5);
     }
 }
