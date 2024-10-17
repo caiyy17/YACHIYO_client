@@ -1,13 +1,16 @@
 using UnityEngine;
 using System.Collections;
+using NUnit.Framework.Internal;
 
 public class AnsweringState : YYState
 {
+    bool isFetching = false;
     public override void EnterState(YYStateManager manager)
     {
         base.EnterState(manager);
-        manager.emotionManager.SetMotionAndExpression("thinking");
-        manager.StartCoroutine(asking_coroutine());
+        isFetching = false;
+        manager.stateChangeEvent.Invoke("answering");
+        // Answering状态下的进入逻辑
     }
 
     public override void ExitState()
@@ -18,27 +21,21 @@ public class AnsweringState : YYState
     public override void UpdateState()
     {
         base.UpdateState();
-        // Answering状态下的更新逻辑
-        if (manager.stopButton.WasReleasedThisFrame()){
-            Debug.Log("Stop fetching");
-            manager.dataFetcher.StopFetching();
-            manager.audioManager.StopPlayingFlag = true;
-            manager.SwitchState(manager.IdleState);
+        if (!manager.recordService.isDataReady && !isFetching){
+            return;
         }
-    }
-
-    IEnumerator asking_coroutine(){
-        yield return new WaitUntil(() => manager.recordService.isDataReady);
-        Debug.Log("Send data to server");
-        manager.audioManager.isAnswering = true;
-        yield return manager.StartCoroutine(manager.dataFetcher.GetDataCoroutine(manager.recordService.wavData, manager.dataFetcher.userId));
-        yield return new WaitForSeconds(0.1f);
-        
-        while (manager.audioManager.isAudioWaitingOrPlaying){
-            yield return new WaitForSeconds(0.1f);
+        else if(manager.recordService.isDataReady && !isFetching){
+            Debug.Log("Start fetching");
+            manager.webSocketClient.sendAudio(manager.recordService.wavData);
+            isFetching = true;
         }
-        manager.audioManager.isAnswering = false;
-        manager.SwitchState(manager.IdleState);
-        yield return null;
+        else if(isFetching){
+            if (manager.stopButton.WasReleasedThisFrame()){
+                Debug.Log("Stop fetching");
+                manager.webSocketClient.sendCancel("stop_fetching");
+                manager.cancelEvent.Invoke("cancel");
+                manager.SwitchState(manager.IdleState);
+            }
+        }
     }
 }

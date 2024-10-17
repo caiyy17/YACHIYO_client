@@ -8,9 +8,7 @@ public class RecordingState : YYState
     public override void EnterState(YYStateManager manager)
     {
         base.EnterState(manager);
-        this.manager.debugger.text = "Start Recording";
-        Debug.Log("Start Recording");
-        this.manager.emotionManager.SetMotionAndExpression("listening");
+        this.manager.stateChangeEvent.Invoke("listening");
         this.manager.recordService.StartRecording(-0.3f);
         startTime = Time.time;
     }
@@ -26,7 +24,7 @@ public class RecordingState : YYState
         manager.debugger.text = "Updating Recording State";
         base.UpdateState();
         // Recording状态下的更新逻辑
-        if (manager.recordButton.WasReleasedThisFrame() || manager.voiceDetector.IsEnding() || Time.time - startTime > manager.recordService.maxRecordingTime)
+        if (manager.recordButton.WasReleasedThisFrame() || (manager.voiceDetector.useVAD && !manager.voiceDetector.isSpeaking) || Time.time - startTime > manager.recordService.maxRecordingTime)
         {
             if(!manager.recordService.isRecording){
                 Debug.LogError("Recorder is not recording, please start it first");
@@ -41,13 +39,12 @@ public class RecordingState : YYState
                 manager.SwitchState(manager.IdleState);
                 return;
             }
-            manager.audioManager.ResetAll();
             manager.SwitchState(manager.AnsweringState);
         }
         else if (manager.stopButton.WasPerformedThisFrame()){
             Debug.Log("Clear all");
-            manager.StopAllCoroutines();
             manager.recordService.StopRecording();
+            manager.cancelEvent.Invoke("cancel");
             manager.SwitchState(manager.IdleState);
         }
     }

@@ -20,7 +20,7 @@ public class EmotionManager : MonoBehaviour
     public float emotionInterval = 10.0f;
     public float idelInterval = 10.0f;
 
-    public void Start()
+    public void Awake()
     {
         foreach (EmotionData emotionData in emotionDataList)
         {
@@ -29,20 +29,16 @@ public class EmotionManager : MonoBehaviour
         lastEmotion = "idle";
     }
 
+    public void Update()
+    {
+        if(Time.time - lastTime > idelInterval && lastEmotion == "idle"){
+            SetMotionAndExpression("idle");
+        }
+    }
+
     public void SetMotionAndExpression(string emotion)
     {
-        // if (emotion == currentEmotion && emotion == "idle")
-        // 记一下时，一段时间内不再重复播放动画
-        if (emotion == "")
-        {
-            return;
-        }
-        if (emotion == lastEmotion && Time.time - lastTime < idelInterval){
-            return;
-        }
-
-        int lastLayer = 0;
-        int currentLayer = 0;
+        int lastLayer, currentLayer;
 
         foreach (EmotionData emotionData in emotionDataList)
         {
@@ -54,13 +50,13 @@ public class EmotionManager : MonoBehaviour
             if (emotionData.emotionDict.motionDict.ContainsKey(emotion))
             {
                 currentLayer = emotionData.emotionDict.motionDict[emotion].layer;
-                if (currentLayer > lastLayer || Time.time - lastTime > emotionInterval)
+                if (currentLayer >= lastLayer || Time.time - lastTime > emotionInterval)
                 {
                     // ramdomly select a motion from the list
                     List<string> motions = emotionData.emotionDict.motionDict[emotion].values;
                     string motion = motions[Random.Range(0, motions.Count)];
                     // set the motion
-                    Debug.Log("Set motion: " + motion);
+                    // Debug.Log("Set motion: " + motion);
                     if(emotionData.motionEvent != null){
                         emotionData.motionEvent.Invoke(motion);
                     }
@@ -68,7 +64,7 @@ public class EmotionManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("Motion not found: " + emotion);
+                // Debug.Log("Motion not found: " + emotion);
             }
 
             if (emotionData.emotionDict.expressionDict.ContainsKey(emotion))
@@ -77,7 +73,7 @@ public class EmotionManager : MonoBehaviour
                 List<string> expressions = emotionData.emotionDict.expressionDict[emotion].values;;
                 string expression = expressions[Random.Range(0, expressions.Count)];
                 // set the expression
-                Debug.Log("Set expression: " + expression);
+                // Debug.Log("Set expression: " + expression);
                 // expressionController.CurrentExpressionIndex = (int)expression[0] - '0';
                 if(emotionData.expressionEvent != null){
                     emotionData.expressionEvent.Invoke(expression);
@@ -85,7 +81,7 @@ public class EmotionManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("Expression not found: " + emotion);
+                // Debug.Log("Expression not found: " + emotion);
             }
         }
 

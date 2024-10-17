@@ -20,7 +20,6 @@ public class ServiceRecorder : MonoBehaviour
     private void Start()
     {
         sampleRate = MicrophoneManager.Instance.sampleRate;
-        WavUtility.WavFormat wav = WavUtility.Load(WavUtility.emptyClip);
     }
 
     void Update()
@@ -29,13 +28,13 @@ public class ServiceRecorder : MonoBehaviour
 
     public void StartRecording(float offset = 0)
     {
-        startSample = MicrophoneManager.Instance.GetCurrentSamplePosition() + (int)(offset * sampleRate);
+        startSample = MicrophoneManager.Instance.GetCurrentSamplePosition(offset);
         isRecording = true;
     }
 
     public void StopRecording(float offset = 0)
     {
-        endSample = MicrophoneManager.Instance.GetCurrentSamplePosition() + (int)(offset * sampleRate);
+        endSample = MicrophoneManager.Instance.GetCurrentSamplePosition(offset);
         isRecording = false;
         isDataReady = false;
         ProcessAudioData();

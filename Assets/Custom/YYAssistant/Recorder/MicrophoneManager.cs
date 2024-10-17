@@ -1,11 +1,12 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class MicrophoneManager : MonoBehaviour
 {
     public static MicrophoneManager Instance;
 
+    public int sampleRate { get; private set; } = 16000;
     private AudioClip microphoneClip;
-    public int sampleRate = 16000;
     private int bufferLength = 60;
     private float[] audioBuffer;
     private int bufferPosition = 0;
@@ -45,6 +46,7 @@ public class MicrophoneManager : MonoBehaviour
         {
             Debug.LogError("No microphone found");
         }
+        AudioClip empty = WavUtility.emptyClip;
     }
 
     private void Update()
@@ -59,8 +61,8 @@ public class MicrophoneManager : MonoBehaviour
     public float[] GetAudioData(int startSample, int endSample)
     {
         // make startSample and endSample in the range of audioBuffer
-        startSample = ((startSample) % audioBuffer.Length + audioBuffer.Length) % audioBuffer.Length;
-        endSample = ((endSample) % audioBuffer.Length + audioBuffer.Length) % audioBuffer.Length;
+        startSample = (startSample % audioBuffer.Length + audioBuffer.Length) % audioBuffer.Length;
+        endSample = (endSample % audioBuffer.Length + audioBuffer.Length) % audioBuffer.Length;
 
         microphoneClip.GetData(audioBuffer, 0);
         int length;
@@ -91,8 +93,26 @@ public class MicrophoneManager : MonoBehaviour
         return GetAudioData(startSample, endSample);
     }
 
-    public int GetCurrentSamplePosition()
+    public int GetCurrentSamplePosition(float offset = 0)
     {
-        return bufferPosition;
+        int position = bufferPosition + (int)(offset * sampleRate);
+        position = (position % audioBuffer.Length + audioBuffer.Length) % audioBuffer.Length;
+        return position;
+    }
+
+    public float GetCurrentLoudness(float timeWindow = 0.5f)
+    {
+        int startPosition = bufferPosition - (int)(sampleRate * timeWindow);
+        int endPosition = bufferPosition;
+        float[] audioData = GetAudioData(startPosition, endPosition);
+
+        float sum = 0;
+        for (int i = 0; i < audioData.Length; i++)
+        {
+            sum += audioData[i] * audioData[i];
+        }
+
+        float rmsValue = Mathf.Sqrt(sum / audioData.Length);
+        return rmsValue;
     }
 }

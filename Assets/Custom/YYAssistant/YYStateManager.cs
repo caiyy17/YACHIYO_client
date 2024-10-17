@@ -6,20 +6,18 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using TMPro;
 
-[RequireComponent(typeof(AudioManager))]
-[RequireComponent(typeof(DataFetcher))]
-[RequireComponent(typeof(EmotionManager))]
+[RequireComponent(typeof(ServiceRecorder))]
+[RequireComponent(typeof(VoiceDetector))]
 public class YYStateManager : MonoBehaviour
 {
     public TextMeshProUGUI debugger;
     [HideInInspector]
-    public AudioManager audioManager;
-    [HideInInspector]
-    public DataFetcher dataFetcher;
-    [HideInInspector]
-    public EmotionManager emotionManager;
     public ServiceRecorder recordService;
+    [HideInInspector]
     public VoiceDetector voiceDetector;
+    [HideInInspector]
+    public WebSocketClient webSocketClient;
+    public bool useVAD = true;
 
     [SerializeField] public InputAction recordButton, stopButton;
 
@@ -27,18 +25,28 @@ public class YYStateManager : MonoBehaviour
     public readonly IAssistantState IdleState = new IdleState();
     public readonly IAssistantState RecordingState = new RecordingState();
     public readonly IAssistantState AnsweringState = new AnsweringState();
+
+    public StringEvent stateChangeEvent, cancelEvent;
+
     // Start is called before the first frame update
 
     void Start()
     {
-        audioManager = GetComponent<AudioManager>();
-        dataFetcher = GetComponent<DataFetcher>();
-        emotionManager = GetComponent<EmotionManager>();
+        recordService = GetComponent<ServiceRecorder>();
+        voiceDetector = GetComponent<VoiceDetector>();
+        webSocketClient = GetComponent<WebSocketClient>();
+        webSocketClient.Connect();
+
         CurrentState = IdleState;
         CurrentState.EnterState(this);
 
         recordButton.Enable();
         stopButton.Enable();
+
+        Debug.Log("Waiting for websocket connection");
+        while(!webSocketClient.IsConnected){
+            continue;
+        }
     }
 
     void OnEnable()
