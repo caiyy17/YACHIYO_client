@@ -115,7 +115,7 @@ public static class WavUtility
         return trimmedClip;
     }
 
-    public static IEnumerator ToAudioClip(byte[] wavBytes, Action<AudioClip> onComplete, string name = "audioClip")
+    public static AudioClip ToAudioClip(byte[] wavBytes, string name = "audioClip")
     {
         // 使用内存流读取字节
         using (MemoryStream stream = new MemoryStream(wavBytes))
@@ -146,8 +146,6 @@ public static class WavUtility
                 float[] audioFloats = new float[audioClip.samples * audioClip.channels];
                 int sampleCount = 0;
 
-                yield return null;
-
                 // 根据 bit depth 转换字节到 float
                 for (int i = 0; i < dataSize; i += bitDepth / 8)
                 {
@@ -166,8 +164,7 @@ public static class WavUtility
                     audioFloats[sampleCount++] = sample;
                 }
                 audioClip.SetData(audioFloats, 0);
-                // 完成后通过回调返回 AudioClip
-                onComplete?.Invoke(audioClip);
+                return audioClip;
             }
         }
     }

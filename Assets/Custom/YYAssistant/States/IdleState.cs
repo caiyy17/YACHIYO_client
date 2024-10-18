@@ -35,7 +35,7 @@ public class IdleState : YYState
             }
         }
         else if(manager.stopButton.WasPerformedThisFrame()){
-            manager.cancelEvent.Invoke("cancel");
+            manager.cancelEvent.Invoke("cancel in idle");
         }
     }
 }

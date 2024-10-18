@@ -32,8 +32,8 @@ public class AnsweringState : YYState
         else if(isFetching){
             if (manager.stopButton.WasReleasedThisFrame()){
                 Debug.Log("Stop fetching");
-                manager.webSocketClient.sendCancel("stop_fetching");
-                manager.cancelEvent.Invoke("cancel");
+                manager.webSocketClient.sendCancel("stop fetching");
+                manager.cancelEvent.Invoke("stop fetching");
                 manager.SwitchState(manager.IdleState);
             }
         }

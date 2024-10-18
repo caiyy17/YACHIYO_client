@@ -5,7 +5,7 @@ using System.Threading;
 public class VoiceDetector : MonoBehaviour
 {
     private MicrophoneManager microphoneManager;
-    public bool useVAD = true;
+    public bool useVAD = false;
 
     public float speakingThreshold = 0.01f;
     public float silenceThreshold = 0.001f;
@@ -15,9 +15,12 @@ public class VoiceDetector : MonoBehaviour
     public GameObject VADEnabledIndicator;
     public GameObject VADIndicator;
     public float currentLoudness = 0;
-    
 
-    private void Start()
+    void Awake()
+    {
+        useVAD = false;
+    }
+    void Start()
     {
         microphoneManager = MicrophoneManager.Instance;
         silenceThreshold = PlayerPrefs.GetFloat("silenceThreshold", silenceThreshold);

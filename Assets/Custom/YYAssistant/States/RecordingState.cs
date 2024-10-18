@@ -44,7 +44,7 @@ public class RecordingState : YYState
         else if (manager.stopButton.WasPerformedThisFrame()){
             Debug.Log("Clear all");
             manager.recordService.StopRecording();
-            manager.cancelEvent.Invoke("cancel");
+            manager.cancelEvent.Invoke("cancel in recording");
             manager.SwitchState(manager.IdleState);
         }
     }

@@ -27,26 +27,31 @@ public class YYStateManager : MonoBehaviour
     public readonly IAssistantState AnsweringState = new AnsweringState();
 
     public StringEvent stateChangeEvent, cancelEvent;
+    private bool isStarted = false;
 
-    // Start is called before the first frame update
-
-    void Start()
+    void Awake()
+    {
+        isStarted = false;
+    }
+    async void Start()
     {
         recordService = GetComponent<ServiceRecorder>();
         voiceDetector = GetComponent<VoiceDetector>();
         webSocketClient = GetComponent<WebSocketClient>();
-        webSocketClient.Connect();
+        await webSocketClient.Connect();
+        Init();
+    }
 
+    void Init()
+    {
+        useVAD = PlayerPrefs.GetInt("useVAD", useVAD ? 1 : 0) == 1;
         CurrentState = IdleState;
         CurrentState.EnterState(this);
-
         recordButton.Enable();
         stopButton.Enable();
-
-        Debug.Log("Waiting for websocket connection");
-        while(!webSocketClient.IsConnected){
-            continue;
-        }
+        isStarted = true;
+        Debug.Log("YYStateManager is started");
+        Debug.Log(voiceDetector.useVAD);
     }
 
     void OnEnable()
@@ -56,7 +61,9 @@ public class YYStateManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CurrentState.UpdateState();
+        if(isStarted){
+            CurrentState.UpdateState();
+        }
     }
 
     public void SwitchState(IAssistantState newState)

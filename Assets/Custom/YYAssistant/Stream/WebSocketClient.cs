@@ -23,15 +23,15 @@ public class WebSocketClient : MonoBehaviour
     private ConcurrentQueue<string> receiveQueue = new ConcurrentQueue<string>();
 
     private double cancelTimeStamp = 0;
-    public float cancelTimeRange = 0.5f;
 
-    public async void Connect()
+    public async Task Connect()
     {
         serverUrl = PlayerPrefs.GetString("urlInput", serverUrl);
         clientId = PlayerPrefs.GetString("userId", clientId);
         // WebSocket连接地址，需要将client_id作为路径参数发送
         string webSocketUrl = $"ws://{this.serverUrl}/ws/{clientId}";
         await ConnectWebSocket(webSocketUrl);
+        cancelTimeStamp = GetUnixTime();
     }
 
     // 连接WebSocket服务器
@@ -43,11 +43,22 @@ public class WebSocketClient : MonoBehaviour
         try
         {
             // 尝试连接到WebSocket服务器
-            await webSocket.ConnectAsync(new Uri(uri), cts.Token);
+            Task connectTask = webSocket.ConnectAsync(new Uri(uri), cts.Token);
+            Task timeoutTask = Task.Delay(20000);
+
+            if (await Task.WhenAny(connectTask, timeoutTask) == timeoutTask)
+            {
+                Debug.LogError("WebSocket connection timeout.");
+                webSocket.Dispose();
+                return;
+            }
+
             Debug.Log("WebSocket connected!");
 
             // 启动接收和发送消息
-            await Task.WhenAll(ReceiveMessages(), ProcessSendQueue());
+            // await Task.WhenAll(ReceiveMessages(), ProcessSendQueue());
+            _ = ReceiveMessages();    // 开启接收消息的异步任务
+            _ = ProcessSendQueue();   // 开启发送消息的异步任务
         }
         catch (Exception e)
         {
@@ -76,17 +87,24 @@ public class WebSocketClient : MonoBehaviour
     // 处理发送队列中的消息
     private async Task ProcessSendQueue()
     {
-        while (webSocket.State == WebSocketState.Open)
+        try
         {
-            if (sendQueue.TryDequeue(out string message))
+            while (webSocket.State == WebSocketState.Open)
             {
-                byte[] buffer = Encoding.UTF8.GetBytes(message);
-                await webSocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, cts.Token);
+                if (sendQueue.TryDequeue(out string message))
+                {
+                    byte[] buffer = Encoding.UTF8.GetBytes(message);
+                    await webSocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, cts.Token);
 
-                Debug.Log($"Message sent: {message}");
+                    Debug.Log($"Message sent: {message}");
+                }
+
+                await Task.Delay(50);
             }
-
-            await Task.Delay(100);  // 等待100毫秒后再检查队列
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"SendQueue error: {e.Message}");
         }
     }
 
@@ -97,33 +115,37 @@ public class WebSocketClient : MonoBehaviour
     // 接收来自服务器的消息
     private async Task ReceiveMessages()
     {
-        byte[] buffer = new byte[1024 * 1024 * 16];
-
-        while (webSocket.State == WebSocketState.Open)
+        try
         {
-            WebSocketReceiveResult result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cts.Token);
-
-            // 检查是否收到关闭帧
-            if (result.MessageType == WebSocketMessageType.Close)
+            byte[] buffer = new byte[1024 * 1024 * 16];
+            while (webSocket.State == WebSocketState.Open)
             {
-                Debug.Log("Received close frame from server. Closing connection.");
-                await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing in response to server", CancellationToken.None);
-                Debug.Log("WebSocket connection closed.");
-                break;
-            }
+                WebSocketReceiveResult result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cts.Token);
 
-            // 正常接收文本消息
-            string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
-            Debug.Log($"Received message from server: {message}");
-            TimeStamp ts = JsonConvert.DeserializeObject<TimeStamp>(message);
-            Debug.Log($"Received message timestamp: {ts.timestamp_remote}");
-            Debug.Log($"Current timestamp: {GetUnixTime()}");
-            if (ts.timestamp_remote < (cancelTimeStamp - cancelTimeRange)){
-                Debug.Log("Received message is too late, ignore it.");
+                // 检查是否收到关闭帧
+                if (result.MessageType == WebSocketMessageType.Close)
+                {
+                    Debug.Log("Received close frame from server. Closing connection.");
+                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing in response to server", CancellationToken.None);
+                    Debug.Log("WebSocket connection closed.");
+                    break;
+                }
+
+                // 正常接收文本消息
+                string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                Debug.Log($"Received message from server: {message}");
+                TimeStamp ts = JsonConvert.DeserializeObject<TimeStamp>(message);
+                if (ts.timestamp_remote < cancelTimeStamp){
+                    Debug.Log("Received message is too late, ignore it.");
+                }
+                else{
+                    receiveQueue.Enqueue(message);  // 将接收到的消息加入接收队列
+                }
             }
-            else{
-                receiveQueue.Enqueue(message);  // 将接收到的消息加入接收队列
-            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"ReceiveMessages error: {e.Message}");
         }
     }
 

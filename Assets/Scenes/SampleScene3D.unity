@@ -7121,6 +7121,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  cancelEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8452782695937358673}
+        m_TargetAssemblyTypeName: ContentLoader, Assembly-CSharp
+        m_MethodName: ClearContent
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!82 &3142908710104728751
 AudioSource:
   m_ObjectHideFlags: 0
@@ -7301,6 +7316,7 @@ GameObject:
   - component: {fileID: 8452782695937358671}
   - component: {fileID: 8452782695937358672}
   - component: {fileID: 3566008986768026179}
+  - component: {fileID: 8452782695937358673}
   - component: {fileID: 3142908710104728751}
   - component: {fileID: 2729317825438630085}
   m_Layer: 0
@@ -7426,6 +7442,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serverUrl: ws://localhost:8000/ws/
   clientId: test-id-1
+--- !u!114 &8452782695937358673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5109295921711183585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d459e6896c16b344cb4070c542ee8899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imageName: default
+  textToShow: 
+  uiImage: {fileID: 1420759069}
+  uiText: {fileID: 1890382372}
+  contentRectTransform: {fileID: 1175106705}
+  defaultImageName: default
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
