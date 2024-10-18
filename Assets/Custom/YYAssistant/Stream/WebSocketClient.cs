@@ -53,7 +53,16 @@ public class WebSocketClient : MonoBehaviour
                 return;
             }
 
-            Debug.Log("WebSocket connected!");
+            // 检查 WebSocket 连接状态
+            if (webSocket.State == WebSocketState.Open)
+            {
+                Debug.Log("WebSocket connected!");
+            }
+            else
+            {
+                Debug.LogError("WebSocket connection failed or was rejected by the server.");
+                webSocket.Dispose(); // 确保在连接失败时释放资源
+            }
 
             // 启动接收和发送消息
             // await Task.WhenAll(ReceiveMessages(), ProcessSendQueue());
@@ -76,12 +85,6 @@ public class WebSocketClient : MonoBehaviour
     public bool TryGetReceivedMessage(out string message)
     {
         return receiveQueue.TryDequeue(out message);  // 从接收队列中取出消息
-    }
-
-    private class TestData
-    {
-        public string type;
-        public string audio_file;
     }
 
     // 处理发送队列中的消息

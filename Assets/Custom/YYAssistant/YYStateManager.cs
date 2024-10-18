@@ -8,6 +8,8 @@ using TMPro;
 
 [RequireComponent(typeof(ServiceRecorder))]
 [RequireComponent(typeof(VoiceDetector))]
+[RequireComponent(typeof(WebSocketClient))]
+[RequireComponent(typeof(SignalManager))]
 public class YYStateManager : MonoBehaviour
 {
     public TextMeshProUGUI debugger;
@@ -17,6 +19,8 @@ public class YYStateManager : MonoBehaviour
     public VoiceDetector voiceDetector;
     [HideInInspector]
     public WebSocketClient webSocketClient;
+    [HideInInspector]
+    public SignalManager signalManager;
     public bool useVAD = true;
 
     [SerializeField] public InputAction recordButton, stopButton;
@@ -26,7 +30,7 @@ public class YYStateManager : MonoBehaviour
     public readonly IAssistantState RecordingState = new RecordingState();
     public readonly IAssistantState AnsweringState = new AnsweringState();
 
-    public StringEvent stateChangeEvent, cancelEvent;
+    public StringEvent stateChangeEvent, cancelEvent, startEvent;
     private bool isStarted = false;
 
     void Awake()
@@ -38,20 +42,28 @@ public class YYStateManager : MonoBehaviour
         recordService = GetComponent<ServiceRecorder>();
         voiceDetector = GetComponent<VoiceDetector>();
         webSocketClient = GetComponent<WebSocketClient>();
+        signalManager = GetComponent<SignalManager>();
+        startEvent.Invoke("Connecting to server...");
         await webSocketClient.Connect();
         Init();
     }
 
     void Init()
     {
-        useVAD = PlayerPrefs.GetInt("useVAD", useVAD ? 1 : 0) == 1;
-        CurrentState = IdleState;
-        CurrentState.EnterState(this);
-        recordButton.Enable();
-        stopButton.Enable();
-        isStarted = true;
-        Debug.Log("YYStateManager is started");
-        Debug.Log(voiceDetector.useVAD);
+        if(webSocketClient.IsConnected){
+            useVAD = PlayerPrefs.GetInt("useVAD", useVAD ? 1 : 0) == 1;
+            CurrentState = IdleState;
+            CurrentState.EnterState(this);
+            recordButton.Enable();
+            stopButton.Enable();
+            isStarted = true;
+            startEvent.Invoke("started");
+            Debug.Log("YYStateManager is started");
+        }
+        else{
+            startEvent.Invoke("Error in start");
+            Debug.LogError("WebSocketClient is not connected, please check the connection");
+        }
     }
 
     void OnEnable()

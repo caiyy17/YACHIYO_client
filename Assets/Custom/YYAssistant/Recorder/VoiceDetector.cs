@@ -9,7 +9,7 @@ public class VoiceDetector : MonoBehaviour
 
     public float speakingThreshold = 0.01f;
     public float silenceThreshold = 0.001f;
-    public float timeWindow = 0.5f;
+    public float timeWindow = 0.3f;
     public bool isSpeaking = false;
 
     public GameObject VADEnabledIndicator;

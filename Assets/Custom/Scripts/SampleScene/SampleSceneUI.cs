@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
+using TMPro;
 
 
 public class SampleSceneUI : MonoBehaviour
@@ -38,9 +39,14 @@ public class SampleSceneUI : MonoBehaviour
     public Slider SpeakingThresholdHigh;
     public Slider Display;
 
+    public GameObject startingPanel;
+    public TMP_Text startingText;
+
     // Start is called before the first frame update
     void Start()
     {
+        startingPanel.SetActive(true);
+
         nextModel.onClick.AddListener(NextModel);
         prevModel.onClick.AddListener(PrevModel);
         hideUI.onClick.AddListener(HideUI);
@@ -170,5 +176,15 @@ public class SampleSceneUI : MonoBehaviour
     float ToExp(float value)
     {
         return Mathf.Pow(10, value * 5 - 5);
+    }
+
+    public void SetStartingPanel(string text){
+        if (text == "started"){
+            startingPanel.SetActive(false);
+        }
+        else{
+            startingPanel.SetActive(true);
+            startingText.text = text;
+        }
     }
 }

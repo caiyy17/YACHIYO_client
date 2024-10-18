@@ -24,6 +24,10 @@ public class ContentLoader : MonoBehaviour
         {
             return;
         }
+        if (string.IsNullOrEmpty(imageName))
+        {
+            imageName = defaultImageName;
+        }
         // 从 Resources 文件夹中加载图片
         Texture2D texture = Resources.Load<Texture2D>("Images/" + imageName);
         if (texture == null)
@@ -50,12 +54,6 @@ public class ContentLoader : MonoBehaviour
         }
     }
 
-    public void ClearImage()
-    {
-        // 加载默认图片
-        LoadImage(defaultImageName);
-    }
-
     public void LoadText(string textToShow)
     {
         if (uiText == null)
@@ -78,22 +76,11 @@ public class ContentLoader : MonoBehaviour
         AdjustContentSize(); // 调整内容大小
     }
 
-    public void ClearText()
-    {
-        LoadText(""); // 清空文字
-    }
-
     private void AdjustContentSize()
     {
         // 获取Text组件的高度
         float textHeight = uiText.preferredHeight;
         // 设置Content对象的高度以适应文本内容
         contentRectTransform.sizeDelta = new Vector2(contentRectTransform.sizeDelta.x, textHeight);
-    }
-
-    public void ClearContent(string textToShow){
-        ClearImage();
-        ClearText();
-        LoadText(textToShow);
     }
 }
