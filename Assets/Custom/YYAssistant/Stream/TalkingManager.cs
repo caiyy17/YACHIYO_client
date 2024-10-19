@@ -43,7 +43,7 @@ public class TalkingManager : MonoBehaviour
 
     bool isTalking = false;
 
-    public StringEvent emotionEvent, textEvent, startEvent, stopEvent;
+    public StringEvent emotionEvent, textEvent, startEvent;
 
     void Start()
     {
@@ -91,11 +91,17 @@ public class TalkingManager : MonoBehaviour
         audioSource.clip = clip;
         audioSource.Play();
         if(emotion != ""){
-            emotionEvent.Invoke(emotion);
-            textEvent.Invoke("[" + emotion_hint + "] " + text);
+            if(emotionEvent != null){
+                emotionEvent.Invoke(emotion);
+            }
+            if(textEvent != null){
+                textEvent.Invoke("[" + emotion_hint + "] " + text);
+            }
         }
         else{
-            textEvent.Invoke(text);
+            if(textEvent != null){
+                textEvent.Invoke(text);
+            }
         }
     }
 
@@ -109,7 +115,9 @@ public class TalkingManager : MonoBehaviour
     public void StateCheck(string message)
     {
         if (message == "answering"){
-            startEvent.Invoke("");
+            if(startEvent != null){
+                startEvent.Invoke("");
+            }
             ResetAll();
             isTalking = true;
         }

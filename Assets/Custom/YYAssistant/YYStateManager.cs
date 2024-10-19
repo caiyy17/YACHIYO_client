@@ -43,7 +43,9 @@ public class YYStateManager : MonoBehaviour
         voiceDetector = GetComponent<VoiceDetector>();
         webSocketClient = GetComponent<WebSocketClient>();
         signalManager = GetComponent<SignalManager>();
-        startEvent.Invoke("Connecting to server...");
+        if(startEvent != null){
+            startEvent.Invoke("Connecting to server...");
+        }
         await webSocketClient.Connect();
         Init();
     }
@@ -57,11 +59,15 @@ public class YYStateManager : MonoBehaviour
             recordButton.Enable();
             stopButton.Enable();
             isStarted = true;
-            startEvent.Invoke("started");
+            if(startEvent != null){
+                startEvent.Invoke("started");
+            }
             Debug.Log("YYStateManager is started");
         }
         else{
-            startEvent.Invoke("Error in start");
+            if(startEvent != null){
+                startEvent.Invoke("Error in start");
+            }
             Debug.LogError("WebSocketClient is not connected, please check the connection");
         }
     }

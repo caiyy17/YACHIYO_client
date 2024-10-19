@@ -32,7 +32,9 @@ public class DataProcessor : MonoBehaviour
             {
                 if (segment.Contains(marker))
                 {
-                    router.eventHandler.Invoke(segment);
+                    if (router.eventHandler != null){
+                        router.eventHandler.Invoke(segment);
+                    }
                     return;
                 }
             }

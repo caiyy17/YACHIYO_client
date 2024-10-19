@@ -12,7 +12,9 @@ public class AnsweringState : YYState
         manager.signalManager.AddSignal("answer_end", OnAnsweringFinished); 
         isFetching = false;
         isFinished = false;
-        manager.stateChangeEvent.Invoke("answering");
+        if(manager.stateChangeEvent != null){
+            manager.stateChangeEvent.Invoke("answering");
+        }
         // Answering状态下的进入逻辑
     }
 
@@ -41,7 +43,9 @@ public class AnsweringState : YYState
             else if (manager.stopButton.WasReleasedThisFrame()){
                 Debug.Log("Stop fetching");
                 manager.webSocketClient.sendCancel("cancel");
-                manager.cancelEvent.Invoke("cancel in answering");
+                if(manager.cancelEvent != null){
+                    manager.cancelEvent.Invoke("cancel in answering");
+                }
                 manager.SwitchState(manager.IdleState);
             }
         }

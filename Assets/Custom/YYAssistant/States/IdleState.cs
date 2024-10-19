@@ -6,7 +6,9 @@ public class IdleState : YYState
     public override void EnterState(YYStateManager manager)
     {
         base.EnterState(manager);
-        manager.stateChangeEvent.Invoke("idle");
+        if(manager.stateChangeEvent != null){
+            manager.stateChangeEvent.Invoke("idle");
+        }
         manager.voiceDetector.SetVAD(manager.useVAD);
     }
 
@@ -35,7 +37,9 @@ public class IdleState : YYState
             }
         }
         else if(manager.stopButton.WasPerformedThisFrame()){
-            manager.cancelEvent.Invoke("cancel in idle");
+            if(manager.cancelEvent != null){
+                manager.cancelEvent.Invoke("cancel in idle");
+            }
         }
     }
 }
