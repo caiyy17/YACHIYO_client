@@ -7769,7 +7769,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dataRouters:
   - markers:
-    - audio_data
+    - '"audio_data"'
     eventHandler:
       m_PersistentCalls:
         m_Calls:
@@ -7786,7 +7786,7 @@ MonoBehaviour:
             m_BoolArgument: 0
           m_CallState: 2
   - markers:
-    - EoS
+    - '"EoS"'
     eventHandler:
       m_PersistentCalls:
         m_Calls:
