@@ -61,7 +61,6 @@ public class TalkingManager : MonoBehaviour
 
     public void QueueAudio(string message)
     {
-        // Debug.Log("QueueAudio: " + message);
         TalkingData data = JsonUtility.FromJson<TalkingData>(message);
         string audio_base64 = data.audio_data;
         AudioClip clip = string.IsNullOrEmpty(audio_base64) 
@@ -71,7 +70,6 @@ public class TalkingManager : MonoBehaviour
     }
 
     public void QueueEoS(string message){
-        // Debug.Log("QueueEoS: " + message);
         audioQueue.Enqueue(new TalkingDataEntry(true));
     }
 

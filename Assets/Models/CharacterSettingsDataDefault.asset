@@ -14,5 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   character_name: default
   scene_name: SampleScene3D
-  jsonFile: {fileID: 4900000, guid: 636f91142203a594480b8bb59465405f, type: 3}
-  _pipeline_config: 
+  pipeline_config: {fileID: 4900000, guid: 636f91142203a594480b8bb59465405f, type: 3}

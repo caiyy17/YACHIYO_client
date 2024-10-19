@@ -99,7 +99,7 @@ public class WebSocketClient : MonoBehaviour
                     byte[] buffer = Encoding.UTF8.GetBytes(message);
                     await webSocket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, cts.Token);
 
-                    Debug.Log($"Message sent: {message}");
+                    Debug.Log($"Message sent");
                 }
 
                 await Task.Delay(50);
@@ -136,8 +136,9 @@ public class WebSocketClient : MonoBehaviour
 
                 // 正常接收文本消息
                 string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                Debug.Log($"Received message from server: {message}");
+                Debug.Log($"Message received: {message}");
                 TimeStamp ts = JsonConvert.DeserializeObject<TimeStamp>(message);
+                Debug.Log($"Time spend: {GetUnixTime() - ts.timestamp_remote}");
                 if (ts.timestamp_remote < cancelTimeStamp){
                     Debug.Log("Received message is too late, ignore it.");
                 }

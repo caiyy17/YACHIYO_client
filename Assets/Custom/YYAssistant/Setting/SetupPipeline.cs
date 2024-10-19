@@ -60,24 +60,30 @@ public class SetupPipeline : MonoBehaviour
         current_status = "Health check...";
         string healthCheckJson = JsonUtility.ToJson(new ClientData(userId));
         yield return CustomWebRequest("http://" + url + "/heartbeat/", healthCheckJson, "Health check");
-        // yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(1f);
         
         // Setup pipeline
         current_progress = 0.4f;
         current_status = "Register client...";
         string clientJson = JsonUtility.ToJson(new ClientData(userId));
         yield return CustomWebRequest("http://" + url + "/register/", clientJson, "Register client");
-        // yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(1f);
 
         current_progress = 0.6f;
         current_status = "Setup pipeline...";
-        string configJson = JsonUtility.ToJson(new ConfigData(pipeline_config, true));
+        bool force = true;
+        string charId = PlayerPrefs.GetString("charId", "default");
+        if (charId == "default")
+        {
+            force = false;
+        }
+        string configJson = JsonUtility.ToJson(new ConfigData(pipeline_config, force));
         yield return CustomWebRequest("http://" + url + "/init_pipeline/" + userId, configJson, "Setup pipeline");
-        // yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(1f);
 
         current_progress = 1.0f;
         current_status = "Setup complete";
-        // yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1f);
 
         // Setup complete
         current_status = "";

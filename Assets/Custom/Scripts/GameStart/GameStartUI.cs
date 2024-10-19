@@ -86,7 +86,7 @@ public class GameStartUI : MonoBehaviour
         }
         char_id = settingsData.chars[char_index].character_name;
         scene_name = settingsData.chars[char_index].scene_name;
-        pipeline_config = settingsData.chars[char_index].pipeline_config;
+        pipeline_config = settingsData.chars[char_index].pipeline_config.text;
         // 从PlayerPrefs中读取用户设置
         server_url = PlayerPrefs.GetString("urlInput", server_url);
         user_id = PlayerPrefs.GetString("userId", user_id);
@@ -193,15 +193,17 @@ public class GameStartUI : MonoBehaviour
     private void OnCharDropDownValueChanged(TMP_Dropdown change)
     {
         int index = change.value;
-        char_id = chars[index];
-        scene_name = settingsData.chars[index].scene_name;
-        pipelineConfigInput.text = settingsData.chars[index].pipeline_config;
+        pipelineConfigInput.text = settingsData.chars[index].pipeline_config.text;
     }
     private void OnOpenSettingButtonClicked()
     {
         // 打开设置界面
         mainScreen.SetActive(false);
         settingPanel.SetActive(true);
+        // 重新设置一遍，为了让滑动条生效
+        string temp = pipelineConfigInput.text;
+        pipelineConfigInput.text = "";
+        pipelineConfigInput.text = temp;
     }
 
     private void OnCloseSettingButtonClicked()
@@ -259,7 +261,7 @@ public class GameStartUI : MonoBehaviour
         int char_index = chars.IndexOf(settingsData.char_id);
         char_id = settingsData.chars[char_index].character_name;
         scene_name = settingsData.chars[char_index].scene_name;
-        pipeline_config = settingsData.chars[char_index].pipeline_config;
+        pipeline_config = settingsData.chars[char_index].pipeline_config.text;
 
         PlayerPrefs.SetString("urlInput", server_url);
         PlayerPrefs.SetString("userId", user_id);
