@@ -35,7 +35,6 @@ public class DataProcessor : MonoBehaviour
                     if (router.eventHandler != null){
                         router.eventHandler.Invoke(segment);
                     }
-                    return;
                 }
             }
         }
