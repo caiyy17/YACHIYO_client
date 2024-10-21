@@ -139,6 +139,7 @@
                         "targets": ["5_motion"]
                     }
                 ],
+                "dataset": "amiya",
                 "next_nodes": [6]
             }
         },
