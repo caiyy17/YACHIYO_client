@@ -87,7 +87,5 @@ public class SceneLoaderWithProgress : MonoBehaviour
         {
             yield return preparation.AssistantSetup();
         }
-        // 所有初始化任务完成
-        yield return null;
     }
 }

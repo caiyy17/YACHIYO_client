@@ -5,14 +5,51 @@ using System.Collections.Generic;
 public class SignalManager : MonoBehaviour
 {
     [System.Serializable]
+    public class SignalRoute
+    {
+        public string source;
+        public string target;
+        public string sourceMessage;
+        public string targetMessage;
+    }
+    public List<SignalRoute> signalRoutes = new List<SignalRoute>();
+
+    [System.Serializable]
     public class Signal
     {
         public string name;
         public StringEvent signalEvent;
     }
-    public List<Signal> signals = new List<Signal>();
+    List<Signal> signals = new List<Signal>();
 
     public void SendSignal(string name, string data)
+    {
+        SendSignalDirect(name, data);
+        foreach (SignalRoute route in signalRoutes)
+        {
+            if (route.source == name)
+            {
+                if (route.sourceMessage == "all" && route.targetMessage == "all")
+                {
+                    SendSignalDirect(route.target, data);
+                }
+                else if (route.sourceMessage == "all")
+                {
+                    SendSignalDirect(route.target, route.targetMessage);
+                }
+                else if (route.targetMessage == "all" && route.sourceMessage == data)
+                {
+                    SendSignalDirect(route.target, data);
+                }
+                else if (route.sourceMessage == data)
+                {
+                    SendSignalDirect(route.target, route.targetMessage);
+                }
+            }
+        }
+    }
+
+    void SendSignalDirect(string name, string data)
     {
         foreach (Signal signal in signals)
         {
@@ -53,6 +90,14 @@ public class SignalManager : MonoBehaviour
                 signal.signalEvent.RemoveListener(action);
                 return;
             }
+        }
+    }
+
+    void Dispose()
+    {
+        foreach (Signal signal in signals)
+        {
+            signal.signalEvent.RemoveAllListeners();
         }
     }
 }

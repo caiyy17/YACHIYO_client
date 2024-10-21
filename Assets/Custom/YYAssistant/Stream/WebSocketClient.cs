@@ -153,8 +153,8 @@ public class WebSocketClient : MonoBehaviour
         }
     }
 
-    // 在应用退出时，关闭WebSocket连接
-    private async void OnApplicationQuit()
+    // 在销毁对象时关闭WebSocket连接
+    private async void OnDestroy()
     {
         if (webSocket != null)
         {

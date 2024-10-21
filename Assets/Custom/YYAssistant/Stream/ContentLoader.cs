@@ -2,8 +2,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+[RequireComponent(typeof(SignalManager))]
 public class ContentLoader : MonoBehaviour
 {
+    SignalManager signalManager;
     public string imageName; // 图片名称，不带扩展名
     public string textToShow; // 要显示的文字
     public Image uiImage; // 要显示图片的UI Image组件
@@ -13,6 +15,7 @@ public class ContentLoader : MonoBehaviour
     // 示例：在Start方法中加载图片
     void Start()
     {
+        signalManager = GetComponent<SignalManager>();
         LoadImage(imageName);
         LoadText(textToShow);
     }

@@ -14,5 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   character_name: YYAssistant
   scene_name: SampleScene3D
-  jsonFile: {fileID: 4900000, guid: 93889388674e3534090fa9e479e592ff, type: 3}
-  _pipeline_config: 
+  pipeline_config: {fileID: 4900000, guid: 93889388674e3534090fa9e479e592ff, type: 3}
