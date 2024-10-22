@@ -11,7 +11,7 @@ public class SignalManager : MonoBehaviour
         public StringEvent signalEvent;
     }
     public List<Signal> signals = new List<Signal>();
-    List<Signal> _signals = new List<Signal>();
+    public List<Signal> _signals = new List<Signal>();
 
     [System.Serializable]
     public class SignalRoute
@@ -23,18 +23,20 @@ public class SignalManager : MonoBehaviour
     }
     public List<SignalRoute> signalRoutes = new List<SignalRoute>();
 
-    void Start()
+    void Awake()
     {
         _signals = new List<Signal>(signals);
     }
 
     public void SendSignal(string name, string data)
     {
+        Debug.Log("SendingSignal: " + name + " " + data);
         SendSignalDirect(name, data);
         foreach (SignalRoute route in signalRoutes)
         {
             if (route.source == name)
             {
+                Debug.Log("SendSignalRoute: " + route.source + " " + route.sourceMessage + " -> " + route.target + " " + route.targetMessage);
                 if (route.sourceMessage == "all" && route.targetMessage == "all")
                 {
                     SendSignalDirect(route.target, data);
@@ -61,6 +63,7 @@ public class SignalManager : MonoBehaviour
         {
             if (signal.name == name)
             {
+                Debug.Log("SendSignalDirect: " + name + " " + data);
                 if (signal.signalEvent == null) return;
                 signal.signalEvent.Invoke(data);
                 return;

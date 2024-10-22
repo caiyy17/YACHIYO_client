@@ -30,7 +30,6 @@ public class YYStateManager : MonoBehaviour
     public readonly IAssistantState RecordingState = new RecordingState();
     public readonly IAssistantState AnsweringState = new AnsweringState();
 
-    // public StringEvent stateChangeEvent, cancelEvent, startEvent;
     private bool isStarted = false;
 
     void Awake()
@@ -43,10 +42,7 @@ public class YYStateManager : MonoBehaviour
         voiceDetector = GetComponent<VoiceDetector>();
         webSocketClient = GetComponent<WebSocketClient>();
         signalManager = GetComponent<SignalManager>();
-        // if(startEvent != null){
-        //     startEvent.Invoke("Connecting to server...");
-        // }
-        signalManager.SendSignal("start", "Connecting to server...");
+        signalManager.SendSignal("yya_start", "Connecting to server...");
         await webSocketClient.Connect();
         Init();
     }
@@ -60,17 +56,11 @@ public class YYStateManager : MonoBehaviour
             recordButton.Enable();
             stopButton.Enable();
             isStarted = true;
-            // if(startEvent != null){
-            //     startEvent.Invoke("started");
-            // }
-            signalManager.SendSignal("start", "started");
+            signalManager.SendSignal("yya_start", "started");
             Debug.Log("YYStateManager is started");
         }
         else{
-            // if(startEvent != null){
-            //     startEvent.Invoke("Error in start");
-            // }
-            signalManager.SendSignal("start", "Error in start");
+            signalManager.SendSignal("yya_start", "Error in start");
             Debug.LogError("WebSocketClient is not connected, please check the connection");
         }
     }

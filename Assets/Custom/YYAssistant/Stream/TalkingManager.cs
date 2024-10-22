@@ -43,12 +43,18 @@ public class TalkingManager : MonoBehaviour
 
     bool isTalking = false;
 
-    public StringEvent emotionEvent, textEvent, startEvent;
-
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
         signalManager = GetComponent<SignalManager>();
+        signalManager.AddSignal("talking_start", TalkingStart);
+        signalManager.AddSignal("talking_cancel", ResetAll);
+    }
+
+    void Dispose()
+    {
+        signalManager.RemoveSignal("talking_start", TalkingStart);
+        signalManager.RemoveSignal("talking_cancel", ResetAll);
     }
 
     class TalkingData
@@ -75,11 +81,11 @@ public class TalkingManager : MonoBehaviour
 
     void Update()
     {
-        if (!audioSource.isPlaying && audioQueue.Count > 0)
+        if (!audioSource.isPlaying && audioQueue.Count > 0 && isTalking)
         {
             TalkingDataEntry entry = audioQueue.Dequeue();
             if(entry.eos){
-                signalManager.SendSignal("answer_end", "finished");
+                signalManager.SendSignal("talking_end", "finished");
                 ResetAll();
             }
             LoadAndPlay(entry.audioClip, entry.emotion, entry.emotion_hint, entry.text);
@@ -91,17 +97,11 @@ public class TalkingManager : MonoBehaviour
         audioSource.clip = clip;
         audioSource.Play();
         if(emotion != ""){
-            if(emotionEvent != null){
-                emotionEvent.Invoke(emotion);
-            }
-            if(textEvent != null){
-                textEvent.Invoke("[" + emotion_hint + "] " + text);
-            }
+            signalManager.SendSignal("talking_emotion", emotion);
+            signalManager.SendSignal("talking_text", "[" + emotion_hint + "] " + text);
         }
         else{
-            if(textEvent != null){
-                textEvent.Invoke(text);
-            }
+            signalManager.SendSignal("talking_text", text);
         }
     }
 
@@ -112,14 +112,9 @@ public class TalkingManager : MonoBehaviour
         audioSource.Stop();
     }
 
-    public void StateCheck(string message)
+    public void TalkingStart(string message)
     {
-        if (message == "answering"){
-            if(startEvent != null){
-                startEvent.Invoke("");
-            }
-            ResetAll();
-            isTalking = true;
-        }
+        ResetAll();
+        isTalking = true;
     }
 }

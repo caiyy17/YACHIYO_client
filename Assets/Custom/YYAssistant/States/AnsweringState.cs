@@ -9,20 +9,17 @@ public class AnsweringState : YYState
     public override void EnterState(YYStateManager manager)
     {
         base.EnterState(manager);
-        manager.signalManager.AddSignal("answer_end", OnAnsweringFinished); 
+        manager.signalManager.AddSignal("yya_exit_answering", OnAnsweringFinished); 
         isFetching = false;
         isFinished = false;
-        // if(manager.stateChangeEvent != null){
-        //     manager.stateChangeEvent.Invoke("answering");
-        // }
-        manager.signalManager.SendSignal("state", "answering");
+        manager.signalManager.SendSignal("yya_state", "answering");
         // Answering状态下的进入逻辑
     }
 
     public override void ExitState()
     {
         base.ExitState();
-        manager.signalManager.RemoveSignal("answering", OnAnsweringFinished);
+        manager.signalManager.RemoveSignal("yya_exit_answering", OnAnsweringFinished);
     }
 
     public override void UpdateState()
@@ -44,9 +41,6 @@ public class AnsweringState : YYState
             else if (manager.stopButton.WasReleasedThisFrame()){
                 Debug.Log("Stop fetching");
                 manager.webSocketClient.sendCancel("cancel");
-                // if(manager.cancelEvent != null){
-                //     manager.cancelEvent.Invoke("cancel in answering");
-                // }
                 manager.signalManager.SendSignal("cancel", "cancel in answering");
                 manager.SwitchState(manager.IdleState);
             }

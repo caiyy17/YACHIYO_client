@@ -8,10 +8,7 @@ public class RecordingState : YYState
     public override void EnterState(YYStateManager manager)
     {
         base.EnterState(manager);
-        // if(this.manager.stateChangeEvent != null){
-        //     this.manager.stateChangeEvent.Invoke("listening");
-        // }
-        manager.signalManager.SendSignal("state", "listening");
+        manager.signalManager.SendSignal("yya_state", "listening");
         this.manager.recordService.StartRecording(-0.3f);
         startTime = Time.time;
     }
@@ -47,9 +44,6 @@ public class RecordingState : YYState
         else if (manager.stopButton.WasPerformedThisFrame()){
             Debug.Log("Clear all");
             manager.recordService.StopRecording();
-            // if(manager.cancelEvent != null){
-            //     manager.cancelEvent.Invoke("cancel in recording");
-            // }
             manager.signalManager.SendSignal("cancel", "cancel in recording");
             manager.SwitchState(manager.IdleState);
         }

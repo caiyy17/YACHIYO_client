@@ -20,7 +20,9 @@ public class EmotionManager : MonoBehaviour
     public float emotionInterval = 10.0f;
     public float idelInterval = 10.0f;
 
-    public void Awake()
+    SignalManager signalManager;
+
+    void Awake()
     {
         foreach (EmotionData emotionData in emotionDataList)
         {
@@ -29,7 +31,19 @@ public class EmotionManager : MonoBehaviour
         lastEmotion = "idle";
     }
 
-    public void Update()
+    void Start()
+    {
+        lastTime = 0;
+        signalManager = GetComponent<SignalManager>();
+        signalManager.AddSignal("emotion_set", SetMotionAndExpression);
+    }
+
+    void Disable()
+    {
+        signalManager.RemoveSignal("emotion_set", SetMotionAndExpression);
+    }
+
+    void Update()
     {
         if(Time.time - lastTime > idelInterval && lastEmotion == "idle"){
             SetMotionAndExpression("idle");

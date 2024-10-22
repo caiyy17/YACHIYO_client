@@ -18,6 +18,15 @@ public class ContentLoader : MonoBehaviour
         signalManager = GetComponent<SignalManager>();
         LoadImage(imageName);
         LoadText(textToShow);
+        signalManager.AddSignal("image_show", LoadImage);
+        signalManager.AddSignal("text_show", LoadText);
+        signalManager.AddSignal("text_add", AddText);
+    }
+
+    void Dispose(){
+        signalManager.RemoveSignal("image_show", LoadImage);
+        signalManager.RemoveSignal("text_show", LoadText);
+        signalManager.RemoveSignal("text_add", AddText);
     }
 
     // 加载并显示图片

@@ -7367,75 +7367,6 @@ MonoBehaviour:
       m_Action: Stop Button
       m_Flags: 0
     m_Flags: 1
-  stateChangeEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3566008986768026179}
-        m_TargetAssemblyTypeName: EmotionManager, Assembly-CSharp
-        m_MethodName: SetMotionAndExpression
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 8452782695937358675}
-        m_TargetAssemblyTypeName: TalkingManager, Assembly-CSharp
-        m_MethodName: StateCheck
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  cancelEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8452782695937358673}
-        m_TargetAssemblyTypeName: ContentLoader, Assembly-CSharp
-        m_MethodName: LoadText
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 8452782695937358675}
-        m_TargetAssemblyTypeName: TalkingManager, Assembly-CSharp
-        m_MethodName: ResetAll
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  startEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 549307636}
-        m_TargetAssemblyTypeName: SampleSceneUI, Assembly-CSharp
-        m_MethodName: SetStartingPanel
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!82 &3142908710104728751
 AudioSource:
   m_ObjectHideFlags: 0
@@ -7822,63 +7753,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb51f7c9fe7358a43ac6fbd52b511b83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  emotionEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3566008986768026179}
-        m_TargetAssemblyTypeName: EmotionManager, Assembly-CSharp
-        m_MethodName: SetMotionAndExpression
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  textEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8452782695937358673}
-        m_TargetAssemblyTypeName: ContentLoader, Assembly-CSharp
-        m_MethodName: AddText
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  startEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8452782695937358673}
-        m_TargetAssemblyTypeName: ContentLoader, Assembly-CSharp
-        m_MethodName: LoadText
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 8452782695937358673}
-        m_TargetAssemblyTypeName: ContentLoader, Assembly-CSharp
-        m_MethodName: LoadImage
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &8452782695937358676
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7892,7 +7766,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   signals:
-  - name: start
+  - name: yya_start
     signalEvent:
       m_PersistentCalls:
         m_Calls:
@@ -7908,63 +7782,44 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - name: state
-    signalEvent:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 3566008986768026179}
-          m_TargetAssemblyTypeName: EmotionManager, Assembly-CSharp
-          m_MethodName: SetMotionAndExpression
-          m_Mode: 0
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 8452782695937358675}
-          m_TargetAssemblyTypeName: TalkingManager, Assembly-CSharp
-          m_MethodName: StateCheck
-          m_Mode: 0
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - name: cancel
-    signalEvent:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 8452782695937358673}
-          m_TargetAssemblyTypeName: ContentLoader, Assembly-CSharp
-          m_MethodName: LoadText
-          m_Mode: 0
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 8452782695937358675}
-          m_TargetAssemblyTypeName: TalkingManager, Assembly-CSharp
-          m_MethodName: ResetAll
-          m_Mode: 0
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  signalRoutes: []
+  _signals: []
+  signalRoutes:
+  - source: yya_state
+    target: emotion_set
+    sourceMessage: all
+    targetMessage: all
+  - source: yya_state
+    target: talking_start
+    sourceMessage: answering
+    targetMessage: 
+  - source: yya_state
+    target: text_show
+    sourceMessage: answering
+    targetMessage: 
+  - source: cancel
+    target: talking_cancel
+    sourceMessage: all
+    targetMessage: all
+  - source: cancel
+    target: text_show
+    sourceMessage: all
+    targetMessage: all
+  - source: cancel
+    target: image_show
+    sourceMessage: all
+    targetMessage: false
+  - source: talking_emotion
+    target: emotion_set
+    sourceMessage: all
+    targetMessage: all
+  - source: talking_text
+    target: text_add
+    sourceMessage: all
+    targetMessage: all
+  - source: talking_end
+    target: yya_exit_answering
+    sourceMessage: all
+    targetMessage: all
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
