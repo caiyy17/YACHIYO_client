@@ -7891,8 +7891,80 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4dd2d89b525139439c08472ebfb8934, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  signals:
+  - name: start
+    signalEvent:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 549307636}
+          m_TargetAssemblyTypeName: SampleSceneUI, Assembly-CSharp
+          m_MethodName: SetStartingPanel
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - name: state
+    signalEvent:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 3566008986768026179}
+          m_TargetAssemblyTypeName: EmotionManager, Assembly-CSharp
+          m_MethodName: SetMotionAndExpression
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 8452782695937358675}
+          m_TargetAssemblyTypeName: TalkingManager, Assembly-CSharp
+          m_MethodName: StateCheck
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - name: cancel
+    signalEvent:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 8452782695937358673}
+          m_TargetAssemblyTypeName: ContentLoader, Assembly-CSharp
+          m_MethodName: LoadText
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 8452782695937358675}
+          m_TargetAssemblyTypeName: TalkingManager, Assembly-CSharp
+          m_MethodName: ResetAll
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   signalRoutes: []
-  signals: []
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

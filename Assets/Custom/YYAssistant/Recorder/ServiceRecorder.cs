@@ -12,6 +12,7 @@ public class ServiceRecorder : MonoBehaviour
     public int sampleRate = 16000;
     public float maxRecordingTime = 60f;
     private float[] audioData = null;
+    [HideInInspector]
     public byte[] wavData = null;
 
     public bool isRecording = false;

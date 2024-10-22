@@ -5,6 +5,15 @@ using System.Collections.Generic;
 public class SignalManager : MonoBehaviour
 {
     [System.Serializable]
+    public class Signal
+    {
+        public string name;
+        public StringEvent signalEvent;
+    }
+    public List<Signal> signals = new List<Signal>();
+    List<Signal> _signals = new List<Signal>();
+
+    [System.Serializable]
     public class SignalRoute
     {
         public string source;
@@ -14,13 +23,10 @@ public class SignalManager : MonoBehaviour
     }
     public List<SignalRoute> signalRoutes = new List<SignalRoute>();
 
-    [System.Serializable]
-    public class Signal
+    void Start()
     {
-        public string name;
-        public StringEvent signalEvent;
+        _signals = new List<Signal>(signals);
     }
-    List<Signal> signals = new List<Signal>();
 
     public void SendSignal(string name, string data)
     {
@@ -51,7 +57,7 @@ public class SignalManager : MonoBehaviour
 
     void SendSignalDirect(string name, string data)
     {
-        foreach (Signal signal in signals)
+        foreach (Signal signal in _signals)
         {
             if (signal.name == name)
             {
@@ -65,7 +71,7 @@ public class SignalManager : MonoBehaviour
     public void AddSignal(string name, UnityAction<string> action)
     {
         if (action == null) return;
-        foreach (Signal signal in signals)
+        foreach (Signal signal in _signals)
         {
             if (signal.name == name)
             {
@@ -77,13 +83,13 @@ public class SignalManager : MonoBehaviour
         newSignal.name = name;
         newSignal.signalEvent = new StringEvent();
         newSignal.signalEvent.AddListener(action);
-        signals.Add(newSignal);
+        _signals.Add(newSignal);
     }
 
     public void RemoveSignal(string name, UnityAction<string> action)
     {
         if (action == null) return;
-        foreach (Signal signal in signals)
+        foreach (Signal signal in _signals)
         {
             if (signal.name == name)
             {
@@ -95,7 +101,7 @@ public class SignalManager : MonoBehaviour
 
     void Dispose()
     {
-        foreach (Signal signal in signals)
+        foreach (Signal signal in _signals)
         {
             signal.signalEvent.RemoveAllListeners();
         }
