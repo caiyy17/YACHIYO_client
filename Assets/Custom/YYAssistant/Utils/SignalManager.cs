@@ -11,7 +11,7 @@ public class SignalManager : MonoBehaviour
         public StringEvent signalEvent;
     }
     public List<Signal> signals = new List<Signal>();
-    public List<Signal> _signals = new List<Signal>();
+    List<Signal> _signals = new List<Signal>();
 
     [System.Serializable]
     public class SignalRoute
