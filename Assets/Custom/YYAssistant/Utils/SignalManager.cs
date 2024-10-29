@@ -102,7 +102,7 @@ public class SignalManager : MonoBehaviour
         }
     }
 
-    void Dispose()
+    void OnDestroy()
     {
         foreach (Signal signal in _signals)
         {

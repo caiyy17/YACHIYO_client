@@ -1568,6 +1568,81 @@ MonoBehaviour:
   Display: {fileID: 1235061875}
   startingPanel: {fileID: 1664842763}
   startingText: {fileID: 1326742277}
+  homeAction:
+    m_Name: Home
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: d5124ee8-0384-494e-88a2-409088dfbeb5
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 98de521c-ee00-4237-bf07-8fc9b845d772
+      m_Path: <Keyboard>/escape
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Home
+      m_Flags: 0
+    - m_Name: 
+      m_Id: e3068d69-1b17-4b5c-87fd-05d1a1f46061
+      m_Path: <Gamepad>/buttonNorth
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Home
+      m_Flags: 0
+    m_Flags: 0
+  leftAction:
+    m_Name: Left
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: 39ad1971-152a-46fb-9c86-a9f1b8f6fc2c
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: f579b2e2-2e4d-480e-b102-9c4b355f6588
+      m_Path: <Keyboard>/leftArrow
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Left
+      m_Flags: 0
+    - m_Name: 
+      m_Id: 3fe49403-8450-4421-bc5b-f6237f08d4b9
+      m_Path: <Gamepad>/dpad/left
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Left
+      m_Flags: 0
+    m_Flags: 0
+  rightAction:
+    m_Name: Right
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: f73e5e2f-80be-461b-9ad4-af9ae5fb000d
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 566a4508-582e-46b6-b836-73f497958a43
+      m_Path: <Keyboard>/rightArrow
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Right
+      m_Flags: 0
+    - m_Name: 
+      m_Id: 829f2b1c-71a7-4f7a-a827-dc0c240a672d
+      m_Path: <Gamepad>/dpad/right
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Right
+      m_Flags: 0
+    m_Flags: 0
 --- !u!82 &549307637
 AudioSource:
   m_ObjectHideFlags: 0
@@ -7317,31 +7392,6 @@ MonoBehaviour:
   webSocketClient: {fileID: 0}
   signalManager: {fileID: 0}
   useVAD: 1
-  recordButton:
-    m_Name: Record Button
-    m_Type: 1
-    m_ExpectedControlType: Button
-    m_Id: c795b416-9339-4615-afe6-62fea04b88b1
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 579cacd1-a575-4c9e-b015-eba70d6d6574
-      m_Path: <Keyboard>/space
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Record Button
-      m_Flags: 0
-    - m_Name: 
-      m_Id: 02ef290c-00d8-4e27-b240-9b5fc4ac5961
-      m_Path: <Gamepad>/buttonSouth
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Record Button
-      m_Flags: 0
-    m_Flags: 1
   stopButton:
     m_Name: Stop Button
     m_Type: 1
@@ -7662,6 +7712,31 @@ MonoBehaviour:
   VADEnabledIndicator: {fileID: 1687347734}
   VADIndicator: {fileID: 1077803522}
   currentLoudness: 0
+  recordButton:
+    m_Name: Record Button
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: 5432e6dd-5cc3-4306-8741-d613f11ffc16
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 89794635-c1b2-4443-aa0a-928721ca1726
+      m_Path: <Keyboard>/space
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Record Button
+      m_Flags: 0
+    - m_Name: 
+      m_Id: dea87823-0ad7-4b06-8b42-8d94c112d7bf
+      m_Path: <Gamepad>/buttonSouth
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Record Button
+      m_Flags: 0
+    m_Flags: 1
 --- !u!114 &8452782695937358672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7782,7 +7857,6 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  _signals: []
   signalRoutes:
   - source: yya_state
     target: emotion_set

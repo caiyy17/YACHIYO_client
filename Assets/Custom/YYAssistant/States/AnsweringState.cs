@@ -44,6 +44,18 @@ public class AnsweringState : YYState
                 manager.signalManager.SendSignal("cancel", "cancel in answering");
                 manager.SwitchState(manager.IdleState);
             }
+            else if (manager.voiceDetector.isSpeaking){
+                Debug.Log("Speaking detected, interrupt fetching");
+                manager.webSocketClient.sendCancel("cancel");
+                manager.signalManager.SendSignal("cancel", "interrupted in answering");
+                if(manager.recordService.isRecording){
+                    Debug.LogError("Recorder is already recording, stop it first");
+                    manager.recordService.StopRecording();
+                }
+                else{
+                    manager.SwitchState(manager.RecordingState);
+                }
+            }
         }
     }
     

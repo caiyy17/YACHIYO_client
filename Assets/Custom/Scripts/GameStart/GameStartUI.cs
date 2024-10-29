@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using System.Collections.Generic;
 using System;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(SceneLoaderWithProgress))]
 public class GameStartUI : MonoBehaviour
@@ -64,6 +65,8 @@ public class GameStartUI : MonoBehaviour
     public float current_volumn = 0;
 
     public AudioSource bgm;
+
+    [SerializeField] public InputAction startAction;
     
     private void Start()
     {
@@ -188,6 +191,22 @@ public class GameStartUI : MonoBehaviour
         PlayerPrefs.SetInt("useVAD", useVAD ? 1 : 0);
         PlayerPrefs.SetFloat("speakingThreshold", speakingThreshold);
         PlayerPrefs.SetFloat("silenceThreshold", silenceThreshold);
+
+        startAction.Enable();
+        startAction.performed += ctx => OnStartGameButtonClicked();
+    }
+
+    void OnDisable(){
+        startGame.onClick.RemoveAllListeners();
+        openSetting.onClick.RemoveAllListeners();
+        closeSetting.onClick.RemoveAllListeners();
+        resetDefault.onClick.RemoveAllListeners();
+        confirmYes.onClick.RemoveAllListeners();
+        confirmNot.onClick.RemoveAllListeners();
+        resetYes.onClick.RemoveAllListeners();
+        resetNot.onClick.RemoveAllListeners();
+        charDropDown.onValueChanged.RemoveAllListeners();
+        startAction.Disable();
     }
 
     private void OnCharDropDownValueChanged(TMP_Dropdown change)
@@ -295,6 +314,7 @@ public class GameStartUI : MonoBehaviour
 
     private void OnStartGameButtonClicked()
     {
+        startAction.Disable();
         string scene = scene_name;
         // 加载游戏场景，把其他交互禁用
         mainScreen.SetActive(false);
@@ -309,6 +329,7 @@ public class GameStartUI : MonoBehaviour
         settingPanel.SetActive(false);
         errorPanel.SetActive(true);
         errorText.text = errorMessage;
+        startAction.Enable();
         Debug.Log("return to main screen");
     }
 

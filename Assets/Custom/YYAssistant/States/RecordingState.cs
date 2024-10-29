@@ -16,7 +16,6 @@ public class RecordingState : YYState
     public override void ExitState()
     {
         base.ExitState();
-        manager.voiceDetector.SetVAD(false);
     }
 
     public override void UpdateState()
@@ -24,7 +23,7 @@ public class RecordingState : YYState
         manager.debugger.text = "Updating Recording State";
         base.UpdateState();
         // Recording状态下的更新逻辑
-        if (manager.recordButton.WasReleasedThisFrame() || (manager.voiceDetector.useVAD && !manager.voiceDetector.isSpeaking) || Time.time - startTime > manager.recordService.maxRecordingTime)
+        if (!manager.voiceDetector.isSpeaking || Time.time - startTime > manager.recordService.maxRecordingTime)
         {
             if(!manager.recordService.isRecording){
                 Debug.LogError("Recorder is not recording, please start it first");

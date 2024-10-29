@@ -23,6 +23,13 @@ public class Rotatable : MonoBehaviour
         axis.canceled += context => { rotation = Vector2.zero; };
     }
 
+    void OnDisable()
+    {
+        pressed.Disable();
+        axis.Disable();
+        point.Disable();
+    }
+
     private void CheckAndStartRotate()
     {
         if (IsPointerOverCollider())

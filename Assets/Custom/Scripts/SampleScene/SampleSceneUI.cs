@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
 using TMPro;
-
+using UnityEngine.InputSystem;
 
 public class SampleSceneUI : MonoBehaviour
 {
@@ -41,6 +41,8 @@ public class SampleSceneUI : MonoBehaviour
 
     public GameObject startingPanel;
     public TMP_Text startingText;
+
+    [SerializeField] public InputAction homeAction, leftAction, rightAction;
 
     // Start is called before the first frame update
     void Start()
@@ -79,6 +81,28 @@ public class SampleSceneUI : MonoBehaviour
             uiPanel.SetActive(true);
             hideUI.GetComponent<Image>().sprite = buttonOnTexture;
         }
+
+        homeAction.Enable();
+        homeAction.performed += ctx => ReturnHome();
+
+        leftAction.Enable();
+        rightAction.Enable();
+        leftAction.performed += ctx => PrevModel();
+        rightAction.performed += ctx => NextModel();
+    }
+
+    void OnDisable(){
+        nextModel.onClick.RemoveAllListeners();
+        prevModel.onClick.RemoveAllListeners();
+        hideUI.onClick.RemoveAllListeners();
+        playBGM.onClick.RemoveAllListeners();
+        SettingButton.onClick.RemoveAllListeners();
+        CloseSetting.onClick.RemoveAllListeners();
+        HomeButton.onClick.RemoveAllListeners();
+
+        homeAction.Disable();
+        leftAction.Disable();
+        rightAction.Disable();
     }
 
     // Update is called once per frame
@@ -131,7 +155,7 @@ public class SampleSceneUI : MonoBehaviour
         if (bgm.isPlaying)
         {
             bgm.Pause();
-            //disable DynamicUI
+            // disable DynamicUI
             playBGM.GetComponent<DynamicUI>().enabled = false;
             playBGM.GetComponent<Image>().sprite = pauseTexture;
         }
@@ -165,6 +189,7 @@ public class SampleSceneUI : MonoBehaviour
 
     void ReturnHome()
     {
+        homeAction.performed -= ctx => ReturnHome();
         SceneManager.LoadScene(0, LoadSceneMode.Single);
     }
 

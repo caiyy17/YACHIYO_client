@@ -51,7 +51,7 @@ public class TalkingManager : MonoBehaviour
         signalManager.AddSignal("talking_cancel", ResetAll);
     }
 
-    void Dispose()
+    void OnDisable()
     {
         signalManager.RemoveSignal("talking_start", TalkingStart);
         signalManager.RemoveSignal("talking_cancel", ResetAll);

@@ -38,7 +38,7 @@ public class EmotionManager : MonoBehaviour
         signalManager.AddSignal("emotion_set", SetMotionAndExpression);
     }
 
-    void Disable()
+    void OnDisable()
     {
         signalManager.RemoveSignal("emotion_set", SetMotionAndExpression);
     }

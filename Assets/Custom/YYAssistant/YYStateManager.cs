@@ -23,7 +23,7 @@ public class YYStateManager : MonoBehaviour
     public SignalManager signalManager;
     public bool useVAD = true;
 
-    [SerializeField] public InputAction recordButton, stopButton;
+    [SerializeField] public InputAction stopButton;
 
     public IAssistantState CurrentState { get; private set; }
     public readonly IAssistantState IdleState = new IdleState();
@@ -47,13 +47,17 @@ public class YYStateManager : MonoBehaviour
         Init();
     }
 
+    void OnDisable(){
+        stopButton.Disable();
+    }
+
     void Init()
     {
         if(webSocketClient.IsConnected){
             useVAD = PlayerPrefs.GetInt("useVAD", useVAD ? 1 : 0) == 1;
+            voiceDetector.SetVAD(useVAD);
             CurrentState = IdleState;
             CurrentState.EnterState(this);
-            recordButton.Enable();
             stopButton.Enable();
             isStarted = true;
             signalManager.SendSignal("yya_start", "started");
@@ -63,10 +67,6 @@ public class YYStateManager : MonoBehaviour
             signalManager.SendSignal("yya_start", "Error in start");
             Debug.LogError("WebSocketClient is not connected, please check the connection");
         }
-    }
-
-    void OnEnable()
-    {
     }
 
     // Update is called once per frame

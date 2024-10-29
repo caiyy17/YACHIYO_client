@@ -7,7 +7,6 @@ public class IdleState : YYState
     {
         base.EnterState(manager);
         manager.signalManager.SendSignal("yya_state", "idle");
-        manager.voiceDetector.SetVAD(manager.useVAD);
     }
 
     public override void ExitState()
@@ -19,16 +18,12 @@ public class IdleState : YYState
     {
         base.UpdateState();
         // Idle状态下的更新逻辑
-        if(manager.recordButton.WasPerformedThisFrame()){
-            manager.voiceDetector.SetVAD(false);
-        }
 
-        if(manager.recordButton.WasPerformedThisFrame() || (manager.voiceDetector.useVAD && manager.voiceDetector.isSpeaking))
+        if(manager.voiceDetector.isSpeaking)
         {
             if(manager.recordService.isRecording){
                 UnityEngine.Debug.LogError("Recorder is already recording, stop it first");
                 manager.recordService.StopRecording();
-                manager.voiceDetector.SetVAD(manager.useVAD);
             }
             else{
                 manager.SwitchState(manager.RecordingState);

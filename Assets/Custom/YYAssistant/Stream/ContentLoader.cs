@@ -23,7 +23,7 @@ public class ContentLoader : MonoBehaviour
         signalManager.AddSignal("text_add", AddText);
     }
 
-    void Dispose(){
+    void OnDisable(){
         signalManager.RemoveSignal("image_show", LoadImage);
         signalManager.RemoveSignal("text_show", LoadText);
         signalManager.RemoveSignal("text_add", AddText);
