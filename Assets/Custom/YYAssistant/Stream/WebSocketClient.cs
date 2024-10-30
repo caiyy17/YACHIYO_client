@@ -4,11 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Net.WebSockets;
 using UnityEngine;
-using System.Collections;
 using Newtonsoft.Json;
-using Unity.VisualScripting;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 
 public class WebSocketClient : MonoBehaviour
 {
@@ -31,7 +28,7 @@ public class WebSocketClient : MonoBehaviour
         // WebSocket连接地址，需要将client_id作为路径参数发送
         string webSocketUrl = $"ws://{this.serverUrl}/ws/{clientId}";
         await ConnectWebSocket(webSocketUrl);
-        cancelTimeStamp = GetUnixTime();
+        cancelTimeStamp = CustomFunctions.GetUnixTime();
     }
 
     // 连接WebSocket服务器
@@ -138,7 +135,7 @@ public class WebSocketClient : MonoBehaviour
                 string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
                 Debug.Log($"Message received: {message}");
                 TimeStamp ts = JsonConvert.DeserializeObject<TimeStamp>(message);
-                Debug.Log($"Time spend: {GetUnixTime() - ts.timestamp_remote}");
+                Debug.Log($"Time spend: {CustomFunctions.GetUnixTime() - ts.timestamp_remote}");
                 if (ts.timestamp_remote < cancelTimeStamp){
                     Debug.Log("Received message is too late, ignore it.");
                 }
@@ -164,18 +161,18 @@ public class WebSocketClient : MonoBehaviour
         }
     }
 
-    double GetUnixTime()
-    {
-        // 获取当前 UTC 时间
-        DateTime currentTime = DateTime.UtcNow;
+    // double GetUnixTime()
+    // {
+    //     // 获取当前 UTC 时间
+    //     DateTime currentTime = DateTime.UtcNow;
 
-        // 计算自1970年1月1日以来的秒数
-        DateTime unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        TimeSpan timeSpan = currentTime - unixEpoch;
+    //     // 计算自1970年1月1日以来的秒数
+    //     DateTime unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+    //     TimeSpan timeSpan = currentTime - unixEpoch;
 
-        // 返回以秒为单位的时间戳
-        return timeSpan.TotalSeconds;
-    }
+    //     // 返回以秒为单位的时间戳
+    //     return timeSpan.TotalSeconds;
+    // }
 
     //////////////////////////// 以下为自定义方法 ////////////////////////////
     class CancelData
@@ -186,11 +183,11 @@ public class WebSocketClient : MonoBehaviour
     }
 
     public void sendCancel(string text){
-        cancelTimeStamp = GetUnixTime();
+        cancelTimeStamp = CustomFunctions.GetUnixTime();
         CancelData data = new CancelData {
             type = "cancel",
             text = text,
-            timestamp_remote = GetUnixTime()
+            timestamp_remote = CustomFunctions.GetUnixTime()
         };
         string message = JsonConvert.SerializeObject(data);
         SendMessageToServer(message);
@@ -209,7 +206,7 @@ public class WebSocketClient : MonoBehaviour
         {
             type = "audio",
             audio_file = Convert.ToBase64String(audio_data),
-            timestamp_remote = GetUnixTime()
+            timestamp_remote = CustomFunctions.GetUnixTime()
         };
         string message = JsonConvert.SerializeObject(data);
         SendMessageToServer(message);
