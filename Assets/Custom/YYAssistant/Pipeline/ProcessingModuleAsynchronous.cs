@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 public class ProcessingModuleAsynchronous : ProcessingModule
 {
@@ -14,13 +15,33 @@ public class ProcessingModuleAsynchronous : ProcessingModule
 
     private async Task ProcessLoop()
     {
+        string message;
         while (isProcessing)
         {
-            if (inputQueue.Count > 0)
+            while(cancelQueue.TryTake(out message))
             {
-                var message = inputQueue.Dequeue();
-                var processedMessage = ProcessMessage(message);
-                outputQueue.Enqueue(processedMessage);
+                CancelMessage cancelMessage = JsonUtility.FromJson<CancelMessage>(message);
+                cancel_timestamp = cancelMessage.timestamp;
+            }
+            if (inputQueue.TryTake(out message))
+            {
+                BaseMessage baseMessage = JsonUtility.FromJson<BaseMessage>(message);
+                if (baseMessage.timestamp < cancel_timestamp)
+                {
+                    Debug.Log($"message: {message}, time: {baseMessage.timestamp}, cancel: {cancel_timestamp}");
+                }
+                else
+                {
+                    var processedMessage = ProcessMessage(baseMessage.signal);
+                    BaseMessage resultMessage = new BaseMessage
+                    {
+                        type = "message",
+                        timestamp = baseMessage.timestamp,
+                        signal = processedMessage,
+                        destination = baseMessage.destination
+                    };
+                    outputQueue.Add(JsonUtility.ToJson(resultMessage));
+                }
             }
             await Task.Delay(50); // 控制频率，避免资源占用过高
         }

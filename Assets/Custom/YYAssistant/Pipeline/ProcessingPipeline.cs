@@ -1,20 +1,21 @@
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using UnityEngine;
 
 public class ProcessingPipeline : MonoBehaviour
 {
     public List<ProcessingModule> modules = new List<ProcessingModule>();
 
-    private List<Queue<string>> queues = new List<Queue<string>>();
-    private List<Queue<string>> cancelQueues = new List<Queue<string>>();
+    private List<BlockingCollection<string>> queues = new List<BlockingCollection<string>>();
+    private List<BlockingCollection<string>> cancelQueues = new List<BlockingCollection<string>>();
 
     private void Start()
     {
         // 为模块链创建队列，并将队列串联起来
         for (int i = 0; i <= modules.Count; i++)
         {
-            queues.Add(new Queue<string>());
-            cancelQueues.Add(new Queue<string>());
+            queues.Add(new BlockingCollection<string>());
+            cancelQueues.Add(new BlockingCollection<string>());
         }
 
         // 初始化并启动所有模块
@@ -32,7 +33,9 @@ public class ProcessingPipeline : MonoBehaviour
         // 每隔5秒向第一个模块的输入队列添加消息
         if(Time.time % 5 < Time.deltaTime){
             Debug.Log("Enqueue message.");
-            EnqueueMessage("Message from ProcessingPipeline");
+            EnqueueMessage("{\"type\":\"message\",\"timestamp\":" 
+            + $"{CustomFunctions.GetUnixTime()}" 
+            + ",\"signal\":\"Hello, World!\",\"destination\":0}");
         }
 
         // 获取最后一个模块的输出结果
@@ -53,18 +56,17 @@ public class ProcessingPipeline : MonoBehaviour
     // 示例：向第一个模块的输入队列添加消息
     public void EnqueueMessage(string message)
     {
-        queues[0].Enqueue(message);
+        queues[0].Add(message);
     }
 
     // 获取最后一个模块的输出结果
     public bool TryGetProcessedMessage(out string message)
     {
-        if (queues[queues.Count - 1].Count > 0)
+        message = null;
+        if (queues[queues.Count - 1].TryTake(out message))
         {
-            message = queues[queues.Count - 1].Dequeue();
             return true;
         }
-        message = null;
         return false;
     }
 }
