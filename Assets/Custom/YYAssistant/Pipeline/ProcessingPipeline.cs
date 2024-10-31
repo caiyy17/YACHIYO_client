@@ -21,9 +21,8 @@ public class ProcessingPipeline : MonoBehaviour
         // 初始化并启动所有模块
         for (int i = 0; i < modules.Count; i++)
         {
-            modules[i].Initialize(queues[i], queues[i + 1], queues[queues.Count - 1], cancelQueues[i]);
+            modules[i].Initialize(queues[i], queues[i + 1], queues[queues.Count - 1], cancelQueues[i], i);
             modules[i].StartProcessing(); // 启动模块
-            Debug.Log($"Module {i} started.");
         }
 
         Debug.Log("Processing pipeline started.");
@@ -35,7 +34,8 @@ public class ProcessingPipeline : MonoBehaviour
             Debug.Log("Enqueue message.");
             EnqueueMessage("{\"type\":\"message\",\"timestamp\":" 
             + $"{CustomFunctions.GetUnixTime()}" 
-            + ",\"signal\":\"Hello, World!\",\"destination\":0}");
+            + ",\"message\":\"Hello, World!\",\"destination\":0" 
+            + ",\"signal\":\"EoS\"}");
         }
 
         // 获取最后一个模块的输出结果
