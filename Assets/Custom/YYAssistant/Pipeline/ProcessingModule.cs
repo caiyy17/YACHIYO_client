@@ -30,7 +30,7 @@ public abstract class ProcessingModule : MonoBehaviour
         public string message = "";
         public double timestamp = 0;
         public string signal = "";
-        public int destination = -1;
+        public int destination = -2;
     }
 
     protected void LogInfo(string message)
@@ -70,48 +70,6 @@ public abstract class ProcessingModule : MonoBehaviour
         isProcessing = false;
         LogInfo("ProcessingModule stopped.");
     }
-
-    public virtual string ProcessMessage(string message)
-    {
-        BaseMessage baseMessage = JsonUtility.FromJson<BaseMessage>(message);
-        baseMessage.signal = $"{name}_{index} processed: {baseMessage.signal}";
-        message = JsonUtility.ToJson(baseMessage);
-        return message;
-    }
-
-    protected void TryProcess()
-    {
-        CheckCancel();
-        string message;
-        if (inputQueue.TryTake(out message))
-        {
-            BaseMessage baseMessage = JsonUtility.FromJson<BaseMessage>(message);
-            if (baseMessage.timestamp < cancel_timestamp)
-            {
-                LogInfo($"discarding old data: {message}");
-                CustomCancel();
-            }
-            else
-            {
-                if (baseMessage.destination != -1 && baseMessage.destination != index)
-                {
-                    outputQueue.Add(message);
-                    return;
-                }
-
-                if (!string.IsNullOrEmpty(baseMessage.signal) && !captuedSignals.Contains(baseMessage.signal))
-                {
-                    baseMessage.destination = -1;
-                    message = JsonUtility.ToJson(baseMessage);
-                    outputQueue.Add(message);
-                    return;
-                }
-
-                var processedMessage = ProcessMessage(message);
-                outputQueue.Add(processedMessage);
-            }
-        }
-    }
     
     protected void CheckCancel()
     {
@@ -132,7 +90,7 @@ public abstract class ProcessingModule : MonoBehaviour
     {
         if(destination_index < 0 || destinationIndices.Count <= destination_index)
         {
-            message.destination = -1;
+            message.destination = -2;
         }
         else{
             message.destination = destinationIndices[destination_index];

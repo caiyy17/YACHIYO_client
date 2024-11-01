@@ -9,8 +9,11 @@ public class ProcessingPipeline : MonoBehaviour
     private List<BlockingCollection<string>> queues = new List<BlockingCollection<string>>();
     private List<BlockingCollection<string>> cancelQueues = new List<BlockingCollection<string>>();
 
+    SignalManager signalManager;
+
     private void Start()
     {
+        signalManager = GetComponent<SignalManager>();
         // 为模块链创建队列，并将队列串联起来
         for (int i = 0; i <= modules.Count; i++)
         {
@@ -25,18 +28,12 @@ public class ProcessingPipeline : MonoBehaviour
             modules[i].StartProcessing(); // 启动模块
         }
 
+        signalManager.AddSignal("enqueue_message", EnqueueMessage);
+
         Debug.Log("Processing pipeline started.");
     }
 
     void Update(){
-        // 每隔5秒向第一个模块的输入队列添加消息
-        if(Time.time % 5 < Time.deltaTime){
-            Debug.Log("Enqueue message.");
-            EnqueueMessage("{\"type\":\"message\",\"timestamp\":" 
-            + $"{CustomFunctions.GetUnixTime()}" 
-            + ",\"message\":\"Hello, World!\",\"destination\":0" 
-            + ",\"signal\":\"EoS\"}");
-        }
 
         // 获取最后一个模块的输出结果
         if(TryGetProcessedMessage(out string message)){
@@ -56,6 +53,8 @@ public class ProcessingPipeline : MonoBehaviour
     // 示例：向第一个模块的输入队列添加消息
     public void EnqueueMessage(string message)
     {
+        message = message.Replace("\"timestamp\":TIME_STAMP", $"\"timestamp\":{CustomFunctions.GetUnixTime()}");
+        Debug.Log($"Enqueue message: {message}");
         queues[0].Add(message);
     }
 

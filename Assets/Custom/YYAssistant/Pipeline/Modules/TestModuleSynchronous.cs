@@ -15,13 +15,13 @@ public class TestModuleSynchronous : ProcessingModuleSynchronous
         moduleName = "TestModuleSynchronous";
     }
 
-    public override string ProcessMessage(string message)
+    public override void ProcessMessage(string message)
     {
         CustomMessage customMessage = JsonUtility.FromJson<CustomMessage>(message);
         customMessage.message = $"{prefix}{customMessage.message} with parameter {parameter}";
         BaseMessage baseMessage = customMessage;
         AddDestination(ref baseMessage);
         message = JsonUtility.ToJson(baseMessage);
-        return message;
+        outputQueue.Add(message);
     }
 }

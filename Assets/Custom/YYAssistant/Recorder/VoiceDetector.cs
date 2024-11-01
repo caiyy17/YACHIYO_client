@@ -5,6 +5,7 @@ using System;
 
 public class VoiceDetector : MonoBehaviour
 {
+    private SignalManager signalManager;
     private MicrophoneManager microphoneManager;
     public bool useVAD = false;
     private bool _useVAD = false;
@@ -27,6 +28,7 @@ public class VoiceDetector : MonoBehaviour
     }
     void Start()
     {
+        signalManager = GetComponent<SignalManager>();
         microphoneManager = MicrophoneManager.Instance;
         silenceThreshold = PlayerPrefs.GetFloat("silenceThreshold", silenceThreshold);
         speakingThreshold = PlayerPrefs.GetFloat("speakingThreshold", speakingThreshold);
@@ -41,6 +43,7 @@ public class VoiceDetector : MonoBehaviour
     {
         if(!isSpeaking){
             if(recordButton.WasPerformedThisFrame()){
+                signalManager.SendSignal("VAD_start","manual_start");
                 isSpeaking = true;
                 _useVAD = false;
             }
@@ -48,12 +51,14 @@ public class VoiceDetector : MonoBehaviour
                 currentLoudness = microphoneManager.GetCurrentLoudness(timeWindow);
                 if (currentLoudness > speakingThreshold)
                 {
+                    signalManager.SendSignal("VAD_start","auto_start");
                     isSpeaking = true;
                 }
             }
         }
         else{
             if(recordButton.WasReleasedThisFrame()){
+                signalManager.SendSignal("VAD_stop","manual_stop");
                 isSpeaking = false;
                 _useVAD = true;
             }
@@ -61,6 +66,7 @@ public class VoiceDetector : MonoBehaviour
                 currentLoudness = microphoneManager.GetCurrentLoudness(timeWindow);
                 if (currentLoudness < silenceThreshold)
                 {
+                    signalManager.SendSignal("VAD_stop","auto_stop");
                     isSpeaking = false;
                 }
             }

@@ -36,7 +36,7 @@ public class SignalManager : MonoBehaviour
         {
             if (route.source == name)
             {
-                Debug.Log("SendSignalRoute: " + route.source + " " + route.sourceMessage + " -> " + route.target + " " + route.targetMessage);
+                // Debug.Log("SendSignalRoute: " + route.source + " " + route.sourceMessage + " -> " + route.target + " " + route.targetMessage);
                 if (route.sourceMessage == "all" && route.targetMessage == "all")
                 {
                     SendSignalDirect(route.target, data);
