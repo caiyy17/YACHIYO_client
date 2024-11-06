@@ -11,7 +11,9 @@ public class ProcessingPipeline : MonoBehaviour
 
     SignalManager signalManager;
 
-    private void Start()
+    bool isStarted = false;
+
+    private async void Start()
     {
         signalManager = GetComponent<SignalManager>();
         // 为模块链创建队列，并将队列串联起来
@@ -24,13 +26,13 @@ public class ProcessingPipeline : MonoBehaviour
         // 初始化并启动所有模块
         for (int i = 0; i < modules.Count; i++)
         {
-            modules[i].Initialize(queues[i], queues[i + 1], queues[queues.Count - 1], cancelQueues[i], i);
-            modules[i].StartProcessing(); // 启动模块
+            await modules[i].Initialize(queues[i], queues[i + 1], queues[queues.Count - 1], cancelQueues[i], i);
+            await modules[i].StartProcessing(); // 启动模块
         }
 
         signalManager.AddSignal("enqueue_message", EnqueueMessage);
-
         Debug.Log("Processing pipeline started.");
+        isStarted = true;
     }
 
     void Update(){

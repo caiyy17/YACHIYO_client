@@ -44,6 +44,7 @@ public class YYStateManager : MonoBehaviour
         signalManager = GetComponent<SignalManager>();
         signalManager.SendSignal("yya_start", "Connecting to server...");
         await webSocketClient.Connect();
+        await webSocketClient.StartProcessing();
         Init();
     }
 

@@ -32,7 +32,7 @@ public class WebSocketClient : MonoBehaviour
     }
 
     // 连接WebSocket服务器
-    public async Task ConnectWebSocket(string uri)
+    public async Task ConnectWebSocket(string url)
     {
         webSocket = new ClientWebSocket();
         cts = new CancellationTokenSource();
@@ -40,7 +40,7 @@ public class WebSocketClient : MonoBehaviour
         try
         {
             // 尝试连接到WebSocket服务器
-            Task connectTask = webSocket.ConnectAsync(new Uri(uri), cts.Token);
+            Task connectTask = webSocket.ConnectAsync(new Uri(url), cts.Token);
             Task timeoutTask = Task.Delay(20000);
 
             if (await Task.WhenAny(connectTask, timeoutTask) == timeoutTask)
@@ -60,16 +60,22 @@ public class WebSocketClient : MonoBehaviour
                 Debug.LogError("WebSocket connection failed or was rejected by the server.");
                 webSocket.Dispose(); // 确保在连接失败时释放资源
             }
-
-            // 启动接收和发送消息
-            // await Task.WhenAll(ReceiveMessages(), ProcessSendQueue());
-            _ = ReceiveMessages();    // 开启接收消息的异步任务
-            _ = ProcessSendQueue();   // 开启发送消息的异步任务
         }
         catch (Exception e)
         {
             Debug.LogError($"WebSocket error: {e.Message}");
         }
+    }
+
+    public async Task StartProcessing()
+    {
+        // 启动接收和发送消息
+        _ = ReceiveTask();    // 开启接收消息的异步任务
+        _ = SendTask();   // 开启发送消息的异步任务
+    }
+
+    class TimeStamp {
+        public double timestamp_remote = 0;
     }
 
     // 外部类调用此方法向WebSocket发送消息
@@ -85,7 +91,7 @@ public class WebSocketClient : MonoBehaviour
     }
 
     // 处理发送队列中的消息
-    private async Task ProcessSendQueue()
+    private async Task SendTask()
     {
         try
         {
@@ -108,12 +114,8 @@ public class WebSocketClient : MonoBehaviour
         }
     }
 
-    class TimeStamp {
-        public double timestamp_remote = 0;
-    }
-
     // 接收来自服务器的消息
-    private async Task ReceiveMessages()
+    private async Task ReceiveTask()
     {
         try
         {
@@ -160,19 +162,6 @@ public class WebSocketClient : MonoBehaviour
             cts.Cancel();
         }
     }
-
-    // double GetUnixTime()
-    // {
-    //     // 获取当前 UTC 时间
-    //     DateTime currentTime = DateTime.UtcNow;
-
-    //     // 计算自1970年1月1日以来的秒数
-    //     DateTime unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-    //     TimeSpan timeSpan = currentTime - unixEpoch;
-
-    //     // 返回以秒为单位的时间戳
-    //     return timeSpan.TotalSeconds;
-    // }
 
     //////////////////////////// 以下为自定义方法 ////////////////////////////
     class CancelData

@@ -2,13 +2,14 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using UniVRM10;
 
 public class ProcessingModuleAsynchronous : ProcessingModule
 {
-    public override void StartProcessing()
+    public override async Task StartProcessing()
     {
-        base.StartProcessing();
-        Task.Run(ProcessLoop); // 启动后台任务
+        await base.StartProcessing();
+        _ = ProcessLoop();
     }
 
     private async Task ProcessLoop()

@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public abstract class ProcessingModule : MonoBehaviour
@@ -38,7 +39,7 @@ public abstract class ProcessingModule : MonoBehaviour
         Debug.Log($"{moduleName}_{index}: {message}");
     }
 
-    public void Initialize(BlockingCollection<string> input, 
+    public async Task Initialize(BlockingCollection<string> input, 
     BlockingCollection<string> output, 
     BlockingCollection<string> send, 
     BlockingCollection<string> cancel, 
@@ -49,16 +50,16 @@ public abstract class ProcessingModule : MonoBehaviour
         sendQueue = send;
         cancelQueue = cancel;
         this.index = index;
-        CustomInit();
+        await CustomInit();
         LogInfo("ProcessingModule initialized.");
     }
 
-    protected virtual void CustomInit()
+    protected virtual async Task CustomInit()
     {
         // 可以在子类中重写
     }
 
-    public virtual void StartProcessing()
+    public virtual async Task StartProcessing()
     {
         // 默认实现，具体模块可以重写
         isProcessing = true;
