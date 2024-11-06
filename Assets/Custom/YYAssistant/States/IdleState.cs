@@ -21,13 +21,7 @@ public class IdleState : YYState
 
         if(manager.voiceDetector.isSpeaking)
         {
-            if(manager.recordService.isRecording){
-                UnityEngine.Debug.LogError("Recorder is already recording, stop it first");
-                manager.recordService.StopRecording();
-            }
-            else{
-                manager.SwitchState(manager.RecordingState);
-            }
+            manager.SwitchState(manager.RecordingState);
         }
         else if(manager.stopButton.WasPerformedThisFrame()){
             manager.signalManager.SendSignal("cancel", "cancel in idle");

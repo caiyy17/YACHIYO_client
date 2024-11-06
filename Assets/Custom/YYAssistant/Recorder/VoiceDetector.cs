@@ -7,11 +7,16 @@ public class VoiceDetector : MonoBehaviour
 {
     private SignalManager signalManager;
     private MicrophoneManager microphoneManager;
+    private int sampleRate = 44100;
+    private float loudnessHoldTimer = 0f;
+    private float silenceHoldTimer = 0f;
     public bool useVAD = false;
     private bool _useVAD = false;
 
     public float speakingThreshold = 0.01f;
     public float silenceThreshold = 0.001f;
+    public float loudnessHoldTime = 0.3f;
+    public float silenceHoldTime = 0.1f;
     public float timeWindow = 0.3f;
     public bool isSpeaking = false;
 
@@ -30,6 +35,7 @@ public class VoiceDetector : MonoBehaviour
     {
         signalManager = GetComponent<SignalManager>();
         microphoneManager = MicrophoneManager.Instance;
+        sampleRate = microphoneManager.sampleRate;
         silenceThreshold = PlayerPrefs.GetFloat("silenceThreshold", silenceThreshold);
         speakingThreshold = PlayerPrefs.GetFloat("speakingThreshold", speakingThreshold);
         recordButton.Enable();
@@ -51,8 +57,17 @@ public class VoiceDetector : MonoBehaviour
                 currentLoudness = microphoneManager.GetCurrentLoudness(timeWindow);
                 if (currentLoudness > speakingThreshold)
                 {
-                    signalManager.SendSignal("VAD_start","auto_start");
-                    isSpeaking = true;
+                    loudnessHoldTimer += Time.deltaTime;
+                    if (loudnessHoldTimer >= loudnessHoldTime)
+                    {
+                        signalManager.SendSignal("VAD_start", "auto_start");
+                        isSpeaking = true;
+                        loudnessHoldTimer = 0f; // 重置计时器
+                    }
+                }
+                else
+                {
+                    loudnessHoldTimer = 0f; // 未达到阈值时重置计时器
                 }
             }
         }
@@ -66,8 +81,17 @@ public class VoiceDetector : MonoBehaviour
                 currentLoudness = microphoneManager.GetCurrentLoudness(timeWindow);
                 if (currentLoudness < silenceThreshold)
                 {
-                    signalManager.SendSignal("VAD_stop","auto_stop");
-                    isSpeaking = false;
+                    silenceHoldTimer += Time.deltaTime;
+                    if (silenceHoldTimer >= silenceHoldTime)
+                    {
+                        signalManager.SendSignal("VAD_stop", "auto_stop");
+                        isSpeaking = false;
+                        silenceHoldTimer = 0f; // 重置计时器
+                    }
+                }
+                else
+                {
+                    silenceHoldTimer = 0f; // 未达到阈值时重置计时器
                 }
             }
         }

@@ -23,21 +23,11 @@ public class RecordingState : YYState
         manager.debugger.text = "Updating Recording State";
         base.UpdateState();
         // Recording状态下的更新逻辑
-        if (!manager.voiceDetector.isSpeaking || Time.time - startTime > manager.recordService.maxRecordingTime)
+        if (!manager.voiceDetector.isSpeaking)
         {
-            if(!manager.recordService.isRecording){
-                Debug.LogError("Recorder is not recording, please start it first");
-                manager.SwitchState(manager.IdleState);
-                return;
-            }
             manager.debugger.text = "Stop recording and process";
             Debug.Log("Stop recording and process");
             manager.recordService.StopRecording();
-            if(Time.time - startTime < deltaTime){
-                Debug.Log("Recording time is too short, please record again");
-                manager.SwitchState(manager.IdleState);
-                return;
-            }
             manager.SwitchState(manager.AnsweringState);
         }
         else if (manager.stopButton.WasPerformedThisFrame()){

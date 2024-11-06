@@ -14,6 +14,7 @@ public class Anim3D : MonoBehaviour
     public List<KeyCode> expressionKeyCodes;
     public List<int> expressionIndexes;
     public int mouthIndex;
+    public int eyeIndexL, eyeIndexR;
     
     // Start is called before the first frame update
     void Start()
@@ -34,6 +35,14 @@ public class Anim3D : MonoBehaviour
     public void MouthControl(float value)
     {
         skinnedMeshRenderer.SetBlendShapeWeight(mouthIndex, value * 100);
+    }
+
+    public void EyeControl(float value)
+    {
+        float currentEyeValueL = 100;
+        float currentEyeValueR = 100;
+        skinnedMeshRenderer.SetBlendShapeWeight(eyeIndexL, 100 - currentEyeValueL * value);
+        skinnedMeshRenderer.SetBlendShapeWeight(eyeIndexR, 100 - currentEyeValueR * value);
     }
 
     public void SetMotion(string motion)

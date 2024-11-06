@@ -5212,6 +5212,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1621425947}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f52fbfd69f7ef48409a2aeba352aa664,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1621425949}
   m_SourcePrefab: {fileID: 100100000, guid: f52fbfd69f7ef48409a2aeba352aa664, type: 3}
 --- !u!4 &1621425944 stripped
 Transform:
@@ -5280,6 +5284,40 @@ MonoBehaviour:
   expressionKeyCodes: 
   expressionIndexes: 
   mouthIndex: 0
+  eyeIndexL: 23
+  eyeIndexR: 24
+--- !u!114 &1621425949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1621425946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a7ed5583deaa0e49bd57b389fa923b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isActive: 1
+  closeDuration: 0.1
+  openDuration: 0.2
+  closedHoldTime: 0.05
+  interval: 10
+  eyeEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1621425948}
+        m_TargetAssemblyTypeName: Anim3D, Assembly-CSharp
+        m_MethodName: EyeControl
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1645867759
 GameObject:
   m_ObjectHideFlags: 0
@@ -6117,6 +6155,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1809582931}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0d9c7f78cd408d3468758f5ab850203f,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1809582936}
   m_SourcePrefab: {fileID: 100100000, guid: 0d9c7f78cd408d3468758f5ab850203f, type: 3}
 --- !u!4 &1809582929 stripped
 Transform:
@@ -6179,12 +6221,46 @@ MonoBehaviour:
   expressionKeyCodes: 
   expressionIndexes: 
   mouthIndex: 0
+  eyeIndexL: 21
+  eyeIndexR: 22
 --- !u!137 &1809582933 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2608408384759629202, guid: 0d9c7f78cd408d3468758f5ab850203f,
     type: 3}
   m_PrefabInstance: {fileID: 1809582928}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1809582936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1809582930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a7ed5583deaa0e49bd57b389fa923b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isActive: 1
+  closeDuration: 0.1
+  openDuration: 0.2
+  closedHoldTime: 0.05
+  interval: 10
+  eyeEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1809582932}
+        m_TargetAssemblyTypeName: Anim3D, Assembly-CSharp
+        m_MethodName: EyeControl
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1833430107
 GameObject:
   m_ObjectHideFlags: 0
