@@ -3,14 +3,11 @@ using System.Collections;
 
 public class RecordingState : YYState
 {
-    private float startTime;
-    float deltaTime = 0.7f;
     public override void EnterState(YYStateManager manager)
     {
         base.EnterState(manager);
         manager.signalManager.SendSignal("yya_state", "listening");
-        this.manager.recordService.StartRecording(-0.3f);
-        startTime = Time.time;
+        this.manager.recordService.StartRecording(-manager.voiceDetector.loudnessHoldTime);
     }
 
     public override void ExitState()

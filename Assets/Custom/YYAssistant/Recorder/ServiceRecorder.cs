@@ -9,7 +9,7 @@ public class ServiceRecorder : MonoBehaviour
 
     public string serviceName = "default";
 
-    public int sampleRate = 16000;
+    public int sampleRate;
     public float maxRecordingTime = 60f;
     private float[] audioData = null;
     [HideInInspector]

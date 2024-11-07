@@ -7,7 +7,7 @@ public class VoiceDetector : MonoBehaviour
 {
     private SignalManager signalManager;
     private MicrophoneManager microphoneManager;
-    private int sampleRate = 44100;
+    private int sampleRate;
     private float loudnessHoldTimer = 0f;
     private float silenceHoldTimer = 0f;
     public bool useVAD = false;
