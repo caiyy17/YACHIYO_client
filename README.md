@@ -1,45 +1,154 @@
-# YYAssistant client
+# YACHIO Client
 
-一个使用 Unity 和 yyassistant server 进行交互的项目，交互基于 websocket 的网络通信。
+A Unity client for real-time AI assistant interaction. Supports voice input, text display, audio playback, and character animation (both traditional and SMPL-H motion), with WebSocket and WebRTC server connections. Designed as the frontend counterpart to [YACHIO Server](https://github.com/caiyy17/YACHIO_server).
 
-# 基础架构
+## Quick Start
 
-## Config
+1. Open project in **Unity 6000.3.10f1** (URP)
+2. Configure server address in GameStart scene settings
+3. Build or play from one of the sample scenes
 
-使用保存在 json 中 pipeline_config 对远程 server 进行初始化之后，就正式进入与 assistant 交互的流程。config 相关可以参考 Setting 文件夹
+## Scenes
 
-## State
+| Scene | Description |
+|-------|-------------|
+| `GameStart` | Launcher with settings input and scene loading |
+| `SampleScene3D_Default` | Standard action system with UnityChan character |
+| `SampleScene3D_Smpl` | SMPL-H motion playback with humanoid character |
+| `SampleScene3D_WebRTC` | Real-time bidirectional audio/video via WebRTC |
 
-总体上 assistant 由一个状态机控制，目前分为三个状态，idle，recording，answering，具体可以参考 States 文件夹。分别如下：
+## Architecture
 
-1. idle 状态下 assistant 可以随时进入 recording 状态，当按下录制键或者 VAD 检测到正在说话，就会进入 recording 状态并开始录音。
-2. recording 状态下，系统会等待结束录音（松开录制键或者 VAD 检测到说话结束），之后就进入 answering 状态。
-3. answering 状态下，系统会收集刚才得到的录音，并发送给服务器，等待服务器回复直至结束。
+```
+Microphone → Pipeline Modules → Server (WebSocket / WebRTC) → Pipeline Modules → Character
+```
 
-当系统改变状态时，会广播 state_change 的信号，emotion 组件（控制 motion 和 expression），talking 组件，content 组件（显示图片和文字）分别会进行相应处理。
+The client uses a **modular processing pipeline** (`ProcessingPipeline`) where messages flow through chained modules via thread-safe queues. Each module can capture specific signals, process data, or forward messages downstream.
 
-## Recorder
+### Pipeline Modules
 
-控制录音的组件为 MicrophoneManager，它会持续在后台录制音频，当 ServiceRecorder 开始录音时会记录开始时间，等结束录音时会用开始与结束时间向 MicrophoneManager 请求这期间的音频。这样可以做到多个不同的 ServiceRecorder 互不干扰地进行录制。也可以使得 VAD 可以实时检测当前音量。具体可以参考 Recorder 文件夹。
+| Module | Function |
+|--------|----------|
+| KWSModule | Keyword spotting (optional voice activation) |
+| VADModule | Voice activity detection, emits recording_start/stop |
+| RecordingModule | Captures microphone audio, encodes to base64 WAV |
+| DirectSendModule | Sends predefined text messages (bypasses recording) |
+| WebSocketClientModule | WebSocket connection to server |
+| WebRTCClientModule | WebRTC connection with audio/video tracks + DataChannels |
+| AudioModule | Decodes base64 audio responses, sequential playback |
+| ContentModule | Text display via TextMesh Pro, action forwarding |
+| ActionModule | Traditional animation triggers via ActionDict lookups |
+| SmplhActionModule | SMPL-H motion playback (replaces ActionModule for SMPL configs) |
 
-## WebSocket
+### Pipeline Configuration (SMPL scene example)
 
-系统传给服务器的音频由 WebSocketClinet 组件控制，通过 websocket 协议将音频传输给服务器，同时开启一个服务来接收回应。每当接收到回应会存入一个队列，并交给 DataProcessor 处理。
+```
+KWSModule → VADModule → RecordingModule → WebSocketClientModule → AudioModule → ContentModule → SmplhActionModule
+```
 
-DataProcessor 会根据每个回答的内容分别路由到对应组件的接口上。每个回答都带有时间戳，可以在取消请求被触发时丢弃所有之前的回应。
+### Message Routing
 
-ContentLoader 复杂把图片和文字显示在屏幕上，而 TalkingManager 会在队列非空的情况下持续播放接收到的音频，并在每段播放开始的时候通知 ContentLoader 显示此时的文字。
+- `destination = -2`: deliver to next module (default)
+- `destination = -1`: skip all modules, deliver to pipeline tail
+- `destination = N`: deliver to module at index N
+- Unrecognized signals are auto-forwarded downstream
 
-## Signal
+## Subsystems
 
-除了服务器接收到的音频文件这种比较大的消息会交给 DataProcessor 处理，其他消息都由 SignalManager 处理（参考 Utils/SignalManager）。发送方会直接使用 SignalManager.SendSignal(type, message)。接收方则通过 SignalManager.Add(type)来监听来自指定 type 的 message。
+### Audio Recording (`Recorder/`)
 
-在 SignalManager 中，可以编辑消息的路由方式，默认情况下，来在 typeA 的消息会转发到所有 type
-A 的监听者，也会转发给所有列表中转发该 type 的所有 type，比如列表中为：
+- **MicrophoneManager**: Singleton managing continuous mic input (16kHz)
+- **VoiceDetector**: Loudness-based VAD with configurable thresholds
+- **KeywordDetector**: Optional keyword spotting activation
 
-1. (typeA, typeB, messageA, messageB): 那么 typeA.messageA 的信号会触发 typeB.messageB
-2. (typeA, typeB, all, all): 那么 typeA 的所有信号会转发给 typeB
-3. (typeA, typeB, messageA, all): 那么 typeA.messageA 的信号会触发 typeB.messageA
-4. (typeA, typeB, all, messageB): 那么 typeA 的所有信号会触发 typeB.messageB
+### Streaming (`Stream/`)
 
-通过这种方式，我们可以很方便地定义 assistant 各种组件地信号路由
+- **WebRTCClient**: Bidirectional audio/video with two DataChannels (`client-signals` for VAD, `server-data` for responses)
+- **WebSocketClient**: Alternative WebSocket transport
+- **AudioLoader**: Sequential audio clip playback
+- **ContentLoader**: Dynamic text display with action hints
+
+### Action System (`Action/`)
+
+- **ActionDict** (ScriptableObject): Maps action names → motion/expression lists with layer-based priority
+- **ActionLoader**: Looks up action string, randomly selects from candidates, fires UnityEvents to animator
+- Used by `ActionModule` for traditional animation trigger workflows
+
+### SMPL-H Motion System (`SmplhMotion/`)
+
+- **SmplhMotionData**: Decoded SMPL-H parameters (poses/trans/betas as float arrays)
+- **SmplhConverter**: Axis-angle → quaternion conversion with coordinate X-mirroring
+- **SmplhMotionPlayer**: Frame-buffer playback with crossfade blending and auto-refill idle
+- **IdleInitializer**: Loads pre-baked idle motion from `Resources/idle_motion.json`
+- Used by `SmplhActionModule` for server-generated humanoid motions
+
+### State Machine (`States/`)
+
+| State | Description |
+|-------|-------------|
+| IdleState | Waiting; listens for activation signals |
+| ReadyState | Preparation (checks AudioModule & character ready) |
+| ListeningState | Recording in progress (VAD active) |
+| AnsweringState | Server processing + response playback |
+
+Managed by **YYStateManager** via **SignalManager** event routing.
+
+### Settings (`Setting/`)
+
+- **GameSettingsData**: Server URLs, user ID, pipeline config, character selection
+- **CharacterSettingsData**: Per-character model, animator, action dict references
+- **SetupPipeline**: Server health check → register → init_pipeline workflow
+
+## Client-Server Flow
+
+```
+1. POST /register/                    → Register client
+2. POST /init_pipeline/{client_id}    → Load pipeline config
+3. WS /ws/{client_id}                 → Connect WebSocket (or WebRTC /offer)
+4. Send: {"audio_file": "base64...", "timestamp": 123.45}
+5. Recv: {"text": "...", "audio_data": "base64...", "action": "..."}
+```
+
+## Key Dependencies
+
+| Package | Version | Purpose |
+|---------|---------|---------|
+| Universal RP | 17.3.0 | Rendering pipeline |
+| WebRTC | 3.0.0-pre.7 | Real-time communication |
+| Input System | 1.18.0 | New Input System |
+| Newtonsoft JSON | 3.2.2 | JSON serialization |
+| uLipSync | — | Lip-sync from audio |
+| UniVRM | — | VRM character support |
+
+## Project Structure
+
+```
+Assets/Custom/
+├── YACHIO/
+│   ├── Action/          — ActionDict, ActionLoader, animation control
+│   ├── ModelControl/    — Anim3D (direct animator control)
+│   ├── Pipeline/        — ProcessingPipeline, ProcessingModule, all modules
+│   ├── Recorder/        — MicrophoneManager, VoiceDetector, KeywordDetector
+│   ├── Setting/         — Game/character settings, pipeline setup
+│   ├── SmplhMotion/     — SMPL-H converter, player, idle initializer
+│   ├── States/          — State machine (Idle/Ready/Listening/Answering)
+│   ├── Stream/          — WebRTC/WebSocket clients, AudioLoader, ContentLoader
+│   └── Utils/           — SignalManager, custom event types, utilities
+├── Scripts/
+│   ├── Editor/          — FBX animation tools
+│   ├── GameStart/       — Launcher UI, scene loading
+│   └── SampleScene/     — Scene-specific UI scripts
+└── UXUI/                — Audio button, loading screen, UI components
+```
+
+## License
+
+This project's source code is licensed under the [MIT License](LICENSE).
+
+### Third-Party Assets
+
+The following assets are subject to their own licenses:
+
+- **Unity-Chan** (`Assets/UnityChan/`): © Unity Technologies Japan/UCL — [Unity-Chan License Terms (UCL 2.02)](https://unity-chan.com/contents/license_jp/)
+- **40+ Simple Icons - Free** (`Assets/40+ Simple Icons - Free/`): [Unity Asset Store EULA](https://unity.com/legal/as-terms)
+- **SmileySans / Source Han Sans** (`Assets/Fonts/`): SIL Open Font License (OFL)

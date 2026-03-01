@@ -9,8 +9,14 @@ EditorBuildSettings:
     path: Assets/Scenes/GameStart.unity
     guid: f1e731d6b4fdee54c88a41e5ae19c55a
   - enabled: 1
-    path: Assets/Scenes/SampleScene3D.unity
-    guid: ab05214867e5ac742a0bd8c82fca85f9
+    path: Assets/Scenes/SampleScene3D_Default.unity
+    guid: 9ca42eb80e1022c40a65cda5eac6a6a8
+  - enabled: 1
+    path: Assets/Scenes/SampleScene3D_WebRTC.unity
+    guid: b33c77f14fecf9049b2fed3a5cf9fed5
+  - enabled: 1
+    path: Assets/Scenes/SampleScene3D_Smpl.unity
+    guid: 94f82a113d49746479a9cb4ae0996bac
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 3efae91c5c58e0f43b60ff898c4b8641,
       type: 2}

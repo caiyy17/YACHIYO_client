@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 603b33bfef0740b4c8a9ceea249bc9a3, type: 3}
+  m_Name: GameSettingsData
+  m_EditorClassIdentifier: 
+  server_url: 127.0.0.1:8000
+  webrtc_url: 127.0.0.1:5005
+  user_id: 0
+  pipeline_config: demo_config
+  char_id: default
+  chars:
+  - {fileID: 11400000, guid: 215b5e6416028a04cad0aaf18a3116e9, type: 2}
+  - {fileID: 11400000, guid: 342cece1f006f58468efb86eb49f139f, type: 2}
+  - {fileID: 11400000, guid: d364664f554d51b4ea0cce52e9b185df, type: 2}

@@ -91,7 +91,8 @@ public class SampleSceneUI : MonoBehaviour
         rightAction.performed += ctx => NextModel();
     }
 
-    void OnDisable(){
+    void OnDisable()
+    {
         nextModel.onClick.RemoveAllListeners();
         prevModel.onClick.RemoveAllListeners();
         hideUI.onClick.RemoveAllListeners();
@@ -114,7 +115,7 @@ public class SampleSceneUI : MonoBehaviour
 
     void NextModel()
     {
-        modelParent.rotation = Quaternion.identity;
+        if (modelParent != null) modelParent.rotation = Quaternion.identity;
         modelList[currentModelIndex].SetActive(false);
         currentModelIndex++;
         if (currentModelIndex >= modelList.Count)
@@ -126,7 +127,7 @@ public class SampleSceneUI : MonoBehaviour
 
     void PrevModel()
     {
-        modelParent.rotation = Quaternion.identity;
+        if (modelParent != null) modelParent.rotation = Quaternion.identity;
         modelList[currentModelIndex].SetActive(false);
         currentModelIndex--;
         if (currentModelIndex < 0)
@@ -170,7 +171,7 @@ public class SampleSceneUI : MonoBehaviour
     void ShowSetting()
     {
         // disable character collider
-        modelParent.GetComponent<BoxCollider>().enabled = false;
+        if (modelParent != null) modelParent.GetComponent<BoxCollider>().enabled = false;
         MainScreen.SetActive(false);
         SettingPanel.SetActive(true);
 
@@ -182,7 +183,7 @@ public class SampleSceneUI : MonoBehaviour
     void CloseSettingPanel()
     {
         // enable character collider
-        modelParent.GetComponent<BoxCollider>().enabled = true;
+        if (modelParent != null) modelParent.GetComponent<BoxCollider>().enabled = true;
         SettingPanel.SetActive(false);
         MainScreen.SetActive(true);
     }
@@ -203,11 +204,14 @@ public class SampleSceneUI : MonoBehaviour
         return Mathf.Pow(10, value * 5 - 5);
     }
 
-    public void SetStartingPanel(string text){
-        if (text == "started"){
+    public void SetStartingPanel(string text)
+    {
+        if (text == "started")
+        {
             startingPanel.SetActive(false);
         }
-        else{
+        else
+        {
             startingPanel.SetActive(true);
             startingText.text = text;
         }

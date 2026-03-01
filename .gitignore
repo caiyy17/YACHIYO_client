@@ -83,12 +83,9 @@ tmp/
 __pycache__
 /[Aa]ssets/Live2D/
 /[Aa]ssets/TextMesh\ Pro/
-/[Aa]ssets/UniGLTF/
-/[Aa]ssets/VRM10/
-/[Aa]ssets/VRMShaders/
 /[Aa]ssets/Resources/
 /[Aa]ssets/Samples/
-/[Aa]ssets/Plugins/
 .utmp/
 
-Lisa/
+keyword_files/
+access_key.cs

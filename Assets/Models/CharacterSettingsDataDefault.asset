@@ -12,6 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 109219f0a6c4d014491e2cfcbb35573b, type: 3}
   m_Name: CharacterSettingsDataDefault
   m_EditorClassIdentifier: 
-  character_name: default
-  scene_name: SampleScene3D
-  pipeline_config: {fileID: 4900000, guid: 636f91142203a594480b8bb59465405f, type: 3}
+  character_name: Default
+  scene_name: SampleScene3D_Default

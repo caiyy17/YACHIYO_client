@@ -12,15 +12,16 @@ public class GameStartUI : MonoBehaviour
     [Header("Game Settings")]
     public GameSettingsData settingsData;
     public string server_url;
+    public string webrtc_url;
     public string user_id;
     public string char_id;
     public string scene_name;
-    [TextArea(1, 1000)]
     public string pipeline_config;
     public List<string> chars = new List<string>();
 
     [Header("UI Elements")]
     public TMP_InputField urlInput;
+    public TMP_InputField webrtcUrlInput;
     public TMP_InputField userIdInput;
     public TMP_Dropdown charDropDown;
     public TMP_InputField pipelineConfigInput;
@@ -67,43 +68,40 @@ public class GameStartUI : MonoBehaviour
     public AudioSource bgm;
 
     [SerializeField] public InputAction startAction;
-    
+
     private void Start()
     {
         // 显示游戏版本号
         versionText.text = "Version: " + Application.version;
 
-        // 从ScriptableObject中读取用户设置
-        server_url = settingsData.server_url;
-        user_id = settingsData.user_id;
-        char_id = settingsData.char_id;
+        // 从PlayerPrefs中读取用户设置
+        server_url = PlayerPrefs.GetString("urlInput", settingsData.server_url);
+        webrtc_url = PlayerPrefs.GetString("webrtcUrlInput", settingsData.webrtc_url);
+        user_id = PlayerPrefs.GetString("userId", settingsData.user_id);
+        pipeline_config = PlayerPrefs.GetString("pipelineConfig", settingsData.pipeline_config);
+        char_id = PlayerPrefs.GetString("charId", settingsData.char_id);
+
         chars = new List<string>();
         foreach (CharacterSettingsData charData in settingsData.chars)
         {
             chars.Add(charData.character_name);
         }
-        int char_index = chars.IndexOf(settingsData.char_id);
+        int char_index = chars.IndexOf(char_id);
         if (char_index == -1)
         {
             char_index = 0;
         }
         char_id = settingsData.chars[char_index].character_name;
         scene_name = settingsData.chars[char_index].scene_name;
-        pipeline_config = settingsData.chars[char_index].pipeline_config.text;
-        // 从PlayerPrefs中读取用户设置
-        server_url = PlayerPrefs.GetString("urlInput", server_url);
-        user_id = PlayerPrefs.GetString("userId", user_id);
-        char_id = PlayerPrefs.GetString("charId", char_id);
-        char_index = chars.IndexOf(char_id);
-        scene_name = PlayerPrefs.GetString("sceneName", scene_name);
-        pipeline_config = PlayerPrefs.GetString("pipelineConfig", pipeline_config);
+
         // 设置UI元素的初始值
         urlInput.text = server_url;
+        webrtcUrlInput.text = webrtc_url;
         userIdInput.text = user_id;
+        pipelineConfigInput.text = pipeline_config;
         charDropDown.ClearOptions();
         charDropDown.AddOptions(chars);
         charDropDown.value = char_index;
-        pipelineConfigInput.text = pipeline_config;
         // AppSettings
         hideUI = PlayerPrefs.GetInt("hideUI", hideUI ? 1 : 0) == 1;
         useBGM = PlayerPrefs.GetInt("useBGM", useBGM ? 1 : 0) == 1;
@@ -111,17 +109,20 @@ public class GameStartUI : MonoBehaviour
         speakingThreshold = PlayerPrefs.GetFloat("speakingThreshold", speakingThreshold);
         silenceThreshold = PlayerPrefs.GetFloat("silenceThreshold", silenceThreshold);
         bgm.Play();
-        if(!useBGM){
+        if (!useBGM)
+        {
             bgm.Pause();
         }
 
-        if(userIdInput.text == "0"){
+        if (userIdInput.text == "0")
+        {
             //generate a UUID
             user_id = System.Guid.NewGuid().ToString();
             userIdInput.text = user_id;
         }
 
-        if(charDropDown.value > charDropDown.options.Count - 1){
+        if (charDropDown.value > charDropDown.options.Count - 1)
+        {
             char_id = chars[0];
             charDropDown.value = 0;
         }
@@ -135,15 +136,18 @@ public class GameStartUI : MonoBehaviour
         confirmNot.onClick.AddListener(OnConfirmNotButtonClicked);
         resetYes.onClick.AddListener(OnResetYesButtonClicked);
         resetNot.onClick.AddListener(OnResetNotButtonClicked);
-        charDropDown.onValueChanged.AddListener(delegate {
+        charDropDown.onValueChanged.AddListener(delegate
+        {
             OnCharDropDownValueChanged(charDropDown);
         });
         // AppSettings
-        closeError.onClick.AddListener(() => {
+        closeError.onClick.AddListener(() =>
+        {
             errorPanel.SetActive(false);
         });
 
-        openAppSetting.onClick.AddListener(() => {
+        openAppSetting.onClick.AddListener(() =>
+        {
             mainScreen.SetActive(false);
             hideUIToggle.isOn = hideUI;
             useBGMToggle.isOn = useBGM;
@@ -152,7 +156,8 @@ public class GameStartUI : MonoBehaviour
             silenceThresholdSlider.value = ToLog(silenceThreshold);
             AppSettingPanel.SetActive(true);
         });
-        closeAppSetting.onClick.AddListener(() => {
+        closeAppSetting.onClick.AddListener(() =>
+        {
             hideUI = hideUIToggle.isOn;
             useBGM = useBGMToggle.isOn;
             useVAD = useVADToggle.isOn;
@@ -165,12 +170,15 @@ public class GameStartUI : MonoBehaviour
             PlayerPrefs.SetFloat("speakingThreshold", speakingThreshold);
             PlayerPrefs.SetFloat("silenceThreshold", silenceThreshold);
 
-            if(useBGM){
-                if(!bgm.isPlaying){
+            if (useBGM)
+            {
+                if (!bgm.isPlaying)
+                {
                     bgm.UnPause();
                 }
             }
-            else{
+            else
+            {
                 bgm.Pause();
             }
 
@@ -181,6 +189,7 @@ public class GameStartUI : MonoBehaviour
         sceneLoader = GetComponent<SceneLoaderWithProgress>();
 
         PlayerPrefs.SetString("urlInput", urlInput.text);
+        PlayerPrefs.SetString("webrtcUrlInput", webrtcUrlInput.text);
         PlayerPrefs.SetString("userId", userIdInput.text);
         PlayerPrefs.SetString("charId", char_id);
         PlayerPrefs.SetString("sceneName", scene_name);
@@ -196,7 +205,8 @@ public class GameStartUI : MonoBehaviour
         startAction.performed += ctx => OnStartGameButtonClicked();
     }
 
-    void OnDisable(){
+    void OnDisable()
+    {
         startGame.onClick.RemoveAllListeners();
         openSetting.onClick.RemoveAllListeners();
         closeSetting.onClick.RemoveAllListeners();
@@ -212,17 +222,12 @@ public class GameStartUI : MonoBehaviour
     private void OnCharDropDownValueChanged(TMP_Dropdown change)
     {
         int index = change.value;
-        pipelineConfigInput.text = settingsData.chars[index].pipeline_config.text;
     }
     private void OnOpenSettingButtonClicked()
     {
         // 打开设置界面
         mainScreen.SetActive(false);
         settingPanel.SetActive(true);
-        // 重新设置一遍，为了让滑动条生效
-        string temp = pipelineConfigInput.text;
-        pipelineConfigInput.text = "";
-        pipelineConfigInput.text = temp;
     }
 
     private void OnCloseSettingButtonClicked()
@@ -230,22 +235,39 @@ public class GameStartUI : MonoBehaviour
         // 关闭设置界面
         settingPanel.SetActive(false);
         if (urlInput.text != PlayerPrefs.GetString("urlInput", server_url) ||
+            webrtcUrlInput.text != PlayerPrefs.GetString("webrtcUrlInput", webrtc_url) ||
             userIdInput.text != PlayerPrefs.GetString("userId", user_id) ||
-            chars[charDropDown.value] != PlayerPrefs.GetString("charId", char_id) ||
-            pipelineConfigInput.text != PlayerPrefs.GetString("pipelineConfig", pipeline_config)){
+            pipelineConfigInput.text != PlayerPrefs.GetString("pipelineConfig", pipeline_config) ||
+            chars[charDropDown.value] != PlayerPrefs.GetString("charId", char_id))
+        {
             comfirmPanel.SetActive(true);
-            }
-        else{
+        }
+        else
+        {
             mainScreen.SetActive(true);
         }
     }
 
     private void OnConfirmYesButtonClicked()
     {
-        PlayerPrefs.SetString("urlInput", urlInput.text);
-        PlayerPrefs.SetString("userId", userIdInput.text);
-        PlayerPrefs.SetString("charId", chars[charDropDown.value]);
-        PlayerPrefs.SetString("pipelineConfig", pipelineConfigInput.text);
+        if (userIdInput.text == "0")
+        {
+            //generate a UUID
+            user_id = System.Guid.NewGuid().ToString();
+            userIdInput.text = user_id;
+        }
+        server_url = urlInput.text;
+        webrtc_url = webrtcUrlInput.text;
+        user_id = userIdInput.text;
+        pipeline_config = pipelineConfigInput.text;
+        char_id = chars[charDropDown.value];
+        scene_name = settingsData.chars[charDropDown.value].scene_name;
+        PlayerPrefs.SetString("urlInput", server_url);
+        PlayerPrefs.SetString("webrtcUrlInput", webrtc_url);
+        PlayerPrefs.SetString("userId", user_id);
+        PlayerPrefs.SetString("pipelineConfig", pipeline_config);
+        PlayerPrefs.SetString("charId", char_id);
+        PlayerPrefs.SetString("sceneName", scene_name);
         // 关闭设置界面
         comfirmPanel.SetActive(false);
         mainScreen.SetActive(true);
@@ -254,9 +276,10 @@ public class GameStartUI : MonoBehaviour
     private void OnConfirmNotButtonClicked()
     {
         urlInput.text = PlayerPrefs.GetString("urlInput", server_url);
+        webrtcUrlInput.text = PlayerPrefs.GetString("webrtcUrlInput", webrtc_url);
         userIdInput.text = PlayerPrefs.GetString("userId", user_id);
-        charDropDown.value = chars.IndexOf(PlayerPrefs.GetString("charId", char_id));
         pipelineConfigInput.text = PlayerPrefs.GetString("pipelineConfig", pipeline_config);
+        charDropDown.value = chars.IndexOf(PlayerPrefs.GetString("charId", char_id));
         // 关闭设置界面
         comfirmPanel.SetActive(false);
         mainScreen.SetActive(true);
@@ -272,6 +295,7 @@ public class GameStartUI : MonoBehaviour
         server_url = settingsData.server_url;
         user_id = settingsData.user_id;
         char_id = settingsData.char_id;
+        pipeline_config = settingsData.pipeline_config;
         chars = new List<string>();
         foreach (CharacterSettingsData charData in settingsData.chars)
         {
@@ -280,22 +304,24 @@ public class GameStartUI : MonoBehaviour
         int char_index = chars.IndexOf(settingsData.char_id);
         char_id = settingsData.chars[char_index].character_name;
         scene_name = settingsData.chars[char_index].scene_name;
-        pipeline_config = settingsData.chars[char_index].pipeline_config.text;
 
         PlayerPrefs.SetString("urlInput", server_url);
+        PlayerPrefs.SetString("webrtcUrlInput", webrtc_url);
         PlayerPrefs.SetString("userId", user_id);
         PlayerPrefs.SetString("charId", char_id);
         PlayerPrefs.SetString("sceneName", scene_name);
         PlayerPrefs.SetString("pipelineConfigInput", pipeline_config);
 
         urlInput.text = server_url;
+        webrtcUrlInput.text = webrtc_url;
         userIdInput.text = user_id;
         pipelineConfigInput.text = pipeline_config;
         charDropDown.ClearOptions();
         charDropDown.AddOptions(chars);
         charDropDown.value = char_index;
 
-        if(userIdInput.text == "0"){
+        if (userIdInput.text == "0")
+        {
             //generate a UUID
             user_id = System.Guid.NewGuid().ToString();
             userIdInput.text = user_id;
@@ -343,7 +369,8 @@ public class GameStartUI : MonoBehaviour
         return Mathf.Pow(10, value * 5 - 5);
     }
 
-    void Update(){
+    void Update()
+    {
         current_volumn = MicrophoneManager.Instance.GetCurrentLoudness(0.5f);
         Display.value = ToLog(current_volumn);
     }

@@ -2,16 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-public class Rotatable : MonoBehaviour 
+public class Rotatable : MonoBehaviour
 {
-	[SerializeField] private InputAction pressed, axis, point;
-	
-	private Transform cam;
-	[SerializeField] private float speed = 1;
-	[SerializeField] private bool inverted;
-	private Vector2 rotation;
-	private bool rotateAllowed;
-	private void Start()
+    [SerializeField] private InputAction pressed, axis, point;
+
+    private Transform cam;
+    [SerializeField] private float speed = 1;
+    [SerializeField] private bool inverted;
+    private Vector2 rotation;
+    private bool rotateAllowed;
+    private void Start()
     {
         cam = Camera.main.transform;
         pressed.Enable();
