@@ -65,9 +65,9 @@ public class WebSocketClientModule : ProcessingModuleSynchronous
                 baseMessage.timestamp = CustomFunctions.GetUnixTime();
             }
 
-            if (jsonDict.TryGetValue("destination_server", out object destination_server))
+            if (jsonDict.TryGetValue("destination_client", out object destination_client))
             {
-                AddDestination(ref baseMessage, (int)destination_server);
+                AddDestination(ref baseMessage, System.Convert.ToInt32(destination_client));
             }
             else
             {
@@ -76,7 +76,7 @@ public class WebSocketClientModule : ProcessingModuleSynchronous
 
             jsonDict.Remove("signal");
             jsonDict.Remove("timestamp");
-            jsonDict.Remove("destination_server");
+            jsonDict.Remove("destination_client");
 
             if (jsonDict.Count == 0 && baseMessage.signal == "")
                 return;

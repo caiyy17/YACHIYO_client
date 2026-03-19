@@ -1,11 +1,11 @@
 using UnityEngine;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
-/// Pipeline module that handles text display and action forwarding.
-/// Captures SoS to clear text. Non-captured signals (EoS etc.) auto-forward
-/// via ProcessingModuleSynchronous to outputQueue → DistributeMessage.
+/// Pipeline module that displays content and forwards message as-is.
+/// Captures SoS to clear text, EoS forwarded directly.
 /// </summary>
 [RequireComponent(typeof(ContentLoader))]
 public class ContentModule : ProcessingModuleSynchronous
@@ -36,32 +36,16 @@ public class ContentModule : ProcessingModuleSynchronous
             return;
         }
 
-        // Text/action message from AudioModule (signal == "")
-        if (baseMessage.content == "") return;
-
-        Dictionary<string, object> jsonDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(baseMessage.content);
-
-        // Consume text display fields
-        string text = jsonDict.ContainsKey("text") ? jsonDict["text"].ToString() : "";
-        string actionHint = jsonDict.ContainsKey("action_hint") ? jsonDict["action_hint"].ToString() : "";
-
-        if (!string.IsNullOrEmpty(actionHint))
+        if (!string.IsNullOrEmpty(baseMessage.content))
         {
-            contentLoader.AddText($"[{actionHint}]{text}");
-        }
-        else if (!string.IsNullOrEmpty(text))
-        {
-            contentLoader.AddText(text);
-        }
-
-        // Remove consumed fields, forward the rest
-        jsonDict.Remove("text");
-        jsonDict.Remove("action_hint");
-
-        if (jsonDict.Count > 0)
-        {
-            baseMessage.content = JsonConvert.SerializeObject(jsonDict);
-            outputQueue.Add(JsonUtility.ToJson(baseMessage));
+            // Filter out empty fields for display
+            var jsonDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(baseMessage.content);
+            var nonEmpty = jsonDict.Where(kv => kv.Value != null && kv.Value.ToString() != "").ToDictionary(kv => kv.Key, kv => kv.Value);
+            if (nonEmpty.Count > 0)
+            {
+                contentLoader.AddText(JsonConvert.SerializeObject(nonEmpty));
+            }
+            outputQueue.Add(message);
         }
     }
 
