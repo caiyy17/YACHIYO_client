@@ -172,6 +172,7 @@ public class WebRTCClient : MonoBehaviour
         micAudioSource.loop = true;
         micAudioSource.volume = 0f;
         micAudioSource.Play();
+        micAudioSource.timeSamples = micManager.GetCurrentSamplePosition();
 
         sendAudioTrack = new AudioStreamTrack(micAudioSource);
         _pc.AddTrack(sendAudioTrack);
