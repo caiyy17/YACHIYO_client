@@ -202,7 +202,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1228976299}
   m_Direction: 0
   m_Value: 1
-  m_Size: 0.99999994
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3061,7 +3061,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1837920295}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.9575
+  m_Size: 0.9574999
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4595,12 +4595,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045d7f19b0bff974989e6753ac6df8b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serverUrl: http://127.0.0.1:18082
-  mainServerUrl: localhost:8000
+  serverUrl: http://127.0.0.1:15168
+  mainServerUrl: http://127.0.0.1:8910
   clientId: demo_webrtc_config
   pipelineConfig: default
   receiveImage: {fileID: 1593648323}
   receiveAudio: {fileID: 1357011965}
+  captureMixerGroup: {fileID: 165949045746451467, guid: ee2c1dc4e998bdf43903bfd71393197c,
+    type: 2}
 --- !u!1 &1379870843
 GameObject:
   m_ObjectHideFlags: 0
@@ -7276,7 +7278,6 @@ MonoBehaviour:
   idleState: {fileID: 8452782695937358683}
   listeningState: {fileID: 8452782695937358679}
   countDownTime: 5
-  extraDataList: []
 --- !u!114 &8452782695937358682
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7347,6 +7348,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  cancelOffset: -0.001
   dataRouters:
   - markers:
     - '"EoS"'

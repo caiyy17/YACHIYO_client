@@ -11,7 +11,7 @@ public class WebSocketClient : MonoBehaviour
 {
     private ClientWebSocket webSocket = null;
     private CancellationTokenSource cts = null;
-    public string serverUrl = "ws://localhost:8000";  // WebSocket服务器地址
+    public string serverUrl = "ws://localhost:8910";  // WebSocket服务器地址
     public string clientId = "test-id-1";  // 客户端ID
     public bool IsConnected => webSocket != null && webSocket.State == WebSocketState.Open;
 

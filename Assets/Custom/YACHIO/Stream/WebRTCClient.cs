@@ -4,18 +4,20 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.Audio;
 using UnityEngine.UI;
 using Unity.WebRTC;
 
 public class WebRTCClient : MonoBehaviour
 {
-    public string serverUrl = "localhost:18082"; // WebRTC signaling server
-    public string mainServerUrl = "localhost:8000"; // Main REST API server
+    public string serverUrl = "localhost:15168"; // WebRTC signaling server
+    public string mainServerUrl = "localhost:8910"; // Main REST API server
     public string clientId = "unity-client";
     public string pipelineConfig = "default";
 
     [SerializeField] private RawImage receiveImage;
     [SerializeField] private AudioSource receiveAudio;
+    [SerializeField] private AudioMixerGroup captureMixerGroup; // Silent mixer group for mic capture
 
     private RTCPeerConnection _pc;
 
@@ -155,6 +157,13 @@ public class WebRTCClient : MonoBehaviour
         yield return StartCoroutine(SendOfferToServer(op.Desc));
     }
 
+    [Header("Mic Sync")]
+    [Tooltip("AudioSource plays this far behind mic write position (ms)")]
+    [SerializeField] private float micOffsetMs = 30f;
+    [Tooltip("How often to resync (seconds)")]
+    [SerializeField] private float micSyncInterval = 2f;
+    private float micSyncTimer;
+
     private void SetupMicAudioTrack()
     {
         var micManager = MicrophoneManager.Instance;
@@ -164,19 +173,47 @@ public class WebRTCClient : MonoBehaviour
             return;
         }
 
-        // Create child GameObject to avoid AudioCustomFilter conflict with receiveAudio
         micAudioObject = new GameObject("MicAudioSender");
         micAudioObject.transform.SetParent(transform);
+
         micAudioSource = micAudioObject.AddComponent<AudioSource>();
         micAudioSource.clip = micManager.MicrophoneClip;
         micAudioSource.loop = true;
-        micAudioSource.volume = 0f;
+        micAudioSource.volume = 1.0f;
+        if (captureMixerGroup != null)
+            micAudioSource.outputAudioMixerGroup = captureMixerGroup;
+
+        SyncMicPlayback();
         micAudioSource.Play();
-        micAudioSource.timeSamples = micManager.GetCurrentSamplePosition();
 
         sendAudioTrack = new AudioStreamTrack(micAudioSource);
         _pc.AddTrack(sendAudioTrack);
         Debug.Log("Added local mic audio track");
+    }
+
+    private void Update()
+    {
+        if (micAudioSource == null || !micAudioSource.isPlaying) return;
+
+        micSyncTimer += Time.deltaTime;
+        if (micSyncTimer >= micSyncInterval)
+        {
+            micSyncTimer = 0f;
+            SyncMicPlayback();
+        }
+    }
+
+    private void SyncMicPlayback()
+    {
+        var micManager = MicrophoneManager.Instance;
+        if (micManager == null || micAudioSource == null) return;
+
+        int micPos = micManager.GetCurrentSamplePosition();
+        int offsetSamples = (int)(micManager.sampleRate * micOffsetMs / 1000f);
+        int bufferSize = micManager.sampleRate * 60;
+        int targetPos = (micPos - offsetSamples + bufferSize) % bufferSize;
+
+        micAudioSource.timeSamples = targetPos;
     }
 
     private void SetupPlaceholderVideoTrack()
