@@ -89,3 +89,7 @@ __pycache__
 
 keyword_files/
 access_key.cs
+
+# Generated SDF font assets
+*SDF.asset
+*SDF.asset.meta
