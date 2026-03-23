@@ -218,7 +218,7 @@ public class WebRTCClient : MonoBehaviour
 
     private void SetupPlaceholderVideoTrack()
     {
-        sendVideoTexture = new RenderTexture(320, 240, 0, UnityEngine.Experimental.Rendering.GraphicsFormat.B8G8R8A8_SRGB);
+        sendVideoTexture = new RenderTexture(320, 240, 0, RenderTextureFormat.ARGB32);
         sendVideoTexture.Create();
 
         sendVideoTrack = new VideoStreamTrack(sendVideoTexture);
