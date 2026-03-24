@@ -218,7 +218,11 @@ public class WebRTCClient : MonoBehaviour
 
     private void SetupPlaceholderVideoTrack()
     {
+#if UNITY_ANDROID && !UNITY_EDITOR
         sendVideoTexture = new RenderTexture(320, 240, 0, RenderTextureFormat.ARGB32);
+#else
+        sendVideoTexture = new RenderTexture(320, 240, 0, RenderTextureFormat.BGRA32);
+#endif
         sendVideoTexture.Create();
 
         sendVideoTrack = new VideoStreamTrack(sendVideoTexture);
