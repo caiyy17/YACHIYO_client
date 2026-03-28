@@ -126,6 +126,12 @@ namespace Yachiyo
 
         public void EnqueueMessage(string message)
         {
+            if (!isStarted)
+            {
+                LogInfo($"Pipeline not ready, discarding: {message}");
+                return;
+            }
+
             YYMessage inputMessage = JsonUtility.FromJson<YYMessage>(message);
 
             if (inputMessage.signal == "cancel")
