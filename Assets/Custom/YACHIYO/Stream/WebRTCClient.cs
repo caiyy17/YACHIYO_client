@@ -293,7 +293,39 @@ namespace Yachiyo
             MainThreadDispatcher.ExecuteInUpdate(() =>
             {
                 receiveImage.texture = texture;
+                FitToScreen(texture);
             });
+        }
+
+        private void FitToScreen(Texture texture)
+        {
+            if (texture == null || receiveImage == null) return;
+
+            RectTransform rt = receiveImage.rectTransform;
+            RectTransform parent = rt.parent as RectTransform;
+            if (parent == null) return;
+
+            float parentW = parent.rect.width;
+            float parentH = parent.rect.height;
+            float videoAspect = (float)texture.width / texture.height;
+            float parentAspect = parentW / parentH;
+
+            // Fill: scale to cover entire parent area
+            float w, h;
+            if (videoAspect > parentAspect)
+            {
+                // Video is wider — match width, letterbox top/bottom
+                w = parentW;
+                h = parentW / videoAspect;
+            }
+            else
+            {
+                // Video is taller — match height, pillarbox left/right
+                h = parentH;
+                w = parentH * videoAspect;
+            }
+
+            rt.sizeDelta = new Vector2(w, h);
         }
 
         /// <summary>
