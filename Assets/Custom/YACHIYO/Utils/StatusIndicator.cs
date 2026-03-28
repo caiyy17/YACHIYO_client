@@ -41,7 +41,7 @@ namespace Yachiyo
 
         void OnDisable()
         {
-            signalManager.RemoveSignal("status_indicator", ApplyColor);
+            signalManager.RemoveSignal("change_status", ApplyColor);
         }
 
         public void ApplyColor(string text)

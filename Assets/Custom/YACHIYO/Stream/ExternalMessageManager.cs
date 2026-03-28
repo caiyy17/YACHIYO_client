@@ -7,208 +7,199 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using UnityEngine;
+using UnityEngine.Events;
 
-namespace Yachiyo
+/// <summary>
+/// Bidirectional HTTP bridge between external services (gateway) and the Unity pipeline.
+///
+/// Inbound (external → pipeline):
+///   POST http://localhost:{port}/send — body is JSON, routed via onMessageReceived event
+///   GET  http://localhost:{port}/health — returns 200 OK
+///
+/// Outbound (pipeline → external):
+///   Receives pipeline output via OnPipelineOutput (bind to ProcessingPipeline.sendSignal in Inspector)
+///   and forwards to gateway via HTTP POST.
+/// </summary>
+public class ExternalMessageManager : MonoBehaviour
 {
-    /// <summary>
-    /// Bidirectional HTTP bridge between external services (gateway) and the Unity pipeline.
-    ///
-    /// Inbound (external → pipeline):
-    ///   POST http://localhost:{port}/send — body is YYMessage JSON, injected into pipeline
-    ///   GET  http://localhost:{port}/health — returns 200 OK
-    ///
-    /// Outbound (pipeline → external):
-    ///   Receives pipeline output via OnPipelineOutput (bound to ProcessingPipeline.sendSignal)
-    ///   and forwards to gateway via HTTP POST.
-    /// </summary>
-    public class ExternalMessageManager : MonoBehaviour
+    [Header("HTTP Server (Inbound)")]
+    [SerializeField] private int port = 7890;
+
+    [Header("Gateway (Outbound)")]
+    [SerializeField] private string gatewayUrl = "http://localhost:8080";
+
+    [Header("Events")]
+    [SerializeField] private UnityEvent<string> onMessageReceived = new UnityEvent<string>();
+
+    private HttpListener _listener;
+    private Thread _listenerThread;
+    private volatile bool _running;
+    private ConcurrentQueue<string> _pendingMessages = new ConcurrentQueue<string>();
+
+    // Outbound HTTP client
+    private static readonly HttpClient _httpClient = new HttpClient()
     {
-        [Header("HTTP Server (Inbound)")]
-        [SerializeField] private int port = 7890;
+        Timeout = TimeSpan.FromSeconds(5)
+    };
 
-        [Header("Gateway (Outbound)")]
-        [SerializeField] private string gatewayUrl = "http://localhost:8080";
+    void Start()
+    {
+        StartServer();
+    }
 
-        [Header("References")]
-        [SerializeField] private ProcessingPipeline processingPipeline;
-
-        private HttpListener _listener;
-        private Thread _listenerThread;
-        private volatile bool _running;
-        private ConcurrentQueue<string> _pendingMessages = new ConcurrentQueue<string>();
-
-        // Outbound HTTP client
-        private static readonly HttpClient _httpClient = new HttpClient()
+    void Update()
+    {
+        while (_pendingMessages.TryDequeue(out string msg))
         {
-            Timeout = TimeSpan.FromSeconds(5)
-        };
-
-        void Start()
-        {
-            StartServer();
+            Debug.Log($"[ExternalMessageManager] Received: {msg}");
+            onMessageReceived.Invoke(msg);
         }
+    }
 
-        void Update()
+    void OnDestroy()
+    {
+        StopServer();
+    }
+
+    // ─── Pipeline Output Handler ───
+    // Bind this to ProcessingPipeline.sendSignal in Inspector
+
+    /// <summary>
+    /// Called by ProcessingPipeline.sendSignal via DataRouter.
+    /// Forwards the event to gateway for external processing.
+    /// </summary>
+    public void OnPipelineOutput(string eventName, string message)
+    {
+        Debug.Log($"[ExternalMessageManager] Pipeline event '{eventName}': {message}");
+        _ = ForwardToGateway(eventName, message);
+    }
+
+    private async Task ForwardToGateway(string eventName, string message)
+    {
+        string url = $"{gatewayUrl}/api/pipeline-event";
+        try
         {
-            while (_pendingMessages.TryDequeue(out string msg))
+            // message is the raw pipeline JSON (already contains signal, timestamp, etc.)
+            string json = $"{{\"eventName\":\"{eventName}\",\"message\":{message}}}";
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync(url, content);
+            if (!response.IsSuccessStatusCode)
             {
-                if (processingPipeline != null)
-                {
-                    processingPipeline.EnqueueMessage(msg);
-                    Debug.Log($"[ExternalMessageManager] Injected into pipeline: {msg}");
-                }
-                else
-                {
-                    Debug.LogWarning("[ExternalMessageManager] ProcessingPipeline not assigned.");
-                }
+                Debug.LogWarning($"[ExternalMessageManager] Gateway forward failed: {response.StatusCode}");
             }
         }
-
-        void OnDestroy()
+        catch (Exception e)
         {
-            StopServer();
+            Debug.LogWarning($"[ExternalMessageManager] Gateway forward error: {e.Message}");
         }
+    }
 
-        // ─── Pipeline Output Handler ───
-        // Bind this to ProcessingPipeline.sendSignal in Inspector
+    // ─── HTTP Server (Inbound) ───
 
-        /// <summary>
-        /// Called by ProcessingPipeline.sendSignal via DataRouter.
-        /// Forwards the event to gateway for external processing.
-        /// </summary>
-        public void OnPipelineOutput(string eventName, string message)
+    private void StartServer()
+    {
+        _listener = new HttpListener();
+        _listener.Prefixes.Add($"http://localhost:{port}/");
+        _listener.Prefixes.Add($"http://127.0.0.1:{port}/");
+
+        try
         {
-            Debug.Log($"[ExternalMessageManager] Pipeline event '{eventName}': {message}");
-            _ = ForwardToGateway(eventName, message);
+            _listener.Start();
+            _running = true;
+            _listenerThread = new Thread(ListenLoop) { IsBackground = true };
+            _listenerThread.Start();
+            Debug.Log($"[ExternalMessageManager] HTTP server started on port {port}");
         }
-
-        private async Task ForwardToGateway(string eventName, string message)
+        catch (Exception e)
         {
-            string url = $"{gatewayUrl}/api/pipeline-event";
+            Debug.LogError($"[ExternalMessageManager] Failed to start: {e.Message}");
+        }
+    }
+
+    private void StopServer()
+    {
+        _running = false;
+        if (_listener != null && _listener.IsListening)
+        {
+            _listener.Stop();
+            _listener.Close();
+        }
+    }
+
+    private void ListenLoop()
+    {
+        while (_running)
+        {
             try
             {
-                // message is the raw pipeline JSON (already contains signal, timestamp, etc.)
-                string json = $"{{\"eventName\":\"{eventName}\",\"message\":{message}}}";
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                var response = await _httpClient.PostAsync(url, content);
-                if (!response.IsSuccessStatusCode)
-                {
-                    Debug.LogWarning($"[ExternalMessageManager] Gateway forward failed: {response.StatusCode}");
-                }
+                var context = _listener.GetContext();
+                ThreadPool.QueueUserWorkItem(_ => HandleRequest(context));
             }
-            catch (Exception e)
-            {
-                Debug.LogWarning($"[ExternalMessageManager] Gateway forward error: {e.Message}");
-            }
+            catch (HttpListenerException) { break; }
+            catch (ObjectDisposedException) { break; }
         }
+    }
 
-        // ─── HTTP Server (Inbound) ───
+    private void HandleRequest(HttpListenerContext context)
+    {
+        var request = context.Request;
+        var response = context.Response;
 
-        private void StartServer()
+        // CORS
+        response.Headers.Add("Access-Control-Allow-Origin", "*");
+        response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        response.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
+
+        try
         {
-            _listener = new HttpListener();
-            _listener.Prefixes.Add($"http://localhost:{port}/");
-            _listener.Prefixes.Add($"http://127.0.0.1:{port}/");
-
-            try
+            if (request.HttpMethod == "OPTIONS")
             {
-                _listener.Start();
-                _running = true;
-                _listenerThread = new Thread(ListenLoop) { IsBackground = true };
-                _listenerThread.Start();
-                Debug.Log($"[ExternalMessageManager] HTTP server started on port {port}");
+                response.StatusCode = 204;
+                response.Close();
+                return;
             }
-            catch (Exception e)
+
+            string path = request.Url.AbsolutePath.TrimEnd('/');
+
+            if (path == "/health" && request.HttpMethod == "GET")
             {
-                Debug.LogError($"[ExternalMessageManager] Failed to start: {e.Message}");
+                SendResponse(response, 200, "{\"status\":\"ok\"}");
             }
-        }
-
-        private void StopServer()
-        {
-            _running = false;
-            if (_listener != null && _listener.IsListening)
+            else if (path == "/send" && request.HttpMethod == "POST")
             {
-                _listener.Stop();
-                _listener.Close();
-            }
-        }
-
-        private void ListenLoop()
-        {
-            while (_running)
-            {
-                try
+                using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
                 {
-                    var context = _listener.GetContext();
-                    ThreadPool.QueueUserWorkItem(_ => HandleRequest(context));
-                }
-                catch (HttpListenerException) { break; }
-                catch (ObjectDisposedException) { break; }
-            }
-        }
-
-        private void HandleRequest(HttpListenerContext context)
-        {
-            var request = context.Request;
-            var response = context.Response;
-
-            // CORS
-            response.Headers.Add("Access-Control-Allow-Origin", "*");
-            response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-            response.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
-
-            try
-            {
-                if (request.HttpMethod == "OPTIONS")
-                {
-                    response.StatusCode = 204;
-                    response.Close();
-                    return;
-                }
-
-                string path = request.Url.AbsolutePath.TrimEnd('/');
-
-                if (path == "/health" && request.HttpMethod == "GET")
-                {
-                    SendResponse(response, 200, "{\"status\":\"ok\"}");
-                }
-                else if (path == "/send" && request.HttpMethod == "POST")
-                {
-                    using (var reader = new StreamReader(request.InputStream, request.ContentEncoding))
+                    string body = reader.ReadToEnd();
+                    if (string.IsNullOrEmpty(body))
                     {
-                        string body = reader.ReadToEnd();
-                        if (string.IsNullOrEmpty(body))
-                        {
-                            SendResponse(response, 400, "{\"error\":\"empty body\"}");
-                            return;
-                        }
-
-                        _pendingMessages.Enqueue(body);
-                        SendResponse(response, 200, "{\"status\":\"queued\"}");
+                        SendResponse(response, 400, "{\"error\":\"empty body\"}");
+                        return;
                     }
-                }
-                else
-                {
-                    SendResponse(response, 404, "{\"error\":\"not found\"}");
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"[ExternalMessageManager] Request error: {e.Message}");
-                try { SendResponse(response, 500, "{\"error\":\"internal\"}"); } catch { }
-            }
-        }
 
-        private void SendResponse(HttpListenerResponse response, int statusCode, string body)
-        {
-            response.StatusCode = statusCode;
-            response.ContentType = "application/json";
-            byte[] data = Encoding.UTF8.GetBytes(body);
-            response.ContentLength64 = data.Length;
-            response.OutputStream.Write(data, 0, data.Length);
-            response.Close();
+                    _pendingMessages.Enqueue(body);
+                    SendResponse(response, 200, "{\"status\":\"queued\"}");
+                }
+            }
+            else
+            {
+                SendResponse(response, 404, "{\"error\":\"not found\"}");
+            }
         }
+        catch (Exception e)
+        {
+            Debug.LogError($"[ExternalMessageManager] Request error: {e.Message}");
+            try { SendResponse(response, 500, "{\"error\":\"internal\"}"); } catch { }
+        }
+    }
+
+    private void SendResponse(HttpListenerResponse response, int statusCode, string body)
+    {
+        response.StatusCode = statusCode;
+        response.ContentType = "application/json";
+        byte[] data = Encoding.UTF8.GetBytes(body);
+        response.ContentLength64 = data.Length;
+        response.OutputStream.Write(data, 0, data.Length);
+        response.Close();
     }
 }

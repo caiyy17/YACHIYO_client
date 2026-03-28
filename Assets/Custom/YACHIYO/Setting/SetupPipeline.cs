@@ -3,8 +3,6 @@ using UnityEngine.Networking;
 using System.Collections;
 using System.Text;
 
-using UnityEngine.UI;
-using TMPro;
 
 namespace Yachiyo
 {
