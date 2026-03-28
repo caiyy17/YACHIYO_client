@@ -1,6 +1,6 @@
-# YACHIO Client
+# YACHIYO Client
 
-A Unity client for real-time AI assistant interaction. Supports voice input, text display, audio playback, and character animation (both traditional and SMPL-H motion), with WebSocket and WebRTC server connections. Designed as the frontend counterpart to [YACHIO Server](https://github.com/caiyy17/YACHIO_server).
+A Unity client for real-time AI assistant interaction. Supports voice input, text display, audio playback, and character animation (both traditional and SMPL-H motion), with WebSocket and WebRTC server connections. Designed as the frontend counterpart to [YACHIYO Server](https://github.com/caiyy17/YACHIYO_server).
 
 ## Quick Start
 
@@ -124,7 +124,7 @@ Managed by **YYStateManager** via **SignalManager** event routing.
 
 ```
 Assets/Custom/
-├── YACHIO/
+├── YACHIYO/
 │   ├── Action/          — ActionDict, ActionLoader, animation control
 │   ├── ModelControl/    — Anim3D (direct animator control)
 │   ├── Pipeline/        — ProcessingPipeline, ProcessingModule, all modules

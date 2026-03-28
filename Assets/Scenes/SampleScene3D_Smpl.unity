@@ -201,8 +201,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1228976300}
   m_HandleRect: {fileID: 1228976299}
   m_Direction: 0
-  m_Value: 1
-  m_Size: 0.99999994
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3115,8 +3115,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1837920296}
   m_HandleRect: {fileID: 1837920295}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.9574999
+  m_Value: 0.9999982
+  m_Size: 0.9575
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -5824,9 +5824,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MouthAnim
   audioSource: {fileID: 9140757736988748936}
-  min_volume: 0.1
-  max_volume: 0.2
-  smoothingFactor: 0.1
+  min_volume: 0.03
+  max_volume: 0.15
+  smoothingFactor: 0.4
   mouthEvent:
     m_PersistentCalls:
       m_Calls:
@@ -7185,7 +7185,7 @@ GameObject:
   - component: {fileID: 8452782695937358678}
   - component: {fileID: 8452782695937358677}
   m_Layer: 0
-  m_Name: YACHIOManager
+  m_Name: YACHIYOManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

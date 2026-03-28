@@ -1,0 +1,135 @@
+using UnityEngine;
+using UnityEngine.Rendering;
+
+namespace Yachiyo
+{
+    public class MicrophoneManager : MonoBehaviour
+    {
+        public static MicrophoneManager Instance;
+        public int sampleRate { get; private set; } = 16000;
+        public int bufferSize { get; private set; } = 1024;
+        private AudioClip microphoneClip;
+        public AudioClip MicrophoneClip => microphoneClip;
+        public string DeviceName => microphone;
+        private int bufferLength = 60;
+        private float[] audioBuffer;
+        private int bufferPosition = 0;
+        private bool isRecording = false;
+        private string microphone;
+
+        private void Awake()
+        {
+            if (Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+                InitializeMicrophone();
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
+
+        private void InitializeMicrophone()
+        {
+            foreach (var device in Microphone.devices)
+            {
+                Debug.Log("Microphone name: " + device);
+            }
+            if (Microphone.devices.Length > 0)
+            {
+                microphone = Microphone.devices[0];
+                int minFreq;
+                int maxFreq;
+                Microphone.GetDeviceCaps(microphone, out minFreq, out maxFreq);
+                if (maxFreq == 0)
+                {
+                    maxFreq = 48000;
+                }
+                sampleRate = Mathf.Clamp(sampleRate, minFreq, maxFreq);
+                Debug.Log("Sample rate: " + sampleRate + " in (" + minFreq + ", " + maxFreq + ")");
+
+                bufferSize = sampleRate * bufferLength;
+                audioBuffer = new float[bufferSize];
+                microphoneClip = Microphone.Start(microphone, true, bufferLength, sampleRate);
+                isRecording = true;
+            }
+            else
+            {
+                Debug.LogError("No microphone found");
+            }
+            AudioClip empty = WavUtility.emptyClip;
+        }
+
+        private void Update()
+        {
+            if (isRecording)
+            {
+                int micPosition = Microphone.GetPosition(microphone);
+                bufferPosition = micPosition;
+            }
+        }
+
+        public float[] GetAudioData(int startSample, int endSample)
+        {
+            // make startSample and endSample in the range of audioBuffer
+            startSample = (startSample % audioBuffer.Length + audioBuffer.Length) % audioBuffer.Length;
+            endSample = (endSample % audioBuffer.Length + audioBuffer.Length) % audioBuffer.Length;
+
+            microphoneClip.GetData(audioBuffer, 0);
+            int length;
+            if (startSample <= endSample)
+            {
+                length = endSample - startSample;
+            }
+            else
+            {
+                length = audioBuffer.Length - startSample + endSample;
+            }
+
+            float[] data = new float[length];
+            if (startSample < endSample)
+            {
+                System.Array.Copy(audioBuffer, startSample, data, 0, length);
+            }
+            else
+            {
+                // 处理循环缓冲区的情况
+                int firstPartLength = audioBuffer.Length - startSample;
+                System.Array.Copy(audioBuffer, startSample, data, 0, firstPartLength);
+                System.Array.Copy(audioBuffer, 0, data, firstPartLength, endSample);
+            }
+            return data;
+        }
+
+        public float[] GetAudioDataLength(int endSample, int length)
+        {
+            int startSample = endSample - length;
+            return GetAudioData(startSample, endSample);
+        }
+
+        public int GetCurrentSamplePosition(float offset = 0)
+        {
+            int position = bufferPosition + (int)(offset * sampleRate);
+            position = (position % audioBuffer.Length + audioBuffer.Length) % audioBuffer.Length;
+            return position;
+        }
+
+        public float GetCurrentLoudness(float timeWindow = 0.5f)
+        {
+            int startPosition = bufferPosition - (int)(sampleRate * timeWindow);
+            int endPosition = bufferPosition;
+            float[] audioData = GetAudioData(startPosition, endPosition);
+
+            float sum = 0;
+            for (int i = 0; i < audioData.Length; i++)
+            {
+                sum += audioData[i] * audioData[i];
+            }
+
+            float rmsValue = Mathf.Sqrt(sum / audioData.Length);
+            return rmsValue;
+        }
+    }
+}

@@ -1,6 +1,6 @@
-# YACHIO Client
+# YACHIYO Client
 
-实时 AI 助手的 Unity 客户端。支持语音输入、文本显示、音频播放和角色动画（传统动画触发和 SMPL-H 动作生成），提供 WebSocket 和 WebRTC 两种服务器连接方式。作为 [YACHIO Server](https://github.com/caiyy17/YACHIO_server) 的前端配套。
+实时 AI 助手的 Unity 客户端。支持语音输入、文本显示、音频播放和角色动画（传统动画触发和 SMPL-H 动作生成），提供 WebSocket 和 WebRTC 两种服务器连接方式。作为 [YACHIYO Server](https://github.com/caiyy17/YACHIYO_server) 的前端配套。
 
 ## 快速开始
 
@@ -124,7 +124,7 @@ KWSModule → VADModule → RecordingModule → WebSocketClientModule → AudioM
 
 ```
 Assets/Custom/
-├── YACHIO/
+├── YACHIYO/
 │   ├── Action/          — ActionDict、ActionLoader、动画控制
 │   ├── ModelControl/    — Anim3D（直接 Animator 控制）
 │   ├── Pipeline/        — ProcessingPipeline、ProcessingModule、所有模块

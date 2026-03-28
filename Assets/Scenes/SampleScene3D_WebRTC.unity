@@ -7017,7 +7017,7 @@ GameObject:
   - component: {fileID: 8452782695937358678}
   - component: {fileID: 8452782695937358677}
   m_Layer: 0
-  m_Name: YACHIOManager
+  m_Name: YACHIYOManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

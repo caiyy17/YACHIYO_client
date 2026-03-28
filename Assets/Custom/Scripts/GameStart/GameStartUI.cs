@@ -5,6 +5,7 @@ using TMPro;
 using System.Collections.Generic;
 using System;
 using UnityEngine.InputSystem;
+using Yachiyo;
 
 [RequireComponent(typeof(SceneLoaderWithProgress))]
 public class GameStartUI : MonoBehaviour

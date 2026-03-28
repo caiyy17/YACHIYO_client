@@ -6,9 +6,13 @@ using UnityEngine.SceneManagement;
 using System;
 using TMPro;
 using UnityEngine.InputSystem;
+using Yachiyo;
 
 public class SampleSceneUI : MonoBehaviour
 {
+    //Home scene
+    public string homeSceneName = "GameStart";
+
     //Model selection
     public Transform modelParent;
     public List<GameObject> modelList;
@@ -191,7 +195,7 @@ public class SampleSceneUI : MonoBehaviour
     void ReturnHome()
     {
         homeAction.performed -= ctx => ReturnHome();
-        SceneManager.LoadScene(0, LoadSceneMode.Single);
+        SceneManager.LoadScene(homeSceneName, LoadSceneMode.Single);
     }
 
     float ToLog(float value)

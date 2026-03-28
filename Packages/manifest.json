@@ -1,6 +1,14 @@
 {
+  "scopedRegistries": [
+    {
+      "name": "Keijiro",
+      "url": "https://registry.npmjs.com",
+      "scopes": ["jp.keijiro"]
+    }
+  ],
   "dependencies": {
     "com.hecomi.ulipsync": "https://github.com/hecomi/uLipSync.git#upm",
+    "jp.keijiro.klak.ndi": "2.1.5",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.ai.navigation": "2.0.10",
     "com.unity.collab-proxy": "2.11.3",

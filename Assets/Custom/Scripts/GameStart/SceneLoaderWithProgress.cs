@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.Events;
 using TMPro;
+using Yachiyo;
 
 public class SceneLoaderWithProgress : MonoBehaviour
 {

@@ -89,3 +89,6 @@ __pycache__
 
 keyword_files/
 access_key.cs
+
+/[Aa]ssets/Dev/
+/Packages/*/
