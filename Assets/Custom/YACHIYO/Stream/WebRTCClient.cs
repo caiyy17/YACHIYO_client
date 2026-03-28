@@ -68,8 +68,7 @@ namespace Yachiyo
         /// </summary>
         private IEnumerator ConnectFlow()
         {
-            yield return StartCoroutine(Register());
-            yield return StartCoroutine(InitPipeline());
+            // Register and init_pipeline are handled by GameStart (SetupPipeline)
             yield return StartCoroutine(Call());
         }
 
