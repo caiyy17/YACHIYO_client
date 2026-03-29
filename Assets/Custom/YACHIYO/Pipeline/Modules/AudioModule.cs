@@ -9,17 +9,16 @@ namespace Yachiyo
     /// Uses the inputQueue as a natural buffer: while audio is playing,
     /// no new messages are dequeued, so EoS is only forwarded after all audio finishes.
     /// </summary>
-    [RequireComponent(typeof(AudioLoader))]
+    [RequireComponent(typeof(AudioSource))]
     public class AudioModule : ProcessingModule
     {
-        AudioLoader audioLoader;
-
+        AudioSource audioSource;
         bool isPlayingAudio = false;
 
         void Awake()
         {
             moduleName = "AudioModule";
-            audioLoader = GetComponent<AudioLoader>();
+            audioSource = GetComponent<AudioSource>();
         }
 
         void Update()
@@ -31,7 +30,7 @@ namespace Yachiyo
             // Wait for current audio to finish
             if (isPlayingAudio)
             {
-                if (!audioLoader.IsPlaying)
+                if (!audioSource.isPlaying)
                 {
                     isPlayingAudio = false;
                 }
@@ -74,7 +73,7 @@ namespace Yachiyo
 
             if (signal == "SoS" || signal == "EoS")
             {
-                // Forward control signals as-is to ContentModule
+                // Forward control signals as-is
                 outputQueue.Add(message);
                 current_timestamp = null;
                 return;
@@ -88,11 +87,15 @@ namespace Yachiyo
             if (!string.IsNullOrEmpty(audioBase64))
             {
                 AudioClip clip = WavUtility.ToAudioClip(System.Convert.FromBase64String(audioBase64));
-                audioLoader.Play(clip);
-                isPlayingAudio = true;
+                if (clip != null)
+                {
+                    audioSource.clip = clip;
+                    audioSource.Play();
+                    isPlayingAudio = true;
+                }
             }
 
-            // Build text/action message for ContentModule (without audio_data)
+            // Forward remaining fields to downstream (without audio_data)
             jsonDict.Remove("audio_data");
             if (jsonDict.Count > 0)
             {
@@ -111,7 +114,7 @@ namespace Yachiyo
 
         protected override void CustomCancel(string message)
         {
-            audioLoader.Stop();
+            audioSource.Stop();
             isPlayingAudio = false;
         }
     }

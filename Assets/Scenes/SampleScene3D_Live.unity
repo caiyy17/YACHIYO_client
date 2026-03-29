@@ -2113,7 +2113,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adb18826789fae24abe482d8c3f037e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MouthAnim
-  audioSource: {fileID: 0}
+  audioSource: {fileID: 9140757736988748936}
   min_volume: 0.03
   max_volume: 0.15
   smoothingFactor: 0.4
@@ -6191,7 +6191,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1325990590}
   m_HandleRect: {fileID: 1325990589}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -7230,9 +7230,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7270645627984393390}
   - component: {fileID: 2696081038372698381}
-  - component: {fileID: 9140757736988748938}
   - component: {fileID: 9140757736988748936}
-  - component: {fileID: 9140757736988748940}
   - component: {fileID: 100000001}
   - component: {fileID: 100000002}
   - component: {fileID: 100000003}
@@ -7603,8 +7601,8 @@ MonoBehaviour:
   modules:
   - {fileID: 3934839681507022593}
   - {fileID: 9140757736988748937}
-  - {fileID: 100000001}
   - {fileID: 9140757736988748939}
+  - {fileID: 100000001}
   sendSignal:
     m_PersistentCalls:
       m_Calls:
@@ -7736,18 +7734,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AudioModule
   destinationIndices: 
   capturedSignals: []
---- !u!114 &9140757736988748938
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1765252097405236044}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 949adcba620291d46b71788fb2eab14a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AudioLoader
 --- !u!114 &9140757736988748939
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7762,21 +7748,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ContentModule
   destinationIndices: 
   capturedSignals: []
---- !u!114 &9140757736988748940
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1765252097405236044}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d459e6896c16b344cb4070c542ee8899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textToShow: 
   uiText: {fileID: 1778650139}
   contentRectTransform: {fileID: 1839197960}
+  displayFields:
+  - name: action_hint
+    color: {r: 0.061615944, g: 0, b: 1, a: 0}
+  - name: expression_hint
+    color: {r: 1, g: 0, b: 0.87140036, a: 0}
+  - name: text
+    color: {r: 1, g: 1, b: 1, a: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

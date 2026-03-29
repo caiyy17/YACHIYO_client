@@ -201,7 +201,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1228976300}
   m_HandleRect: {fileID: 1228976299}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -8169,9 +8169,7 @@ GameObject:
   - component: {fileID: 3755512382130600590}
   - component: {fileID: 9140757736988748933}
   - component: {fileID: 2696081038372698381}
-  - component: {fileID: 9140757736988748939}
   - component: {fileID: 9140757736988748940}
-  - component: {fileID: 9140757736988748937}
   - component: {fileID: 9140757736988748943}
   - component: {fileID: 9140757736988748934}
   - component: {fileID: 9140757736988748935}
@@ -8788,21 +8786,6 @@ MonoBehaviour:
   sensitivity: 0.7
   isOn: 0
   isDetected: 0
---- !u!114 &9140757736988748937
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1765252097405236044}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d459e6896c16b344cb4070c542ee8899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textToShow: 
-  uiText: {fileID: 1890382372}
-  contentRectTransform: {fileID: 1175106705}
 --- !u!114 &9140757736988748938
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8817,18 +8800,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AudioModule
   destinationIndices: 
   capturedSignals: []
---- !u!114 &9140757736988748939
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1765252097405236044}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 949adcba620291d46b71788fb2eab14a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AudioLoader
 --- !u!82 &9140757736988748940
 AudioSource:
   m_ObjectHideFlags: 0
@@ -8940,6 +8911,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ContentModule
   destinationIndices: 
   capturedSignals: []
+  uiText: {fileID: 1890382372}
+  contentRectTransform: {fileID: 1175106705}
+  displayFields:
+  - name: action_hint
+    color: {r: 0.061615944, g: 0, b: 1, a: 0}
+  - name: expression_hint
+    color: {r: 1, g: 0, b: 0.87140036, a: 0}
+  - name: text
+    color: {r: 1, g: 1, b: 1, a: 0}
 --- !u!114 &9140757736988748942
 MonoBehaviour:
   m_ObjectHideFlags: 0

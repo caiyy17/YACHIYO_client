@@ -1,24 +1,39 @@
 using UnityEngine;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Linq;
+using TMPro;
 
 namespace Yachiyo
 {
     /// <summary>
     /// Pipeline module that displays content and forwards message as-is.
-    /// Captures SoS to clear text, EoS forwarded directly.
+    /// Only fields listed in displayFields are shown (with color). All data is forwarded unmodified.
     /// </summary>
-    [RequireComponent(typeof(ContentLoader))]
     public class ContentModule : ProcessingModuleSynchronous
     {
-        ContentLoader contentLoader;
+        [System.Serializable]
+        public class DisplayField
+        {
+            public string name;
+            public Color color = Color.white;
+        }
+
+        [SerializeField] private TextMeshProUGUI uiText;
+        [SerializeField] private RectTransform contentRectTransform;
+        [SerializeField] private List<DisplayField> displayFields = new List<DisplayField>();
+
+        private Dictionary<string, Color> _fieldColorMap;
 
         void Awake()
         {
             moduleName = "ContentModule";
-            capturedSignals = new System.Collections.Generic.List<string> { "SoS", "EoS" };
-            contentLoader = GetComponent<ContentLoader>();
+            capturedSignals = new List<string> { "SoS", "EoS" };
+            _fieldColorMap = new Dictionary<string, Color>();
+            foreach (var field in displayFields)
+            {
+                if (!string.IsNullOrEmpty(field.name))
+                    _fieldColorMap[field.name] = field.color;
+            }
         }
 
         protected override void ProcessMessage(string message)
@@ -27,7 +42,7 @@ namespace Yachiyo
 
             if (baseMessage.signal == "SoS")
             {
-                contentLoader.LoadText("");
+                ClearText();
                 outputQueue.Add(message);
                 return;
             }
@@ -40,20 +55,46 @@ namespace Yachiyo
 
             if (!string.IsNullOrEmpty(baseMessage.content))
             {
-                // Filter out empty fields for display
                 var jsonDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(baseMessage.content);
-                var nonEmpty = jsonDict.Where(kv => kv.Value != null && kv.Value.ToString() != "").ToDictionary(kv => kv.Key, kv => kv.Value);
-                if (nonEmpty.Count > 0)
-                {
-                    contentLoader.AddText(JsonConvert.SerializeObject(nonEmpty));
-                }
+                AppendDisplayFields(jsonDict);
                 outputQueue.Add(message);
             }
         }
 
         protected override void CustomCancel(string message)
         {
-            contentLoader.LoadText("");
+            ClearText();
+        }
+
+        private void AppendDisplayFields(Dictionary<string, object> jsonDict)
+        {
+            if (uiText == null) return;
+
+            foreach (var kv in _fieldColorMap)
+            {
+                if (jsonDict.TryGetValue(kv.Key, out object value) && value != null)
+                {
+                    string text = value.ToString();
+                    if (string.IsNullOrEmpty(text)) continue;
+                    string hex = ColorUtility.ToHtmlStringRGB(kv.Value);
+                    uiText.text += $"<color=#{hex}>{text}</color>";
+                }
+            }
+            AdjustContentSize();
+        }
+
+        private void ClearText()
+        {
+            if (uiText == null) return;
+            uiText.text = "";
+            AdjustContentSize();
+        }
+
+        private void AdjustContentSize()
+        {
+            if (contentRectTransform == null) return;
+            float textHeight = uiText.preferredHeight;
+            contentRectTransform.sizeDelta = new Vector2(contentRectTransform.sizeDelta.x, textHeight);
         }
     }
 }
