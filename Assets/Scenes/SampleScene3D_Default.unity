@@ -201,7 +201,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1228976300}
   m_HandleRect: {fileID: 1228976299}
   m_Direction: 0
-  m_Value: 1
+  m_Value: 0
   m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -4487,15 +4487,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 100338, guid: 49f2055d53eeb4e5a92af590a44bddee,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1165644670}
-    - targetCorrespondingSourceObject: {fileID: 100338, guid: 49f2055d53eeb4e5a92af590a44bddee,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1165644669}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49f2055d53eeb4e5a92af590a44bddee, type: 3}
 --- !u!4 &1165644667 stripped
 Transform:
@@ -4509,55 +4501,12 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1165644666}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1165644669
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+--- !u!95 &1165644669 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 9500000, guid: 49f2055d53eeb4e5a92af590a44bddee,
+    type: 3}
+  m_PrefabInstance: {fileID: 1165644666}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1165644668}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: adb18826789fae24abe482d8c3f037e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioSource: {fileID: 9140757736988748940}
-  min_volume: 0.03
-  max_volume: 0.15
-  smoothingFactor: 0.4
-  mouthEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1165644670}
-        m_TargetAssemblyTypeName: Anim3D, Assembly-CSharp
-        m_MethodName: MouthControl
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &1165644670
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1165644668}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04b39f1976b3b22468e08ceb20d6d661, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  skinnedMeshRenderer: {fileID: 1165644671}
-  motionKeyCodes: 
-  motionTriggers: []
-  expressionKeyCodes: 
-  expressionIndexes: 
-  mouthIndex: 6
 --- !u!137 &1165644671 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 13700030, guid: 49f2055d53eeb4e5a92af590a44bddee,
@@ -8170,7 +8119,6 @@ GameObject:
   - component: {fileID: 9140757736988748933}
   - component: {fileID: 2696081038372698381}
   - component: {fileID: 9140757736988748940}
-  - component: {fileID: 9140757736988748943}
   - component: {fileID: 9140757736988748934}
   - component: {fileID: 9140757736988748935}
   - component: {fileID: 3198830696365162771}
@@ -8180,6 +8128,7 @@ GameObject:
   - component: {fileID: 9140757736988748941}
   - component: {fileID: 9140757736988748942}
   - component: {fileID: 8897564120450272052}
+  - component: {fileID: 9140757736988748950}
   m_Layer: 0
   m_Name: Pipeline
   m_TagString: Untagged
@@ -8934,7 +8883,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ActionModule
   destinationIndices: 
   capturedSignals: []
---- !u!114 &9140757736988748943
+  fieldName: action
+  onValue:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 9140757736988748950}
+        m_TargetAssemblyTypeName: Yachiyo.Anim3D, Assembly-CSharp
+        m_MethodName: SetMotion
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument:
+          m_BoolArgument: 0
+        m_CallState: 2
+  sosValue: thinking
+  eosValue: idle
+--- !u!114 &9140757736988748950
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8943,42 +8910,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 1765252097405236044}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94abe5f035163ab44ae692cd3ff4fa91, type: 3}
+  m_Script: {fileID: 11500000, guid: 04b39f1976b3b22468e08ceb20d6d661, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ActionLoader
-  actionDataList:
-  - actionDict: {fileID: 11400000, guid: 7eb54d7366b41ff45b64f18e86608d81, type: 2}
-    motionEvent:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1165644670}
-          m_TargetAssemblyTypeName: Anim3D, Assembly-CSharp
-          m_MethodName: SetMotion
-          m_Mode: 0
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    expressionEvent:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1165644670}
-          m_TargetAssemblyTypeName: Anim3D, Assembly-CSharp
-          m_MethodName: SetExpression
-          m_Mode: 0
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  actionInterval: 10
+  m_EditorClassIdentifier: Assembly-CSharp::Anim3D
+  motionTargets:
+  - animator: {fileID: 1165644669}
+    actionMap: {fileID: 11400000, guid: 7eb54d7366b41ff45b64f18e86608d81, type: 2}
+  expressionTargets: []
+  mouthAudioSource: {fileID: 9140757736988748940}
+  mouthTargets:
+  - renderer: {fileID: 1165644671}
+    blendShapeIndex: 6
+    minVolume: 0.03
+    maxVolume: 0.2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

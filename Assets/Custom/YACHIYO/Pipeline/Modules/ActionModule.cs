@@ -1,42 +1,24 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 
 namespace Yachiyo
 {
     /// <summary>
-    /// Pipeline module that handles action events.
-    /// Receives action data (signal="") from ContentModule via pipeline,
-    /// and action_set from SignalManager (e.g. yya_state → action_set route).
+    /// Pipeline module that consumes a single configured field from messages
+    /// and invokes a UnityEvent. Mount multiple instances for multiple fields.
     /// </summary>
-    [RequireComponent(typeof(ActionLoader))]
     public class ActionModule : ProcessingModuleSynchronous
     {
-        ActionLoader actionLoader;
-        SignalManager signalManager;
+        [SerializeField] private string fieldName = "action";
+        [SerializeField] private StringEvent onValue;
+        [SerializeField] private string sosValue;
+        [SerializeField] private string eosValue;
 
         void Awake()
         {
-            moduleName = "ActionModule";
-            capturedSignals = new System.Collections.Generic.List<string> { "SoS", "EoS" };
-            actionLoader = GetComponent<ActionLoader>();
-            signalManager = FindObjectOfType<SignalManager>();
-        }
-
-        void Start()
-        {
-            if (signalManager != null)
-            {
-                signalManager.AddSignal("action_set", OnActionSet);
-            }
-        }
-
-        void OnDisable()
-        {
-            if (signalManager != null)
-            {
-                signalManager.RemoveSignal("action_set", OnActionSet);
-            }
+            moduleName = $"ActionModule({fieldName})";
+            capturedSignals = new List<string> { "SoS", "EoS" };
         }
 
         protected override void ProcessMessage(string message)
@@ -45,42 +27,35 @@ namespace Yachiyo
 
             if (baseMessage.signal == "SoS")
             {
-                actionLoader.SetAction("thinking");
+                if (!string.IsNullOrEmpty(sosValue) && onValue != null)
+                    onValue.Invoke(sosValue);
                 outputQueue.Add(message);
                 return;
             }
 
             if (baseMessage.signal == "EoS")
             {
-                actionLoader.SetAction("idle");
+                if (!string.IsNullOrEmpty(eosValue) && onValue != null)
+                    onValue.Invoke(eosValue);
                 outputQueue.Add(message);
                 return;
             }
 
             if (string.IsNullOrEmpty(baseMessage.content)) return;
 
-            // Consume action field, forward the rest
             Dictionary<string, object> jsonDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(baseMessage.content);
-            if (jsonDict.ContainsKey("action"))
+            if (jsonDict.ContainsKey(fieldName))
             {
-                actionLoader.SetAction(jsonDict["action"].ToString());
-                jsonDict.Remove("action");
+                string value = jsonDict[fieldName]?.ToString();
+                if (!string.IsNullOrEmpty(value) && onValue != null)
+                    onValue.Invoke(value);
+                jsonDict.Remove(fieldName);
             }
 
             if (jsonDict.Count > 0)
             {
                 baseMessage.content = JsonConvert.SerializeObject(jsonDict);
                 outputQueue.Add(JsonUtility.ToJson(baseMessage));
-            }
-        }
-
-        // Called by SignalManager via yya_state → action_set route
-        void OnActionSet(string message)
-        {
-            Dictionary<string, object> jsonDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(message);
-            if (jsonDict.ContainsKey("action"))
-            {
-                actionLoader.SetAction(jsonDict["action"].ToString());
             }
         }
     }

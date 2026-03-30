@@ -287,6 +287,33 @@ namespace SmplhMotion
             Debug.Log($"[MotionPlayer] ReturnToIdle: remaining={BufferRemaining}");
         }
 
+        /// <summary>
+        /// Parse SMPL-H motion JSON, convert, and play.
+        /// Called by ActionModule's onValue via UnityEvent.
+        /// </summary>
+        public void PlayMotion(string actionJson)
+        {
+            if (!IsPlaying || _converter == null) return;
+            if (string.IsNullOrEmpty(actionJson)) return;
+
+            try
+            {
+                SmplhMotionData motionData = IdleInitializer.ParseMotionJson(actionJson);
+                if (motionData.numFrames <= 30)
+                {
+                    Debug.Log($"[MotionPlayer] Motion too short ({motionData.numFrames} frames), skipping");
+                    return;
+                }
+
+                SmplhPoseFrame[] frames = _converter.ConvertAll(motionData);
+                SetCurrentMotion(frames);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"[MotionPlayer] Failed to parse motion: {e.Message}");
+            }
+        }
+
         public void Stop()
         {
             if (_playCoroutine != null)

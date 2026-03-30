@@ -2077,10 +2077,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 100338, guid: 49f2055d53eeb4e5a92af590a44bddee,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 392454414}
-    - targetCorrespondingSourceObject: {fileID: 100338, guid: 49f2055d53eeb4e5a92af590a44bddee,
-        type: 3}
-      insertIndex: -1
       addedObject: {fileID: 392454413}
   m_SourcePrefab: {fileID: 100100000, guid: 49f2055d53eeb4e5a92af590a44bddee, type: 3}
 --- !u!4 &392454410 stripped
@@ -2101,55 +2097,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 392454409}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &392454413
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 392454412}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: adb18826789fae24abe482d8c3f037e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MouthAnim
-  audioSource: {fileID: 9140757736988748936}
-  min_volume: 0.03
-  max_volume: 0.15
-  smoothingFactor: 0.4
-  mouthEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 392454414}
-        m_TargetAssemblyTypeName: Anim3D, Assembly-CSharp
-        m_MethodName: MouthControl
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &392454414
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 392454412}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04b39f1976b3b22468e08ceb20d6d661, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Anim3D
-  skinnedMeshRenderer: {fileID: 392454411}
-  motionKeyCodes: 
-  motionTriggers: []
-  expressionKeyCodes: 
-  expressionIndexes: 
-  mouthIndex: 6
 --- !u!95 &396562589 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 9500000, guid: 49f2055d53eeb4e5a92af590a44bddee,
@@ -7220,6 +7167,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &9140757736988748950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1765252097405236044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04b39f1976b3b22468e08ceb20d6d661, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Anim3D
+  motionTargets: []
+  expressionTargets: []
+  mouthAudioSource: {fileID: 9140757736988748936}
+  mouthTargets: []
 --- !u!1 &1765252097405236044
 GameObject:
   m_ObjectHideFlags: 0
@@ -7239,6 +7202,7 @@ GameObject:
   - component: {fileID: 9140757736988748937}
   - component: {fileID: 9140757736988748939}
   - component: {fileID: 8897564120450272052}
+  - component: {fileID: 9140757736988748950}
   m_Layer: 0
   m_Name: Pipeline
   m_TagString: Untagged

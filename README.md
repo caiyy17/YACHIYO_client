@@ -37,7 +37,7 @@ The client uses a **modular processing pipeline** (`ProcessingPipeline`) where m
 | WebRTCClientModule | WebRTC connection with audio/video tracks + DataChannels |
 | AudioModule | Decodes base64 audio responses, sequential playback |
 | ContentModule | Text display via TextMesh Pro, action forwarding |
-| ActionModule | Traditional animation triggers via ActionDict lookups |
+| ActionModule | Generic field consumer — extracts configured JSON fields and fires UnityEvents |
 | SmplhActionModule | SMPL-H motion playback (replaces ActionModule for SMPL configs) |
 
 ### Pipeline Configuration (SMPL scene example)
@@ -68,11 +68,10 @@ KWSModule → VADModule → RecordingModule → WebSocketClientModule → AudioM
 - **AudioLoader**: Sequential audio clip playback
 - **ContentLoader**: Dynamic text display with action hints
 
-### Action System (`Action/`)
+### Model Control (`ModelControl/`)
 
-- **ActionDict** (ScriptableObject): Maps action names → motion/expression lists with layer-based priority
-- **ActionLoader**: Looks up action string, randomly selects from candidates, fires UnityEvents to animator
-- Used by `ActionModule` for traditional animation trigger workflows
+- **ActionMap** (ScriptableObject): Reusable mapping from action keys → variants with layer-based priority
+- **Anim3D**: Multi-target animation controller supporting multiple Animators (motion), SkinnedMeshRenderers (expression), and mouth lip-sync targets, each with its own ActionMap
 
 ### SMPL-H Motion System (`SmplhMotion/`)
 
@@ -125,8 +124,7 @@ Managed by **YYStateManager** via **SignalManager** event routing.
 ```
 Assets/Custom/
 ├── YACHIYO/
-│   ├── Action/          — ActionDict, ActionLoader, animation control
-│   ├── ModelControl/    — Anim3D (direct animator control)
+│   ├── ModelControl/    — Anim3D (multi-target animation), ActionMap (ScriptableObject)
 │   ├── Pipeline/        — ProcessingPipeline, ProcessingModule, all modules
 │   ├── Recorder/        — MicrophoneManager, VoiceDetector, KeywordDetector
 │   ├── Setting/         — Game/character settings, pipeline setup

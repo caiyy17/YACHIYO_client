@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ebec6e074e34384468889e86efb8fe1b, type: 3}
+  m_Script: {fileID: 11500000, guid: 965d14fd6bfe1ab4b853870af84db148, type: 3}
   m_Name: ActionDictUnityChan
-  m_EditorClassIdentifier: 
-  motionList:
+  m_EditorClassIdentifier: Assembly-CSharp::ActionMap
+  entries:
   - key: idle
     layer: -10
     values:
@@ -37,4 +37,3 @@ MonoBehaviour:
     layer: 0
     values:
     - win00
-  expressionList: []
