@@ -202,7 +202,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1228976299}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.99999994
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3095,7 +3095,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1837920295}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.9575
+  m_Size: 0.9575001
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3553,6 +3553,12 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!137 &1162926943 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 13700036, guid: 49f2055d53eeb4e5a92af590a44bddee,
+    type: 3}
+  m_PrefabInstance: {fileID: 1774740484}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1171585438
 GameObject:
   m_ObjectHideFlags: 0
@@ -5782,9 +5788,27 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1774740484}
   m_PrefabAsset: {fileID: 0}
+--- !u!137 &1774740487 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 13700030, guid: 49f2055d53eeb4e5a92af590a44bddee,
+    type: 3}
+  m_PrefabInstance: {fileID: 1774740484}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &1774740488 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 13700016, guid: 49f2055d53eeb4e5a92af590a44bddee,
+    type: 3}
+  m_PrefabInstance: {fileID: 1774740484}
+  m_PrefabAsset: {fileID: 0}
 --- !u!95 &1774740489 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 9500000, guid: 49f2055d53eeb4e5a92af590a44bddee,
+    type: 3}
+  m_PrefabInstance: {fileID: 1774740484}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &1774740490 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 13700034, guid: 49f2055d53eeb4e5a92af590a44bddee,
     type: 3}
   m_PrefabInstance: {fileID: 1774740484}
   m_PrefabAsset: {fileID: 0}
@@ -6991,6 +7015,7 @@ GameObject:
   - component: {fileID: 9140757736988748937}
   - component: {fileID: 9140757736988748939}
   - component: {fileID: 9140757736988748951}
+  - component: {fileID: 9140757736988748952}
   - component: {fileID: 8897564120450272052}
   - component: {fileID: 9140757736988748950}
   m_Layer: 0
@@ -7421,6 +7446,7 @@ MonoBehaviour:
   - {fileID: 9140757736988748937}
   - {fileID: 9140757736988748939}
   - {fileID: 9140757736988748951}
+  - {fileID: 9140757736988748952}
   sendSignal:
     m_PersistentCalls:
       m_Calls:
@@ -7647,12 +7673,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Anim3D
   motionTargets: []
   idleAction: idle
-  idleTimeout: 10
-  expressionTargets: []
+  idleTimeout: 20
+  expressionTargets:
+  - renderer: {fileID: 1774740487}
+    actionMap: {fileID: 11400000, guid: 453e831bbc4403d449aaff311fa05bce, type: 2}
+    transitionSpeed: 10
+  - renderer: {fileID: 1774740490}
+    actionMap: {fileID: 11400000, guid: 453e831bbc4403d449aaff311fa05bce, type: 2}
+    transitionSpeed: 10
+  - renderer: {fileID: 1774740488}
+    actionMap: {fileID: 11400000, guid: 453e831bbc4403d449aaff311fa05bce, type: 2}
+    transitionSpeed: 10
+  - renderer: {fileID: 1162926943}
+    actionMap: {fileID: 11400000, guid: 453e831bbc4403d449aaff311fa05bce, type: 2}
+    transitionSpeed: 10
   expressionTimeout: 5
-  blinkTargets: []
+  blinkTargets:
+  - renderer: {fileID: 1774740490}
+    blendShapeIndex: 6
+    closeRatio: 100
+    halfCloseRatio: 20
+  - renderer: {fileID: 1774740488}
+    blendShapeIndex: 6
+    closeRatio: 100
+    halfCloseRatio: 20
+  blinkDuration: 0.4
+  blinkInterval: 3
+  blinkThreshold: 0.3
   mouthAudioSource: {fileID: 9140757736988748936}
-  mouthTargets: []
+  mouthTargets:
+  - renderer: {fileID: 1774740487}
+    blendShapeIndex: 6
+    minVolume: 0.03
+    maxVolume: 0.2
+    smoothingFactor: 0.4
 --- !u!114 &9140757736988748951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7685,6 +7739,38 @@ MonoBehaviour:
         m_CallState: 2
   sosValue: 
   eosValue: 
+--- !u!114 &9140757736988748952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1765252097405236044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3a371841f2cbee4fafeadd83fe76eaf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Yachiyo.ActionModule
+  destinationIndices: 
+  capturedSignals: []
+  fieldName: expression
+  onValue:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 9140757736988748950}
+        m_TargetAssemblyTypeName: Yachiyo.Anim3D, Assembly-CSharp
+        m_MethodName: SetExpression
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  sosValue: 
+  eosValue: neutral
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

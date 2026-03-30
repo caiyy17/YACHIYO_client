@@ -40,24 +40,24 @@ namespace Yachiyo
         [SerializeField] private float expressionTimeout = 5f;
         private float lastExpressionTime;
 
-        // --- Blink ---
+        // --- Blink: single timer drives all targets ---
         [Serializable]
         public class BlinkTarget
         {
             public SkinnedMeshRenderer renderer;
             public int blendShapeIndex;
-            public float blinkDuration = 0.4f;
-            public float interval = 3.0f;
-            public float threshold = 0.3f;
             public float closeRatio = 100f;
             public float halfCloseRatio = 20f;
-            [NonSerialized] public float blinkTimer;
-            [NonSerialized] public float intervalTimer;
-            [NonSerialized] public bool isBlinking;
         }
 
         [Header("Blink")]
         [SerializeField] private List<BlinkTarget> blinkTargets = new List<BlinkTarget>();
+        [SerializeField] private float blinkDuration = 0.4f;
+        [SerializeField] private float blinkInterval = 3.0f;
+        [SerializeField] private float blinkThreshold = 0.3f;
+        private float blinkTimer;
+        private float blinkIntervalTimer;
+        private bool isBlinking;
 
         // --- Mouth: multiple SkinnedMeshRenderers, each with its own thresholds ---
         [Serializable]
@@ -98,10 +98,7 @@ namespace Yachiyo
                     CacheBlendShapeIndices(target);
             }
 
-            foreach (var target in blinkTargets)
-            {
-                target.intervalTimer = target.interval;
-            }
+            blinkIntervalTimer = blinkInterval;
         }
 
         void Update()
@@ -143,51 +140,76 @@ namespace Yachiyo
                 }
             }
 
-            // Blink (runs after expression, paused when expression is active)
-            foreach (var blink in blinkTargets)
+            // Blink (runs after expression, single timer drives all targets)
+            if (blinkTargets.Count > 0)
             {
-                if (blink.renderer == null) continue;
-
-                // Pause blink when expression is active on the same renderer
-                if (IsExpressionActive(blink.renderer))
+                // Pause blink when any expression is active
+                bool anyExpressionActive = false;
+                foreach (var blink in blinkTargets)
                 {
-                    if (blink.isBlinking)
+                    if (blink.renderer != null && IsExpressionActive(blink.renderer))
                     {
-                        blink.renderer.SetBlendShapeWeight(blink.blendShapeIndex, 0f);
-                        blink.isBlinking = false;
-                        blink.blinkTimer = 0f;
-                    }
-                    continue;
-                }
-
-                // Interval countdown → roll dice to start blink
-                blink.intervalTimer -= Time.deltaTime;
-                if (blink.intervalTimer <= 0f)
-                {
-                    blink.intervalTimer = blink.interval;
-                    if (!blink.isBlinking && UnityEngine.Random.value > blink.threshold)
-                    {
-                        blink.isBlinking = true;
-                        blink.blinkTimer = blink.blinkDuration;
+                        anyExpressionActive = true;
+                        break;
                     }
                 }
 
-                // Blink animation
-                if (blink.isBlinking)
+                if (anyExpressionActive)
                 {
-                    blink.blinkTimer -= Time.deltaTime;
-                    if (blink.blinkTimer <= 0f)
+                    if (isBlinking)
                     {
-                        blink.renderer.SetBlendShapeWeight(blink.blendShapeIndex, 0f);
-                        blink.isBlinking = false;
+                        foreach (var blink in blinkTargets)
+                        {
+                            if (blink.renderer != null)
+                                blink.renderer.SetBlendShapeWeight(blink.blendShapeIndex, 0f);
+                        }
+                        isBlinking = false;
+                        blinkTimer = 0f;
                     }
-                    else if (blink.blinkTimer <= blink.blinkDuration * 0.3f)
+                }
+                else
+                {
+                    // Interval countdown → roll dice to start blink
+                    blinkIntervalTimer -= Time.deltaTime;
+                    if (blinkIntervalTimer <= 0f)
                     {
-                        blink.renderer.SetBlendShapeWeight(blink.blendShapeIndex, blink.halfCloseRatio);
+                        blinkIntervalTimer = blinkInterval;
+                        if (!isBlinking && UnityEngine.Random.value > blinkThreshold)
+                        {
+                            isBlinking = true;
+                            blinkTimer = blinkDuration;
+                        }
                     }
-                    else
+
+                    // Blink animation — apply to all targets simultaneously
+                    if (isBlinking)
                     {
-                        blink.renderer.SetBlendShapeWeight(blink.blendShapeIndex, blink.closeRatio);
+                        blinkTimer -= Time.deltaTime;
+                        if (blinkTimer <= 0f)
+                        {
+                            foreach (var blink in blinkTargets)
+                            {
+                                if (blink.renderer != null)
+                                    blink.renderer.SetBlendShapeWeight(blink.blendShapeIndex, 0f);
+                            }
+                            isBlinking = false;
+                        }
+                        else if (blinkTimer <= blinkDuration * 0.3f)
+                        {
+                            foreach (var blink in blinkTargets)
+                            {
+                                if (blink.renderer != null)
+                                    blink.renderer.SetBlendShapeWeight(blink.blendShapeIndex, blink.halfCloseRatio);
+                            }
+                        }
+                        else
+                        {
+                            foreach (var blink in blinkTargets)
+                            {
+                                if (blink.renderer != null)
+                                    blink.renderer.SetBlendShapeWeight(blink.blendShapeIndex, blink.closeRatio);
+                            }
+                        }
                     }
                 }
             }

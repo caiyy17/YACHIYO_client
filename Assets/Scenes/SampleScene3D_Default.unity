@@ -202,7 +202,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1228976299}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.99999994
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3819,8 +3819,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1837920296}
   m_HandleRect: {fileID: 1837920295}
   m_Direction: 2
-  m_Value: 1.0000018
-  m_Size: 0.9574999
+  m_Value: 1
+  m_Size: 0.9575001
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4484,6 +4484,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 11400116, guid: 49f2055d53eeb4e5a92af590a44bddee, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4507,9 +4511,21 @@ Animator:
     type: 3}
   m_PrefabInstance: {fileID: 1165644666}
   m_PrefabAsset: {fileID: 0}
+--- !u!137 &1165644670 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 13700016, guid: 49f2055d53eeb4e5a92af590a44bddee,
+    type: 3}
+  m_PrefabInstance: {fileID: 1165644666}
+  m_PrefabAsset: {fileID: 0}
 --- !u!137 &1165644671 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 13700030, guid: 49f2055d53eeb4e5a92af590a44bddee,
+    type: 3}
+  m_PrefabInstance: {fileID: 1165644666}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &1165644672 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 13700034, guid: 49f2055d53eeb4e5a92af590a44bddee,
     type: 3}
   m_PrefabInstance: {fileID: 1165644666}
   m_PrefabAsset: {fileID: 0}
@@ -6384,6 +6400,12 @@ Transform:
   m_Children: []
   m_Father: {fileID: 474811828}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!137 &1723209669 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 13700036, guid: 49f2055d53eeb4e5a92af590a44bddee,
+    type: 3}
+  m_PrefabInstance: {fileID: 1165644666}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1723407952
 GameObject:
   m_ObjectHideFlags: 0
@@ -8127,6 +8149,7 @@ GameObject:
   - component: {fileID: 9140757736988748938}
   - component: {fileID: 9140757736988748941}
   - component: {fileID: 9140757736988748942}
+  - component: {fileID: 9140757736988748951}
   - component: {fileID: 8897564120450272052}
   - component: {fileID: 9140757736988748950}
   m_Layer: 0
@@ -8562,6 +8585,7 @@ MonoBehaviour:
   - {fileID: 9140757736988748938}
   - {fileID: 9140757736988748941}
   - {fileID: 9140757736988748942}
+  - {fileID: 9140757736988748951}
   sendSignal:
     m_PersistentCalls:
       m_Calls:
@@ -8896,11 +8920,11 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument:
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  sosValue: thinking
-  eosValue: idle
+  sosValue: 
+  eosValue: 
 --- !u!114 &9140757736988748950
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8916,13 +8940,73 @@ MonoBehaviour:
   motionTargets:
   - animator: {fileID: 1165644669}
     actionMap: {fileID: 11400000, guid: 7eb54d7366b41ff45b64f18e86608d81, type: 2}
-  expressionTargets: []
+  idleAction: idle
+  idleTimeout: 20
+  expressionTargets:
+  - renderer: {fileID: 1165644671}
+    actionMap: {fileID: 11400000, guid: 453e831bbc4403d449aaff311fa05bce, type: 2}
+    transitionSpeed: 10
+  - renderer: {fileID: 1165644672}
+    actionMap: {fileID: 11400000, guid: 453e831bbc4403d449aaff311fa05bce, type: 2}
+    transitionSpeed: 10
+  - renderer: {fileID: 1165644670}
+    actionMap: {fileID: 11400000, guid: 453e831bbc4403d449aaff311fa05bce, type: 2}
+    transitionSpeed: 10
+  - renderer: {fileID: 1723209669}
+    actionMap: {fileID: 11400000, guid: 453e831bbc4403d449aaff311fa05bce, type: 2}
+    transitionSpeed: 10
+  expressionTimeout: 5
+  blinkTargets:
+  - renderer: {fileID: 1165644672}
+    blendShapeIndex: 6
+    closeRatio: 100
+    halfCloseRatio: 20
+  - renderer: {fileID: 1165644670}
+    blendShapeIndex: 6
+    closeRatio: 100
+    halfCloseRatio: 20
+  blinkDuration: 0.4
+  blinkInterval: 3
+  blinkThreshold: 0.3
   mouthAudioSource: {fileID: 9140757736988748940}
   mouthTargets:
   - renderer: {fileID: 1165644671}
     blendShapeIndex: 6
     minVolume: 0.03
     maxVolume: 0.2
+    smoothingFactor: 0.4
+--- !u!114 &9140757736988748951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1765252097405236044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3a371841f2cbee4fafeadd83fe76eaf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Yachiyo.ActionModule
+  destinationIndices: 
+  capturedSignals: []
+  fieldName: expression
+  onValue:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 9140757736988748950}
+        m_TargetAssemblyTypeName: Yachiyo.Anim3D, Assembly-CSharp
+        m_MethodName: SetExpression
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  sosValue: 
+  eosValue: neutral
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

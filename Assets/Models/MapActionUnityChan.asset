@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 965d14fd6bfe1ab4b853870af84db148, type: 3}
-  m_Name: ActionDictUnityChan
+  m_Name: MapActionUnityChan
   m_EditorClassIdentifier: Assembly-CSharp::ActionMap
   entries:
   - key: idle

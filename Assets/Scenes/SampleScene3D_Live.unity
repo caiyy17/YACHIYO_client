@@ -413,22 +413,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 92523487}
   m_CullTransparentMesh: 1
---- !u!114 &100000001
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1765252097405236044}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba79d690b1a47de4fa1d5637fbffa183, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  destinationIndices: 
-  capturedSignals: []
-  motionPlayer: {fileID: 100000003}
-  converter: {fileID: 100000002}
 --- !u!114 &100000002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1396,8 +1380,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 253806092}
   m_HandleRect: {fileID: 253806091}
   m_Direction: 2
-  m_Value: 1.0000018
-  m_Size: 0.9574999
+  m_Value: 1
+  m_Size: 0.9575001
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2073,11 +2057,7 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 259945761}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 100338, guid: 49f2055d53eeb4e5a92af590a44bddee,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 392454413}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49f2055d53eeb4e5a92af590a44bddee, type: 3}
 --- !u!4 &392454410 stripped
 Transform:
@@ -2087,13 +2067,25 @@ Transform:
   m_PrefabAsset: {fileID: 0}
 --- !u!137 &392454411 stripped
 SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 13700016, guid: 49f2055d53eeb4e5a92af590a44bddee,
+    type: 3}
+  m_PrefabInstance: {fileID: 392454409}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &392454412 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 13700034, guid: 49f2055d53eeb4e5a92af590a44bddee,
+    type: 3}
+  m_PrefabInstance: {fileID: 392454409}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &392454413 stripped
+SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 13700030, guid: 49f2055d53eeb4e5a92af590a44bddee,
     type: 3}
   m_PrefabInstance: {fileID: 392454409}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &392454412 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 100338, guid: 49f2055d53eeb4e5a92af590a44bddee,
+--- !u!137 &392454414 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 13700036, guid: 49f2055d53eeb4e5a92af590a44bddee,
     type: 3}
   m_PrefabInstance: {fileID: 392454409}
   m_PrefabAsset: {fileID: 0}
@@ -6138,8 +6130,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1325990590}
   m_HandleRect: {fileID: 1325990589}
   m_Direction: 0
-  m_Value: 1
-  m_Size: 0.99999994
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -7167,22 +7159,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &9140757736988748950
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1765252097405236044}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04b39f1976b3b22468e08ceb20d6d661, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::Anim3D
-  motionTargets: []
-  expressionTargets: []
-  mouthAudioSource: {fileID: 9140757736988748936}
-  mouthTargets: []
 --- !u!1 &1765252097405236044
 GameObject:
   m_ObjectHideFlags: 0
@@ -7194,13 +7170,14 @@ GameObject:
   - component: {fileID: 7270645627984393390}
   - component: {fileID: 2696081038372698381}
   - component: {fileID: 9140757736988748936}
-  - component: {fileID: 100000001}
   - component: {fileID: 100000002}
   - component: {fileID: 100000003}
   - component: {fileID: 100000004}
   - component: {fileID: 3934839681507022593}
   - component: {fileID: 9140757736988748937}
   - component: {fileID: 9140757736988748939}
+  - component: {fileID: 9140757736988748951}
+  - component: {fileID: 9140757736988748952}
   - component: {fileID: 8897564120450272052}
   - component: {fileID: 9140757736988748950}
   m_Layer: 0
@@ -7566,7 +7543,8 @@ MonoBehaviour:
   - {fileID: 3934839681507022593}
   - {fileID: 9140757736988748937}
   - {fileID: 9140757736988748939}
-  - {fileID: 100000001}
+  - {fileID: 9140757736988748951}
+  - {fileID: 9140757736988748952}
   sendSignal:
     m_PersistentCalls:
       m_Calls:
@@ -7721,6 +7699,118 @@ MonoBehaviour:
     color: {r: 1, g: 0, b: 0.87140036, a: 0}
   - name: text
     color: {r: 1, g: 1, b: 1, a: 0}
+--- !u!114 &9140757736988748950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1765252097405236044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04b39f1976b3b22468e08ceb20d6d661, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Anim3D
+  motionTargets: []
+  idleAction: idle
+  idleTimeout: 20
+  expressionTargets:
+  - renderer: {fileID: 392454413}
+    actionMap: {fileID: 11400000, guid: 453e831bbc4403d449aaff311fa05bce, type: 2}
+    transitionSpeed: 10
+  - renderer: {fileID: 392454412}
+    actionMap: {fileID: 11400000, guid: 453e831bbc4403d449aaff311fa05bce, type: 2}
+    transitionSpeed: 10
+  - renderer: {fileID: 392454411}
+    actionMap: {fileID: 11400000, guid: 453e831bbc4403d449aaff311fa05bce, type: 2}
+    transitionSpeed: 10
+  - renderer: {fileID: 392454414}
+    actionMap: {fileID: 11400000, guid: 453e831bbc4403d449aaff311fa05bce, type: 2}
+    transitionSpeed: 10
+  expressionTimeout: 5
+  blinkTargets:
+  - renderer: {fileID: 392454412}
+    blendShapeIndex: 6
+    closeRatio: 100
+    halfCloseRatio: 20
+  - renderer: {fileID: 392454411}
+    blendShapeIndex: 6
+    closeRatio: 100
+    halfCloseRatio: 20
+  blinkDuration: 0.4
+  blinkInterval: 3
+  blinkThreshold: 0.3
+  mouthAudioSource: {fileID: 9140757736988748936}
+  mouthTargets:
+  - renderer: {fileID: 392454413}
+    blendShapeIndex: 6
+    minVolume: 0.03
+    maxVolume: 0.2
+    smoothingFactor: 0.4
+--- !u!114 &9140757736988748951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1765252097405236044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3a371841f2cbee4fafeadd83fe76eaf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Yachiyo.ActionModule
+  destinationIndices: 
+  capturedSignals: []
+  fieldName: action
+  onValue:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 100000003}
+        m_TargetAssemblyTypeName: SmplhMotion.SmplhMotionPlayer, Assembly-CSharp
+        m_MethodName: PlayMotion
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  sosValue: 
+  eosValue: 
+--- !u!114 &9140757736988748952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1765252097405236044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3a371841f2cbee4fafeadd83fe76eaf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Yachiyo.ActionModule
+  destinationIndices: 
+  capturedSignals: []
+  fieldName: expression
+  onValue:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 9140757736988748950}
+        m_TargetAssemblyTypeName: Yachiyo.Anim3D, Assembly-CSharp
+        m_MethodName: SetExpression
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  sosValue: 
+  eosValue: neutral
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

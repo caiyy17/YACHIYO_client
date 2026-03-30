@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 965d14fd6bfe1ab4b853870af84db148, type: 3}
+  m_Name: MapExpressionUnityChan
+  m_EditorClassIdentifier: Assembly-CSharp::ActionMap
+  entries:
+  - key: smile
+    layer: 0
+    values:
+    - MTH_SMILE1
+    - MTH_SMILE2
+  - key: smirk
+    layer: 0
+    values:
+    - MTH_SMILE1
+  - key: mouth_corners_up
+    layer: 0
+    values:
+    - MTH_SMILE1
+  - key: happy_eyes
+    layer: 0
+    values:
+    - MTH_SMILE1
+  - key: raised_eyebrows
+    layer: 0
+    values:
+    - MTH_SMILE2
+  - key: angry
+    layer: 0
+    values:
+    - MTH_ANG1
+    - MTH_ANG2
+  - key: hmph
+    layer: 0
+    values:
+    - MTH_ANG1
+  - key: serious
+    layer: 0
+    values:
+    - MTH_ANG1
+  - key: frown
+    layer: 0
+    values:
+    - MTH_ANG2
+  - key: determined_eyes
+    layer: 0
+    values:
+    - MTH_ANG1
+  - key: troubled
+    layer: 0
+    values:
+    - MTH_CONF
+  - key: shy
+    layer: 0
+    values:
+    - MTH_CONF
+  - key: surprised_eyes
+    layer: 0
+    values:
+    - MTH_SAP
+  - key: horrified_eyes
+    layer: 0
+    values:
+    - MTH_SAP
