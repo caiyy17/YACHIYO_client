@@ -14,7 +14,8 @@ A Unity client for real-time AI assistant interaction. Supports voice input, tex
 |-------|-------------|
 | `GameStart` | Launcher with settings input and scene loading |
 | `SampleScene3D_Default` | Standard action system with UnityChan character |
-| `SampleScene3D_Smpl` | SMPL-H motion playback with humanoid character |
+| `SampleScene3D_Live` | Live mode — external interaction via gateway, SMPL-H motion + UnityChan |
+| `SampleScene3D_Smpl` | Same as Default but with SMPL-H motion instead of traditional animation |
 | `SampleScene3D_WebRTC` | Real-time bidirectional audio/video via WebRTC |
 
 ## Architecture
@@ -36,14 +37,13 @@ The client uses a **modular processing pipeline** (`ProcessingPipeline`) where m
 | WebSocketClientModule | WebSocket connection to server |
 | WebRTCClientModule | WebRTC connection with audio/video tracks + DataChannels |
 | AudioModule | Decodes base64 audio responses, sequential playback |
-| ContentModule | Text display via TextMesh Pro, action forwarding |
-| ActionModule | Generic field consumer — extracts configured JSON fields and fires UnityEvents |
-| SmplhActionModule | SMPL-H motion playback (replaces ActionModule for SMPL configs) |
+| ContentModule | Text display via TextMesh Pro |
+| ActionModule | Single-field consumer — extracts one JSON field (e.g. `action` or `expression`) and fires a UnityEvent |
 
-### Pipeline Configuration (SMPL scene example)
+### Pipeline Configuration Example
 
 ```
-KWSModule → VADModule → RecordingModule → WebSocketClientModule → AudioModule → ContentModule → SmplhActionModule
+KWSModule → VADModule → RecordingModule → WebSocketClientModule → AudioModule → ContentModule → ActionModule(action) → ActionModule(expression)
 ```
 
 ### Message Routing
@@ -71,15 +71,19 @@ KWSModule → VADModule → RecordingModule → WebSocketClientModule → AudioM
 ### Model Control (`ModelControl/`)
 
 - **ActionMap** (ScriptableObject): Reusable mapping from action keys → variants with layer-based priority
-- **Anim3D**: Multi-target animation controller supporting multiple Animators (motion), SkinnedMeshRenderers (expression), and mouth lip-sync targets, each with its own ActionMap
+- **Anim3D**: Multi-target animation controller:
+  - **Motion**: Multiple Animators with ActionMap trigger selection and idle timeout
+  - **Expression**: Multiple SkinnedMeshRenderers with ActionMap blendshape mapping and smooth transitions
+  - **Blink**: Timer-based auto-blink with expression mutual exclusion (single timer drives all targets)
+  - **Mouth**: Audio RMS lip-sync with EMA smoothing
 
 ### SMPL-H Motion System (`SmplhMotion/`)
 
 - **SmplhMotionData**: Decoded SMPL-H parameters (poses/trans/betas as float arrays)
 - **SmplhConverter**: Axis-angle → quaternion conversion with coordinate X-mirroring
-- **SmplhMotionPlayer**: Frame-buffer playback with crossfade blending and auto-refill idle
+- **SmplhMotionPlayer**: Frame-buffer playback with crossfade blending, auto-refill idle, and `PlayMotion(string)` API for direct JSON motion input
 - **IdleInitializer**: Loads pre-baked idle motion from `Resources/idle_motion.json`
-- Used by `SmplhActionModule` for server-generated humanoid motions
+- ActionModule calls `SmplhMotionPlayer.PlayMotion` directly (no intermediate module needed)
 
 ### State Machine (`States/`)
 
@@ -105,7 +109,7 @@ Managed by **YYStateManager** via **SignalManager** event routing.
 2. POST /init_pipeline/{client_id}    → Load pipeline config
 3. WS /ws/{client_id}                 → Connect WebSocket (or WebRTC /offer)
 4. Send: {"audio_file": "base64...", "timestamp": 123.45}
-5. Recv: {"text": "...", "audio_data": "base64...", "action": "..."}
+5. Recv: {"text": "...", "audio_data": "base64...", "action": "...", "expression": "..."}
 ```
 
 ## Key Dependencies
@@ -116,15 +120,13 @@ Managed by **YYStateManager** via **SignalManager** event routing.
 | WebRTC | 3.0.0-pre.7 | Real-time communication |
 | Input System | 1.18.0 | New Input System |
 | Newtonsoft JSON | 3.2.2 | JSON serialization |
-| uLipSync | — | Lip-sync from audio |
-| UniVRM | — | VRM character support |
 
 ## Project Structure
 
 ```
 Assets/Custom/
 ├── YACHIYO/
-│   ├── ModelControl/    — Anim3D (multi-target animation), ActionMap (ScriptableObject)
+│   ├── ModelControl/    — Anim3D (motion/expression/blink/mouth), ActionMap
 │   ├── Pipeline/        — ProcessingPipeline, ProcessingModule, all modules
 │   ├── Recorder/        — MicrophoneManager, VoiceDetector, KeywordDetector
 │   ├── Setting/         — Game/character settings, pipeline setup
@@ -132,11 +134,12 @@ Assets/Custom/
 │   ├── States/          — State machine (Idle/Ready/Listening/Answering)
 │   ├── Stream/          — WebRTC/WebSocket clients, AudioLoader, ContentLoader
 │   └── Utils/           — SignalManager, custom event types, utilities
-├── Scripts/
-│   ├── Editor/          — FBX animation tools
-│   ├── GameStart/       — Launcher UI, scene loading
-│   └── SampleScene/     — Scene-specific UI scripts
-└── UXUI/                — Audio button, loading screen, UI components
+Assets/Models/           — ActionMap assets (MapExpressionUnityChan, etc.)
+Assets/Scripts/
+├── Editor/              — FBX animation tools
+├── GameStart/           — Launcher UI, scene loading
+└── SampleScene/         — Scene-specific UI scripts
+Assets/UXUI/             — Audio button, loading screen, UI components
 ```
 
 ## License

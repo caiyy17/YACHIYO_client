@@ -14,7 +14,8 @@
 |------|------|
 | `GameStart` | 启动器，设置输入和场景加载 |
 | `SampleScene3D_Default` | 传统动画系统 + UnityChan 角色 |
-| `SampleScene3D_Smpl` | SMPL-H 动作回放 + humanoid 角色 |
+| `SampleScene3D_Live` | 直播模式 — 通过 gateway 获取外部交互信息，SMPL-H 动作 + UnityChan |
+| `SampleScene3D_Smpl` | Default 的 SMPL-H 动作版本（用 SMPL-H 替代传统动画） |
 | `SampleScene3D_WebRTC` | 基于 WebRTC 的实时双向音视频 |
 
 ## 架构
@@ -36,14 +37,13 @@
 | WebSocketClientModule | WebSocket 服务器连接 |
 | WebRTCClientModule | WebRTC 连接，含音视频轨道 + DataChannel |
 | AudioModule | 解码 base64 音频响应，顺序播放 |
-| ContentModule | 通过 TextMesh Pro 显示文本，转发动作数据 |
-| ActionModule | 传统动画触发，通过 ActionDict 查表 |
-| SmplhActionModule | SMPL-H 动作回放（替代 ActionModule 用于 SMPL 配置） |
+| ContentModule | 通过 TextMesh Pro 显示文本 |
+| ActionModule | 单字段消费模块 — 提取 JSON 中指定字段（如 `action` 或 `expression`）并触发 UnityEvent |
 
-### Pipeline 配置（SMPL 场景示例）
+### Pipeline 配置示例
 
 ```
-KWSModule → VADModule → RecordingModule → WebSocketClientModule → AudioModule → ContentModule → SmplhActionModule
+KWSModule → VADModule → RecordingModule → WebSocketClientModule → AudioModule → ContentModule → ActionModule(action) → ActionModule(expression)
 ```
 
 ### 消息路由
@@ -68,19 +68,22 @@ KWSModule → VADModule → RecordingModule → WebSocketClientModule → AudioM
 - **AudioLoader**：音频片段顺序播放
 - **ContentLoader**：动态文本显示，支持动作提示
 
-### 动作系统（`Action/`）
+### 模型控制（`ModelControl/`）
 
-- **ActionDict**（ScriptableObject）：将动作名称映射到动画/表情列表，支持基于 layer 的优先级
-- **ActionLoader**：查找动作字符串，从候选列表中随机选择，通过 UnityEvent 触发 Animator
-- 由 `ActionModule` 用于传统动画触发流程
+- **ActionMap**（ScriptableObject）：可复用的动作键 → 变体映射，支持 layer 优先级
+- **Anim3D**：多目标动画控制器：
+  - **Motion**：多 Animator 目标，ActionMap 触发选择 + idle 超时
+  - **Expression**：多 SkinnedMeshRenderer 目标，ActionMap blendshape 映射 + 平滑过渡
+  - **Blink**：定时自动眨眼，单 timer 驱动所有目标，与 expression 互斥
+  - **Mouth**：音频 RMS + EMA 平滑口型同步
 
 ### SMPL-H 动作系统（`SmplhMotion/`）
 
 - **SmplhMotionData**：解码后的 SMPL-H 参数（poses/trans/betas 为 float 数组）
 - **SmplhConverter**：轴角 → 四元数转换，坐标 X 轴镜像
-- **SmplhMotionPlayer**：帧缓冲播放，支持交叉淡入淡出和自动补充 idle 动作
+- **SmplhMotionPlayer**：帧缓冲播放，支持交叉淡入淡出、自动补充 idle，提供 `PlayMotion(string)` API
 - **IdleInitializer**：从 `Resources/idle_motion.json` 加载预烘焙的 idle 动作
-- 由 `SmplhActionModule` 用于服务器生成的 humanoid 动作
+- ActionModule 直接调用 `SmplhMotionPlayer.PlayMotion`（无需中间模块）
 
 ### 状态机（`States/`）
 
@@ -106,7 +109,7 @@ KWSModule → VADModule → RecordingModule → WebSocketClientModule → AudioM
 2. POST /init_pipeline/{client_id}    → 加载 pipeline 配置
 3. WS /ws/{client_id}                 → 连接 WebSocket（或 WebRTC /offer）
 4. Send: {"audio_file": "base64...", "timestamp": 123.45}
-5. Recv: {"text": "...", "audio_data": "base64...", "action": "..."}
+5. Recv: {"text": "...", "audio_data": "base64...", "action": "...", "expression": "..."}
 ```
 
 ## 主要依赖
@@ -117,16 +120,13 @@ KWSModule → VADModule → RecordingModule → WebSocketClientModule → AudioM
 | WebRTC | 3.0.0-pre.7 | 实时通信 |
 | Input System | 1.18.0 | 新版输入系统 |
 | Newtonsoft JSON | 3.2.2 | JSON 序列化 |
-| uLipSync | — | 音频口型同步 |
-| UniVRM | — | VRM 角色支持 |
 
 ## 项目结构
 
 ```
 Assets/Custom/
 ├── YACHIYO/
-│   ├── Action/          — ActionDict、ActionLoader、动画控制
-│   ├── ModelControl/    — Anim3D（直接 Animator 控制）
+│   ├── ModelControl/    — Anim3D（motion/expression/blink/mouth）、ActionMap
 │   ├── Pipeline/        — ProcessingPipeline、ProcessingModule、所有模块
 │   ├── Recorder/        — MicrophoneManager、VoiceDetector、KeywordDetector
 │   ├── Setting/         — 游戏/角色设置、pipeline 初始化
@@ -134,11 +134,12 @@ Assets/Custom/
 │   ├── States/          — 状态机（Idle/Ready/Listening/Answering）
 │   ├── Stream/          — WebRTC/WebSocket 客户端、AudioLoader、ContentLoader
 │   └── Utils/           — SignalManager、自定义事件类型、工具函数
-├── Scripts/
-│   ├── Editor/          — FBX 动画工具
-│   ├── GameStart/       — 启动器 UI、场景加载
-│   └── SampleScene/     — 场景专用 UI 脚本
-└── UXUI/                — 音频按钮、加载画面、UI 组件
+Assets/Models/           — ActionMap 资产（MapExpressionUnityChan 等）
+Assets/Scripts/
+├── Editor/              — FBX 动画工具
+├── GameStart/           — 启动器 UI、场景加载
+└── SampleScene/         — 场景专用 UI 脚本
+Assets/UXUI/             — 音频按钮、加载画面、UI 组件
 ```
 
 ## 许可证

@@ -1,20 +1,35 @@
-# Progress
+# 进度
 
-## Current: ActionModule 通用化 + Action/ 合并进 Anim3D
+## 已完成：ActionModule 通用化 + Anim3D 整合
 
-### Completed
-- **ActionModule.cs** — 通用字段消费模块，可配置 `actionFields` 列表（fieldName/onValue/sosValue/eosValue），支持可配置 `signalName`
-- **ActionMap.cs** — 新建 ScriptableObject，可实例化复用的 action key → (layer, variants) 映射
-- **Anim3D.cs** — 多目标设计：
-  - `List<MotionTarget>`: 多个 Animator + 各自 ActionMap，保留 trigger cache + priority/debounce/随机选取
-  - `List<ExpressionTarget>`: 多个 SkinnedMeshRenderer + 各自 ActionMap
-  - `List<MouthTarget>`: 多个 SkinnedMeshRenderer + 各自 blendShapeIndex/minVolume/maxVolume
-  - 口型动画从 MouthAnim 吸收（LateUpdate RMS → 平滑 → per-target 阈值）
-- **删除 Action/ 目录**: ActionLoader.cs, ActionDict.cs, MouthAnim.cs 及 .meta 全部删除
-- **6 个场景 YAML 更新**: 移除 MouthAnim/ActionLoader 组件块，Anim3D 添加 mouthAudioSource 引用
+### ActionModule.cs
+- 单字段消费管线模块：一个 `fieldName` + 一个 `onValue` UnityEvent + `sosValue`/`eosValue`
+- 过滤空字符串值（防止 LLM 空字段触发事件）
+- 多个 ActionModule 链式使用（action → expression）
 
-### TODO (用户在 Unity Editor 中完成)
-- 创建 ActionMap .asset 实例（替代原 ActionDict .asset）
-- 在 Anim3D Inspector 中配置 motionTargets / expressionTargets / mouthTargets
-- 在 ActionModule Inspector 中配置 actionFields 事件绑定到 Anim3D.SetAction
-- 清理旧的 ActionDict .asset 文件（Dev/ActionDict.asset, Models/ActionDictUnityChan.asset）
+### Anim3D.cs
+- **MotionTarget**：Animator + ActionMap，trigger 缓存，idle 超时（20s）
+- **ExpressionTarget**：SkinnedMeshRenderer + ActionMap，平滑 blendshape 过渡（Lerp），表情超时（5s）自动回 neutral
+- **BlinkTarget**：定时自动眨眼，单 timer 驱动所有 target，与 expression 互斥（expression 激活时暂停眨眼）
+- **MouthTarget**：音频 RMS + EMA 平滑口型同步，每个 target 独立阈值
+
+### SmplhMotionPlayer.cs
+- 新增 `PlayMotion(string actionJson)` 方法，ActionModule 直接调用
+- SmplhActionModule 已删除（逻辑吸收）
+
+### ActionMap 资产
+- `Models/MapExpressionUnityChan.asset`：UnityChan MTH_DEF blendshape 映射（14 条）
+
+### 已删除脚本
+- `Action/ActionLoader.cs`、`Action/ActionDict.cs`、`Action/MouthAnim.cs`
+- `Scripts/AutoBlink.cs`、`Scripts/MMDExpressionModule.cs`
+- `Pipeline/Modules/SmplhActionModule.cs`
+
+### 场景配置
+所有场景：pipeline 末尾为 ActionModule(action) → ActionModule(expression)，expression eosValue=neutral
+
+| 场景 | Action 目标 | Anim3D motion | Blink targets |
+|------|------------|---------------|---------------|
+| Scenes/Default | SetMotion (Anim3D) | Animator + map | 2 个 (idx 6) |
+| Scenes/Live | PlayMotion (SmplhPlayer) | 空 | 2 个 (idx 6) |
+| Scenes/Smpl | PlayMotion (SmplhPlayer) | 空 | 2 个 (idx 6) |
