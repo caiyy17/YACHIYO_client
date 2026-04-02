@@ -201,8 +201,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1228976300}
   m_HandleRect: {fileID: 1228976299}
   m_Direction: 0
-  m_Value: 1
-  m_Size: 0.99999994
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3061,8 +3061,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1837920296}
   m_HandleRect: {fileID: 1837920295}
   m_Direction: 2
-  m_Value: 1.0000018
-  m_Size: 0.9574999
+  m_Value: 1
+  m_Size: 0.9575
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4604,6 +4604,14 @@ MonoBehaviour:
   receiveAudio: {fileID: 1357011965}
   captureMixerGroup: {fileID: 165949045746451467, guid: ee2c1dc4e998bdf43903bfd71393197c,
     type: 2}
+  videoSource: 2
+  videoWidth: 1280
+  videoHeight: 720
+  videoFps: 30
+  sendCamera: {fileID: 0}
+  webcamDeviceName: 
+  sendStats: '-'
+  recvStats: '-'
   micOffsetMs: 30
   micSyncInterval: 2
 --- !u!1 &1379870843

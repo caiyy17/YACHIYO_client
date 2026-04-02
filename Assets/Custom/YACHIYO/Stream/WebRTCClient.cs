@@ -21,7 +21,29 @@ namespace Yachiyo
         [SerializeField] private AudioSource receiveAudio;
         [SerializeField] private AudioMixerGroup captureMixerGroup; // Silent mixer group for mic capture
 
+        public enum VideoSourceMode { None, Camera, Webcam }
+
+        [Header("Video")]
+        [SerializeField] private VideoSourceMode videoSource = VideoSourceMode.None;
+        [SerializeField] private int videoWidth = 320;
+        [SerializeField] private int videoHeight = 240;
+        [SerializeField] private int videoFps = 30;
+
+        [Header("Video Source — Camera")]
+        [SerializeField] private Camera sendCamera;
+
+        [Header("Video Source — Webcam")]
+        [Tooltip("Leave empty for default device.")]
+        [SerializeField] private string webcamDeviceName;
+
+        [Header("Stats (Read Only)")]
+        [SerializeField] private string sendStats = "-";
+        [SerializeField] private string recvStats = "-";
+
         private RTCPeerConnection _pc;
+        private Coroutine _statsCoroutine;
+        private ulong _lastFramesSent;
+        private ulong _lastFramesReceived;
 
         // Receive tracks
         private VideoStreamTrack receiveVideoTrack;
@@ -33,6 +55,7 @@ namespace Yachiyo
         private AudioStreamTrack sendAudioTrack;
         private RenderTexture sendVideoTexture;
         private VideoStreamTrack sendVideoTrack;
+        private WebCamTexture _webcamTex;
 
         // Data channels
         private RTCDataChannel clientDataChannel; // "client-signals" — created by us
@@ -124,8 +147,8 @@ namespace Yachiyo
             // Add local mic audio track → transceiver becomes SendRecv
             SetupMicAudioTrack();
 
-            // Add local placeholder video track → transceiver becomes SendRecv
-            SetupPlaceholderVideoTrack();
+            // Add local video track (if source configured) → transceiver becomes SendRecv
+            SetupVideoTrack();
 
             // Create "client-signals" DataChannel for VAD signals
             RTCDataChannelInit dcConf = new RTCDataChannelInit { ordered = true };
@@ -156,6 +179,8 @@ namespace Yachiyo
 
             Debug.Log("Set local description successfully");
             yield return StartCoroutine(SendOfferToServer(op.Desc));
+
+            _statsCoroutine = StartCoroutine(StatsCoroutine());
         }
 
         [Header("Mic Sync")]
@@ -194,6 +219,13 @@ namespace Yachiyo
 
         private void Update()
         {
+            // Blit webcam frames to RT
+            if (_webcamTex != null && _webcamTex.didUpdateThisFrame && sendVideoTexture != null)
+            {
+                Graphics.Blit(_webcamTex, sendVideoTexture);
+            }
+
+            // Mic sync
             if (micAudioSource == null || !micAudioSource.isPlaying) return;
 
             micSyncTimer += Time.deltaTime;
@@ -201,6 +233,35 @@ namespace Yachiyo
             {
                 micSyncTimer = 0f;
                 SyncMicPlayback();
+            }
+        }
+
+        private IEnumerator StatsCoroutine()
+        {
+            while (_pc != null)
+            {
+                yield return new WaitForSeconds(1f);
+                if (_pc == null) yield break;
+
+                var op = _pc.GetStats();
+                yield return op;
+                if (op.IsError) continue;
+
+                foreach (var stat in op.Value.Stats.Values)
+                {
+                    if (stat is RTCOutboundRTPStreamStats outbound && outbound.kind == "video")
+                    {
+                        ulong delta = outbound.framesSent - _lastFramesSent;
+                        _lastFramesSent = outbound.framesSent;
+                        sendStats = $"{outbound.frameWidth}x{outbound.frameHeight} {delta}fps";
+                    }
+                    else if (stat is RTCInboundRTPStreamStats inbound && inbound.kind == "video")
+                    {
+                        ulong delta = inbound.framesReceived - _lastFramesReceived;
+                        _lastFramesReceived = inbound.framesReceived;
+                        recvStats = $"{inbound.frameWidth}x{inbound.frameHeight} {delta}fps";
+                    }
+                }
             }
         }
 
@@ -217,18 +278,61 @@ namespace Yachiyo
             micAudioSource.timeSamples = targetPos;
         }
 
-        private void SetupPlaceholderVideoTrack()
+        private void SetupVideoTrack()
         {
-    #if UNITY_ANDROID && !UNITY_EDITOR
-            sendVideoTexture = new RenderTexture(320, 240, 0, RenderTextureFormat.ARGB32);
-    #else
-            sendVideoTexture = new RenderTexture(320, 240, 0, RenderTextureFormat.BGRA32);
-    #endif
+            // Create RT with platform-correct format
+#if UNITY_ANDROID && !UNITY_EDITOR
+            sendVideoTexture = new RenderTexture(videoWidth, videoHeight, 0, RenderTextureFormat.ARGB32);
+#else
+            sendVideoTexture = new RenderTexture(videoWidth, videoHeight, 0, RenderTextureFormat.BGRA32);
+#endif
             sendVideoTexture.Create();
 
+            // Bind source to RT
+            switch (videoSource)
+            {
+                case VideoSourceMode.Camera:
+                    if (sendCamera != null)
+                    {
+                        sendCamera.targetTexture = sendVideoTexture;
+                        Debug.Log($"Video source: Camera '{sendCamera.name}' → RT ({videoWidth}x{videoHeight})");
+                    }
+                    else
+                    {
+                        Debug.LogWarning("videoSource=Camera but sendCamera not assigned, sending blank");
+                    }
+                    break;
+
+                case VideoSourceMode.Webcam:
+                    if (WebCamTexture.devices.Length == 0)
+                    {
+                        Debug.LogWarning("No webcam found, falling back to blank RT");
+                        break;
+                    }
+                    if (string.IsNullOrEmpty(webcamDeviceName))
+                        _webcamTex = new WebCamTexture(videoWidth, videoHeight, videoFps);
+                    else
+                        _webcamTex = new WebCamTexture(webcamDeviceName, videoWidth, videoHeight, videoFps);
+                    _webcamTex.Play();
+                    Debug.Log($"Video source: Webcam '{_webcamTex.deviceName}' → RT ({videoWidth}x{videoHeight})");
+                    break;
+
+                default:
+                    Debug.Log($"Video source: None, sending blank RT ({videoWidth}x{videoHeight})");
+                    break;
+            }
+
             sendVideoTrack = new VideoStreamTrack(sendVideoTexture);
-            _pc.AddTrack(sendVideoTrack);
-            Debug.Log("Added local placeholder video track");
+            var sender = _pc.AddTrack(sendVideoTrack);
+
+            var parameters = sender.GetParameters();
+            foreach (var encoding in parameters.encodings)
+            {
+                encoding.maxFramerate = (uint)videoFps;
+            }
+            sender.SetParameters(parameters);
+
+            Debug.Log($"Added video track ({videoWidth}x{videoHeight}@{videoFps}fps)");
         }
 
         private RTCConfiguration GetSelectedSdpSemantics()
@@ -349,7 +453,10 @@ namespace Yachiyo
             var offerData = new OfferData
             {
                 sdp = offerDesc.sdp,
-                type = offerDesc.type.ToString().ToLower()
+                type = offerDesc.type.ToString().ToLower(),
+                video_fps = videoFps,
+                video_width = videoWidth,
+                video_height = videoHeight
             };
 
             string jsonData = JsonUtility.ToJson(offerData);
@@ -392,6 +499,12 @@ namespace Yachiyo
         {
             Debug.Log("Cleaning up WebRTC");
 
+            if (_statsCoroutine != null)
+            {
+                StopCoroutine(_statsCoroutine);
+                _statsCoroutine = null;
+            }
+
             if (receiveVideoTrack != null)
             {
                 receiveVideoTrack.OnVideoReceived -= OnVideoFrameReceived;
@@ -417,6 +530,16 @@ namespace Yachiyo
                 sendVideoTrack.Dispose();
                 sendVideoTrack = null;
             }
+
+            if (_webcamTex != null)
+            {
+                _webcamTex.Stop();
+                Destroy(_webcamTex);
+                _webcamTex = null;
+            }
+
+            if (sendCamera != null && sendCamera.targetTexture == sendVideoTexture)
+                sendCamera.targetTexture = null;
 
             if (sendVideoTexture != null)
             {
@@ -459,6 +582,9 @@ namespace Yachiyo
         {
             public string sdp;
             public string type;
+            public int video_fps;
+            public int video_width;
+            public int video_height;
         }
 
         [Serializable]
