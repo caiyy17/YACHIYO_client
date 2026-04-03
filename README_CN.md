@@ -38,20 +38,14 @@
 | WebRTCClientModule | WebRTC 连接，含音视频轨道 + DataChannel |
 | AudioModule | 解码 base64 音频响应，顺序播放 |
 | ContentModule | 通过 TextMesh Pro 显示文本 |
-| ActionModule | 单字段消费模块 — 提取 JSON 中指定字段（如 `action` 或 `expression`）并触发 UnityEvent |
-
-### Pipeline 配置示例
-
-```
-KWSModule → VADModule → RecordingModule → WebSocketClientModule → AudioModule → ContentModule → ActionModule(action) → ActionModule(expression)
-```
+| ActionModule | 单字段消费模块 — 提取 JSON 中指定字段并触发 UnityEvent |
 
 ### 消息路由
 
 - `destination = -2`：传递给下一个模块（默认）
 - `destination = -1`：跳过所有模块，直送 pipeline 末端
 - `destination = N`：传递给索引为 N 的模块
-- 未被识别的信号会自动转发给下游
+- 未识别的信号自动向下游转发
 
 ## 子系统
 
@@ -63,27 +57,28 @@ KWSModule → VADModule → RecordingModule → WebSocketClientModule → AudioM
 
 ### 流传输（`Stream/`）
 
-- **WebRTCClient**：双向音视频，两个 DataChannel（`client-signals` 发送 VAD 信号，`server-data` 接收响应）
+- **WebRTCClient**：双向音视频，支持可配置视频源：
+  - 视频源模式：`None`（空白占位）/ `Camera`（Unity 摄像机）/ `Webcam`（物理摄像头）
+  - 可配置分辨率和帧率（需与服务器 pipeline 配置一致）
+  - Inspector 中实时显示收发分辨率和帧率（通过 WebRTC GetStats API）
+  - 音频固定 48kHz（Unity WebRTC 限制）
 - **WebSocketClient**：替代 WebRTC 的 WebSocket 传输方案
-- **AudioLoader**：音频片段顺序播放
-- **ContentLoader**：动态文本显示，支持动作提示
+
+### NDI 输出（`Scripts/`）
+
+- **NdiSendManager**：通过 KlakNDI 从 Unity 摄像机创建 NDI 发送流，每个摄像机成为独立 NDI 源
 
 ### 模型控制（`ModelControl/`）
 
 - **ActionMap**（ScriptableObject）：可复用的动作键 → 变体映射，支持 layer 优先级
-- **Anim3D**：多目标动画控制器：
-  - **Motion**：多 Animator 目标，ActionMap 触发选择 + idle 超时
-  - **Expression**：多 SkinnedMeshRenderer 目标，ActionMap blendshape 映射 + 平滑过渡
-  - **Blink**：定时自动眨眼，单 timer 驱动所有目标，与 expression 互斥
-  - **Mouth**：音频 RMS + EMA 平滑口型同步
+- **Anim3D**：多目标动画控制器（motion、expression、blink、口型同步）
 
 ### SMPL-H 动作系统（`SmplhMotion/`）
 
-- **SmplhMotionData**：解码后的 SMPL-H 参数（poses/trans/betas 为 float 数组）
+- **SmplhMotionData**：解码后的 SMPL-H 参数（poses/trans/betas 浮点数组）
 - **SmplhConverter**：轴角 → 四元数转换，坐标 X 轴镜像
-- **SmplhMotionPlayer**：帧缓冲播放，支持交叉淡入淡出、自动补充 idle，提供 `PlayMotion(string)` API
+- **SmplhMotionPlayer**：帧缓冲播放，支持交叉淡入淡出和自动补充 idle
 - **IdleInitializer**：从 `Resources/idle_motion.json` 加载预烘焙的 idle 动作
-- ActionModule 直接调用 `SmplhMotionPlayer.PlayMotion`（无需中间模块）
 
 ### 状态机（`States/`）
 
@@ -94,7 +89,7 @@ KWSModule → VADModule → RecordingModule → WebSocketClientModule → AudioM
 | ListeningState | 录音中（VAD 激活） |
 | AnsweringState | 服务器处理 + 响应播放 |
 
-由 **YYStateManager** 通过 **SignalManager** 事件路由管理。
+由 **YYStateManager** 管理，通过 **SignalManager** 进行事件路由。
 
 ### 设置（`Setting/`）
 
@@ -104,13 +99,24 @@ KWSModule → VADModule → RecordingModule → WebSocketClientModule → AudioM
 
 ## 客户端-服务器流程
 
+### WebSocket 模式
+
 ```
-1. POST /register/                    → 注册客户端
-2. POST /init_pipeline/{client_id}    → 加载 pipeline 配置
-3. WS /ws/{client_id}                 → 连接 WebSocket（或 WebRTC /offer）
-4. Send: {"audio_file": "base64...", "timestamp": 123.45}
-5. Recv: {"text": "...", "audio_data": "base64...", "action": "...", "expression": "..."}
+1. POST /register/                 → 注册客户端
+2. POST /init_pipeline/{client_id} → 加载 pipeline 配置
+3. WS   /ws/{client_id}           → 双向消息通信
 ```
+
+### WebRTC 模式
+
+```
+1. POST /register/                 → 注册客户端
+2. POST /init_pipeline/{client_id} → 加载 pipeline 配置
+3. POST /offer/{client_id}        → SDP offer + 视频参数（fps/width/height）
+4. 双向流：音频轨道 + 视频轨道 + DataChannel
+```
+
+视频参数（`video_fps`、`video_width`、`video_height`）需在 Unity 客户端、服务器默认值和 pipeline 配置（`frame_splitter` 节点）之间保持一致。
 
 ## 主要依赖
 
@@ -118,7 +124,8 @@ KWSModule → VADModule → RecordingModule → WebSocketClientModule → AudioM
 |----|------|------|
 | Universal RP | 17.3.0 | 渲染管线 |
 | WebRTC | 3.0.0-pre.7 | 实时通信 |
-| Input System | 1.18.0 | 新版输入系统 |
+| KlakNDI | 2.1.5 | NDI 视频输出 |
+| Input System | 1.18.0 | 输入处理 |
 | Newtonsoft JSON | 3.2.2 | JSON 序列化 |
 
 ## 项目结构
@@ -126,20 +133,20 @@ KWSModule → VADModule → RecordingModule → WebSocketClientModule → AudioM
 ```
 Assets/Custom/
 ├── YACHIYO/
-│   ├── ModelControl/    — Anim3D（motion/expression/blink/mouth）、ActionMap
+│   ├── ModelControl/    — Anim3D（多目标动画）、ActionMap（ScriptableObject）
 │   ├── Pipeline/        — ProcessingPipeline、ProcessingModule、所有模块
 │   ├── Recorder/        — MicrophoneManager、VoiceDetector、KeywordDetector
 │   ├── Setting/         — 游戏/角色设置、pipeline 初始化
 │   ├── SmplhMotion/     — SMPL-H 转换器、播放器、idle 初始化
 │   ├── States/          — 状态机（Idle/Ready/Listening/Answering）
-│   ├── Stream/          — WebRTC/WebSocket 客户端、AudioLoader、ContentLoader
+│   ├── Stream/          — WebRTC/WebSocket 客户端
 │   └── Utils/           — SignalManager、自定义事件类型、工具函数
-Assets/Models/           — ActionMap 资产（MapExpressionUnityChan 等）
-Assets/Scripts/
-├── Editor/              — FBX 动画工具
-├── GameStart/           — 启动器 UI、场景加载
-└── SampleScene/         — 场景专用 UI 脚本
-Assets/UXUI/             — 音频按钮、加载画面、UI 组件
+├── Scripts/
+│   ├── GameStart/       — 启动器 UI、场景加载
+│   ├── SampleScene/     — 场景专用 UI 脚本
+│   └── NdiSendManager   — NDI 摄像机输出
+Assets/Models/           — ActionMap 资产、设置数据
+Assets/UXUI/             — UI 组件、图标、背景
 ```
 
 ## 许可证
@@ -147,8 +154,6 @@ Assets/UXUI/             — 音频按钮、加载画面、UI 组件
 本项目源代码基于 [MIT License](LICENSE) 开源。
 
 ### 第三方资产
-
-以下资产适用各自的许可证：
 
 - **Unity-Chan**（`Assets/UnityChan/`）：© Unity Technologies Japan/UCL — [Unity-Chan License Terms (UCL 2.02)](https://unity-chan.com/contents/license_jp/)
 - **40+ Simple Icons - Free**（`Assets/40+ Simple Icons - Free/`）：[Unity Asset Store EULA](https://unity.com/legal/as-terms)
