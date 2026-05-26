@@ -79,7 +79,6 @@ namespace Yachiyo
 
         private void LateUpdate()
         {
-            float start = Time.realtimeSinceStartup;
             CheckTailCancel();
 
             if (TryGetProcessedMessage(out string message))
@@ -112,9 +111,6 @@ namespace Yachiyo
                 LogInfo($"Output: {modified_message}");
                 DistributeMessage(modified_message);
             }
-            float ms = (Time.realtimeSinceStartup - start) * 1000f;
-            if (ms > 30f)
-                LogInfo($"[Perf] LateUpdate took {ms:F1}ms");
         }
 
         private void OnDisable()

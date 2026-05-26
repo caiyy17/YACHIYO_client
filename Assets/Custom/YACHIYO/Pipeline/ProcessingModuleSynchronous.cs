@@ -4,17 +4,11 @@ namespace Yachiyo
 {
     public class ProcessingModuleSynchronous : ProcessingModule
     {
-        private const float PERF_THRESHOLD_MS = 30f;
-
         private void Update()
         {
             if (isProcessing)
             {
-                float start = Time.realtimeSinceStartup;
                 TryProcess();
-                float ms = (Time.realtimeSinceStartup - start) * 1000f;
-                if (ms > PERF_THRESHOLD_MS)
-                    Debug.LogWarning($"[Perf] {moduleName}_{index}.TryProcess took {ms:F1}ms");
             }
         }
 
