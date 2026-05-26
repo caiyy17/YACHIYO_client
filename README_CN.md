@@ -30,7 +30,6 @@
 
 | 模块 | 功能 |
 |------|------|
-| KWSModule | 关键词唤醒（可选语音激活） |
 | VADModule | 语音活动检测，发出 recording_start/stop 信号 |
 | RecordingModule | 捕获麦克风音频，编码为 base64 WAV |
 | DirectSendModule | 发送预设文本消息（跳过录音流程） |
@@ -53,7 +52,6 @@
 
 - **MicrophoneManager**：单例管理连续麦克风输入（16kHz）
 - **VoiceDetector**：基于响度的 VAD，支持可配置阈值
-- **KeywordDetector**：可选的关键词唤醒检测
 
 ### 流传输（`Stream/`）
 
@@ -135,7 +133,7 @@ Assets/Custom/
 ├── YACHIYO/
 │   ├── ModelControl/    — Anim3D（多目标动画）、ActionMap（ScriptableObject）
 │   ├── Pipeline/        — ProcessingPipeline、ProcessingModule、所有模块
-│   ├── Recorder/        — MicrophoneManager、VoiceDetector、KeywordDetector
+│   ├── Recorder/        — MicrophoneManager、VoiceDetector
 │   ├── Setting/         — 游戏/角色设置、pipeline 初始化
 │   ├── SmplhMotion/     — SMPL-H 转换器、播放器、idle 初始化
 │   ├── States/          — 状态机（Idle/Ready/Listening/Answering）

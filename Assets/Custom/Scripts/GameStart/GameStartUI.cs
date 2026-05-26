@@ -49,7 +49,6 @@ public class GameStartUI : MonoBehaviour
     public Button closeError;
 
     public bool hideUI = false;
-    public bool useBGM = true;
     public bool useVAD = false;
 
     public float speakingThreshold = 0.01f;
@@ -59,15 +58,12 @@ public class GameStartUI : MonoBehaviour
     public GameObject AppSettingPanel;
     public Button closeAppSetting;
     public Toggle hideUIToggle;
-    public Toggle useBGMToggle;
     public Toggle useVADToggle;
     public Slider speakingThresholdSlider;
     public Slider silenceThresholdSlider;
     public TMP_Dropdown micDropdown;
     public Slider Display;
     public float current_volumn = 0;
-
-    public AudioSource bgm;
 
     [SerializeField] public InputAction startAction;
 
@@ -106,15 +102,9 @@ public class GameStartUI : MonoBehaviour
         charDropDown.value = char_index;
         // AppSettings
         hideUI = PlayerPrefs.GetInt("hideUI", hideUI ? 1 : 0) == 1;
-        useBGM = PlayerPrefs.GetInt("useBGM", useBGM ? 1 : 0) == 1;
         useVAD = PlayerPrefs.GetInt("useVAD", useVAD ? 1 : 0) == 1;
         speakingThreshold = PlayerPrefs.GetFloat("speakingThreshold", speakingThreshold);
         silenceThreshold = PlayerPrefs.GetFloat("silenceThreshold", silenceThreshold);
-        bgm.Play();
-        if (!useBGM)
-        {
-            bgm.Pause();
-        }
 
         if (userIdInput.text == "0")
         {
@@ -152,7 +142,6 @@ public class GameStartUI : MonoBehaviour
         {
             mainScreen.SetActive(false);
             hideUIToggle.isOn = hideUI;
-            useBGMToggle.isOn = useBGM;
             useVADToggle.isOn = useVAD;
             speakingThresholdSlider.value = ToLog(speakingThreshold);
             silenceThresholdSlider.value = ToLog(silenceThreshold);
@@ -171,7 +160,6 @@ public class GameStartUI : MonoBehaviour
         closeAppSetting.onClick.AddListener(() =>
         {
             hideUI = hideUIToggle.isOn;
-            useBGM = useBGMToggle.isOn;
             useVAD = useVADToggle.isOn;
             speakingThreshold = ToExp(speakingThresholdSlider.value);
             silenceThreshold = ToExp(silenceThresholdSlider.value);
@@ -187,22 +175,9 @@ public class GameStartUI : MonoBehaviour
             }
 
             PlayerPrefs.SetInt("hideUI", hideUI ? 1 : 0);
-            PlayerPrefs.SetInt("useBGM", useBGM ? 1 : 0);
             PlayerPrefs.SetInt("useVAD", useVAD ? 1 : 0);
             PlayerPrefs.SetFloat("speakingThreshold", speakingThreshold);
             PlayerPrefs.SetFloat("silenceThreshold", silenceThreshold);
-
-            if (useBGM)
-            {
-                if (!bgm.isPlaying)
-                {
-                    bgm.UnPause();
-                }
-            }
-            else
-            {
-                bgm.Pause();
-            }
 
             AppSettingPanel.SetActive(false);
             mainScreen.SetActive(true);
@@ -218,7 +193,6 @@ public class GameStartUI : MonoBehaviour
         PlayerPrefs.SetString("pipelineConfig", pipelineConfigInput.text);
         // AppSettings
         PlayerPrefs.SetInt("hideUI", hideUI ? 1 : 0);
-        PlayerPrefs.SetInt("useBGM", useBGM ? 1 : 0);
         PlayerPrefs.SetInt("useVAD", useVAD ? 1 : 0);
         PlayerPrefs.SetFloat("speakingThreshold", speakingThreshold);
         PlayerPrefs.SetFloat("silenceThreshold", silenceThreshold);

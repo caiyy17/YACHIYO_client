@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Audio;
 using UnityEngine.UI;
 using Unity.WebRTC;
+using Debug = UnityEngine.Debug;
 
 namespace Yachiyo
 {
@@ -217,12 +219,23 @@ namespace Yachiyo
             Debug.Log("Added local mic audio track");
         }
 
+        private Stopwatch _debugSw = new Stopwatch();
+        private int _frameCount = 0;
+        private const float DEBUG_THRESHOLD_MS = 30f;
+
         private void Update()
         {
+            _frameCount++;
+            float frameStart = Time.realtimeSinceStartup;
+
             // Blit webcam frames to RT
             if (_webcamTex != null && _webcamTex.didUpdateThisFrame && sendVideoTexture != null)
             {
+                _debugSw.Restart();
                 Graphics.Blit(_webcamTex, sendVideoTexture);
+                _debugSw.Stop();
+                if (_debugSw.ElapsedMilliseconds > DEBUG_THRESHOLD_MS)
+                    Debug.LogWarning($"[Perf] Frame {_frameCount}: Graphics.Blit took {_debugSw.ElapsedMilliseconds}ms");
             }
 
             // Mic sync
@@ -232,8 +245,16 @@ namespace Yachiyo
             if (micSyncTimer >= micSyncInterval)
             {
                 micSyncTimer = 0f;
+                _debugSw.Restart();
                 SyncMicPlayback();
+                _debugSw.Stop();
+                if (_debugSw.ElapsedMilliseconds > DEBUG_THRESHOLD_MS)
+                    Debug.LogWarning($"[Perf] Frame {_frameCount}: SyncMicPlayback took {_debugSw.ElapsedMilliseconds}ms");
             }
+
+            float frameDelta = (Time.realtimeSinceStartup - frameStart) * 1000f;
+            if (frameDelta > DEBUG_THRESHOLD_MS)
+                Debug.LogWarning($"[Perf] Frame {_frameCount}: WebRTCClient.Update total {frameDelta:F1}ms");
         }
 
         private IEnumerator StatsCoroutine()

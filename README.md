@@ -30,7 +30,6 @@ The client uses a **modular processing pipeline** (`ProcessingPipeline`) where m
 
 | Module | Function |
 |--------|----------|
-| KWSModule | Keyword spotting (optional voice activation) |
 | VADModule | Voice activity detection, emits recording_start/stop |
 | RecordingModule | Captures microphone audio, encodes to base64 WAV |
 | DirectSendModule | Sends predefined text messages (bypasses recording) |
@@ -53,7 +52,6 @@ The client uses a **modular processing pipeline** (`ProcessingPipeline`) where m
 
 - **MicrophoneManager**: Singleton managing continuous mic input (16kHz)
 - **VoiceDetector**: Loudness-based VAD with configurable thresholds
-- **KeywordDetector**: Optional keyword spotting activation
 
 ### Streaming (`Stream/`)
 
@@ -135,7 +133,7 @@ Assets/Custom/
 ├── YACHIYO/
 │   ├── ModelControl/    — Anim3D (multi-target animation), ActionMap (ScriptableObject)
 │   ├── Pipeline/        — ProcessingPipeline, ProcessingModule, all modules
-│   ├── Recorder/        — MicrophoneManager, VoiceDetector, KeywordDetector
+│   ├── Recorder/        — MicrophoneManager, VoiceDetector
 │   ├── Setting/         — Game/character settings, pipeline setup
 │   ├── SmplhMotion/     — SMPL-H converter, player, idle initializer
 │   ├── States/          — State machine (Idle/Ready/Listening/Answering)

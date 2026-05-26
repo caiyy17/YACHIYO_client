@@ -26,12 +26,6 @@ public class SampleSceneUI : MonoBehaviour
     public Sprite buttonOnTexture;
     public Sprite buttonOffTexture;
 
-    //BGM
-    public AudioSource bgm;
-    public Button playBGM;
-    public Sprite playTexture;
-    public Sprite pauseTexture;
-
     //Settings
     public Button SettingButton;
     public GameObject MainScreen;
@@ -56,23 +50,9 @@ public class SampleSceneUI : MonoBehaviour
         nextModel.onClick.AddListener(NextModel);
         prevModel.onClick.AddListener(PrevModel);
         hideUI.onClick.AddListener(HideUI);
-        playBGM.onClick.AddListener(PlayBGM);
         SettingButton.onClick.AddListener(ShowSetting);
         CloseSetting.onClick.AddListener(CloseSettingPanel);
         HomeButton.onClick.AddListener(ReturnHome);
-
-        bool useBGM = PlayerPrefs.GetInt("useBGM", 1) == 1;
-        bgm.Play();
-        if (useBGM)
-        {
-            playBGM.GetComponent<DynamicUI>().enabled = true;
-        }
-        else
-        {
-            bgm.Pause();
-            playBGM.GetComponent<DynamicUI>().enabled = false;
-            playBGM.GetComponent<Image>().sprite = pauseTexture;
-        }
 
         bool isHideUI = PlayerPrefs.GetInt("hideUI", 0) == 1;
         if (isHideUI)
@@ -100,7 +80,6 @@ public class SampleSceneUI : MonoBehaviour
         nextModel.onClick.RemoveAllListeners();
         prevModel.onClick.RemoveAllListeners();
         hideUI.onClick.RemoveAllListeners();
-        playBGM.onClick.RemoveAllListeners();
         SettingButton.onClick.RemoveAllListeners();
         CloseSetting.onClick.RemoveAllListeners();
         HomeButton.onClick.RemoveAllListeners();
@@ -152,23 +131,6 @@ public class SampleSceneUI : MonoBehaviour
         {
             uiPanel.SetActive(true);
             hideUI.GetComponent<Image>().sprite = buttonOnTexture;
-        }
-    }
-
-    public void PlayBGM()
-    {
-        if (bgm.isPlaying)
-        {
-            bgm.Pause();
-            // disable DynamicUI
-            playBGM.GetComponent<DynamicUI>().enabled = false;
-            playBGM.GetComponent<Image>().sprite = pauseTexture;
-        }
-        else
-        {
-            bgm.UnPause();
-            //enable DynamicUI
-            playBGM.GetComponent<DynamicUI>().enabled = true;
         }
     }
 
