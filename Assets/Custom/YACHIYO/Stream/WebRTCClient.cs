@@ -106,55 +106,8 @@ namespace Yachiyo
                 rt.sizeDelta = new Vector2(320, 180);
             }
 
-            StartCoroutine(ConnectFlow());
+            StartCoroutine(Call());
             StartCoroutine(WebRTC.Update());
-        }
-
-        /// <summary>
-        /// Full connection flow: register → init pipeline → WebRTC signaling
-        /// </summary>
-        private IEnumerator ConnectFlow()
-        {
-            // Register and init_pipeline are handled by GameStart (SetupPipeline)
-            yield return StartCoroutine(Call());
-        }
-
-        private IEnumerator Register()
-        {
-            Debug.Log("Registering client...");
-            string json = $"{{\"client_id\":\"{clientId}\"}}";
-            byte[] postData = Encoding.UTF8.GetBytes(json);
-
-            UnityWebRequest request = new UnityWebRequest($"{mainServerUrl}/register/", "POST");
-            request.uploadHandler = new UploadHandlerRaw(postData);
-            request.downloadHandler = new DownloadHandlerBuffer();
-            request.SetRequestHeader("Content-Type", "application/json");
-
-            yield return request.SendWebRequest();
-
-            if (request.result != UnityWebRequest.Result.Success)
-                Debug.LogError($"Registration failed: {request.error}");
-            else
-                Debug.Log($"Registration successful: {request.downloadHandler.text}");
-        }
-
-        private IEnumerator InitPipeline()
-        {
-            Debug.Log("Initializing pipeline...");
-            string json = $"{{\"config\":\"{pipelineConfig}\"}}";
-            byte[] postData = Encoding.UTF8.GetBytes(json);
-
-            UnityWebRequest request = new UnityWebRequest($"{mainServerUrl}/init_pipeline/{clientId}", "POST");
-            request.uploadHandler = new UploadHandlerRaw(postData);
-            request.downloadHandler = new DownloadHandlerBuffer();
-            request.SetRequestHeader("Content-Type", "application/json");
-
-            yield return request.SendWebRequest();
-
-            if (request.result != UnityWebRequest.Result.Success)
-                Debug.LogError($"Init pipeline failed: {request.error}");
-            else
-                Debug.Log($"Init pipeline successful: {request.downloadHandler.text}");
         }
 
         private IEnumerator Call()
