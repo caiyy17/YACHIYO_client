@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SampleScene3D_Smpl.unity
     guid: 94f82a113d49746479a9cb4ae0996bac
+  - enabled: 1
+    path: Assets/Scenes/SampleScene3D_Live.unity
+    guid: ec044498d4f0b574ca18511a2e2e9df0
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 3efae91c5c58e0f43b60ff898c4b8641,
       type: 2}

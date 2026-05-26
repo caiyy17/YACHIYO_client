@@ -8,8 +8,6 @@ namespace Yachiyo
         private int startSample;
         private int endSample;
 
-        public string serviceName = "default";
-
         public int sampleRate;
         public float maxRecordingTime = 60f;
         private float[] audioData = null;

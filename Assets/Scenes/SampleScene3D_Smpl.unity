@@ -3094,8 +3094,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1837920296}
   m_HandleRect: {fileID: 1837920295}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.9575001
+  m_Value: 1.0000018
+  m_Size: 0.9575
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -7387,7 +7387,7 @@ MonoBehaviour:
   defaultState: {fileID: 8452782695937358682}
   idleState: {fileID: 8452782695937358682}
   listeningState: {fileID: 8452782695937358679}
-  countDownTime: 5
+  countDownTime: 9999
 --- !u!114 &8452782695937358681
 MonoBehaviour:
   m_ObjectHideFlags: 0

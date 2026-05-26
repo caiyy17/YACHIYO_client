@@ -3820,7 +3820,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1837920295}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.9575001
+  m_Size: 0.9575
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -8667,7 +8667,7 @@ MonoBehaviour:
       m_Flags: 0
     name: go out
     message: "{\"1_text\":\"\u6211\u51FA\u95E8\u4E86\", \"1_language\":\"auto\"}"
-    destination_remote: 3
+    destination_remote: 2
   - button:
       m_Name: Button
       m_Type: 1
@@ -8687,7 +8687,7 @@ MonoBehaviour:
       m_Flags: 0
     name: go home
     message: "{\"1_text\":\"\u6211\u56DE\u6765\u4E86\", \"1_language\":\"auto\"}"
-    destination_remote: 3
+    destination_remote: 2
   - button:
       m_Name: Button
       m_Type: 1
@@ -8707,7 +8707,7 @@ MonoBehaviour:
       m_Flags: 0
     name: morning
     message: "{\"1_text\":\"\u65E9\u4E0A\u597D\", \"1_language\":\"auto\"}"
-    destination_remote: 3
+    destination_remote: 2
   - button:
       m_Name: Button
       m_Type: 1
@@ -8727,7 +8727,7 @@ MonoBehaviour:
       m_Flags: 0
     name: evening
     message: "{\"1_text\":\"\u665A\u4E0A\u597D\", \"1_language\":\"auto\"}"
-    destination_remote: 3
+    destination_remote: 2
 --- !u!114 &9140757736988748935
 MonoBehaviour:
   m_ObjectHideFlags: 0

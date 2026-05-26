@@ -30,6 +30,31 @@ namespace Yachiyo
             }
         }
 
+        /// <summary>
+        /// Get the list of available microphone device names.
+        /// </summary>
+        public string[] GetAvailableDevices()
+        {
+            return Microphone.devices;
+        }
+
+        /// <summary>
+        /// Switch to a different microphone by device name.
+        /// Stops the current recording, starts the new one, and resets the buffer.
+        /// </summary>
+        public void SwitchMicrophone(string deviceName)
+        {
+            // stop current recording
+            if (isRecording)
+            {
+                Microphone.End(microphone);
+                isRecording = false;
+            }
+
+            microphone = deviceName;
+            StartRecording();
+        }
+
         private void InitializeMicrophone()
         {
             foreach (var device in Microphone.devices)
@@ -39,26 +64,23 @@ namespace Yachiyo
             if (Microphone.devices.Length > 0)
             {
                 microphone = Microphone.devices[0];
-                int minFreq;
-                int maxFreq;
-                Microphone.GetDeviceCaps(microphone, out minFreq, out maxFreq);
-                if (maxFreq == 0)
-                {
-                    maxFreq = 48000;
-                }
-                sampleRate = Mathf.Clamp(sampleRate, minFreq, maxFreq);
-                Debug.Log("Sample rate: " + sampleRate + " in (" + minFreq + ", " + maxFreq + ")");
-
-                bufferSize = sampleRate * bufferLength;
-                audioBuffer = new float[bufferSize];
-                microphoneClip = Microphone.Start(microphone, true, bufferLength, sampleRate);
-                isRecording = true;
+                StartRecording();
             }
             else
             {
                 Debug.LogError("No microphone found");
             }
             AudioClip empty = WavUtility.emptyClip;
+        }
+
+        private void StartRecording()
+        {
+            bufferSize = sampleRate * bufferLength;
+            audioBuffer = new float[bufferSize];
+            bufferPosition = 0;
+            microphoneClip = Microphone.Start(microphone, true, bufferLength, sampleRate);
+            isRecording = true;
+            Debug.Log($"Recording started: \"{microphone}\" @ {sampleRate}Hz");
         }
 
         private void Update()

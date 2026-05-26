@@ -63,6 +63,7 @@ public class GameStartUI : MonoBehaviour
     public Toggle useVADToggle;
     public Slider speakingThresholdSlider;
     public Slider silenceThresholdSlider;
+    public TMP_Dropdown micDropdown;
     public Slider Display;
     public float current_volumn = 0;
 
@@ -155,6 +156,16 @@ public class GameStartUI : MonoBehaviour
             useVADToggle.isOn = useVAD;
             speakingThresholdSlider.value = ToLog(speakingThreshold);
             silenceThresholdSlider.value = ToLog(silenceThreshold);
+            // Populate microphone dropdown
+            if (micDropdown != null)
+            {
+                micDropdown.ClearOptions();
+                string[] devices = MicrophoneManager.Instance.GetAvailableDevices();
+                micDropdown.AddOptions(new List<string>(devices));
+                string currentMic = MicrophoneManager.Instance.DeviceName;
+                int micIndex = Array.IndexOf(devices, currentMic);
+                micDropdown.value = Mathf.Max(0, micIndex);
+            }
             AppSettingPanel.SetActive(true);
         });
         closeAppSetting.onClick.AddListener(() =>
@@ -164,6 +175,16 @@ public class GameStartUI : MonoBehaviour
             useVAD = useVADToggle.isOn;
             speakingThreshold = ToExp(speakingThresholdSlider.value);
             silenceThreshold = ToExp(silenceThresholdSlider.value);
+
+            // Apply microphone selection
+            if (micDropdown != null && micDropdown.options.Count > 0)
+            {
+                string selectedMic = micDropdown.options[micDropdown.value].text;
+                if (selectedMic != MicrophoneManager.Instance.DeviceName)
+                {
+                    MicrophoneManager.Instance.SwitchMicrophone(selectedMic);
+                }
+            }
 
             PlayerPrefs.SetInt("hideUI", hideUI ? 1 : 0);
             PlayerPrefs.SetInt("useBGM", useBGM ? 1 : 0);
