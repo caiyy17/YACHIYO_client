@@ -23,11 +23,16 @@ namespace Yachiyo
 
         public enum VideoSourceMode { None, Camera, Webcam }
 
-        [Header("Video")]
+        [Header("Video — Send")]
         [SerializeField] private VideoSourceMode videoSource = VideoSourceMode.None;
-        [SerializeField] private int videoWidth = 320;
-        [SerializeField] private int videoHeight = 240;
-        [SerializeField] private int videoFps = 30;
+        [SerializeField] private int sendWidth = 1280;
+        [SerializeField] private int sendHeight = 720;
+        [SerializeField] private int sendFps = 30;
+
+        [Header("Video — Receive (request from server)")]
+        [SerializeField] private int receiveWidth = 1280;
+        [SerializeField] private int receiveHeight = 720;
+        [SerializeField] private int receiveFps = 30;
 
         [Header("Video Source — Camera")]
         [SerializeField] private Camera sendCamera;
@@ -35,6 +40,8 @@ namespace Yachiyo
         [Header("Video Source — Webcam")]
         [Tooltip("Leave empty for default device.")]
         [SerializeField] private string webcamDeviceName;
+        [SerializeField] private int webcamWidth = 640;
+        [SerializeField] private int webcamHeight = 480;
 
         [Header("Stats (Read Only)")]
         [SerializeField] private string sendStats = "-";
@@ -80,8 +87,25 @@ namespace Yachiyo
             Cleanup();
         }
 
+        private RawImage _debugPreview;
+
         private void Start()
         {
+            // Create debug preview in bottom-left corner
+            var go = new GameObject("DebugSendPreview");
+            var canvas = FindObjectOfType<Canvas>();
+            if (canvas != null)
+            {
+                go.transform.SetParent(canvas.transform, false);
+                _debugPreview = go.AddComponent<RawImage>();
+                var rt = _debugPreview.rectTransform;
+                rt.anchorMin = new Vector2(0, 0);
+                rt.anchorMax = new Vector2(0, 0);
+                rt.pivot = new Vector2(0, 0);
+                rt.anchoredPosition = new Vector2(10, 10);
+                rt.sizeDelta = new Vector2(320, 180);
+            }
+
             StartCoroutine(ConnectFlow());
             StartCoroutine(WebRTC.Update());
         }
@@ -225,6 +249,12 @@ namespace Yachiyo
                 Graphics.Blit(_webcamTex, sendVideoTexture);
             }
 
+            // Debug preview of send texture
+            if (_debugPreview != null && sendVideoTexture != null)
+            {
+                _debugPreview.texture = sendVideoTexture;
+            }
+
             // Mic sync
             if (micAudioSource == null || !micAudioSource.isPlaying) return;
 
@@ -280,11 +310,11 @@ namespace Yachiyo
 
         private void SetupVideoTrack()
         {
-            // Create RT with platform-correct format
+            // Create RT at send resolution
 #if UNITY_ANDROID && !UNITY_EDITOR
-            sendVideoTexture = new RenderTexture(videoWidth, videoHeight, 0, RenderTextureFormat.ARGB32);
+            sendVideoTexture = new RenderTexture(sendWidth, sendHeight, 0, RenderTextureFormat.ARGB32);
 #else
-            sendVideoTexture = new RenderTexture(videoWidth, videoHeight, 0, RenderTextureFormat.BGRA32);
+            sendVideoTexture = new RenderTexture(sendWidth, sendHeight, 0, RenderTextureFormat.BGRA32);
 #endif
             sendVideoTexture.Create();
 
@@ -295,7 +325,7 @@ namespace Yachiyo
                     if (sendCamera != null)
                     {
                         sendCamera.targetTexture = sendVideoTexture;
-                        Debug.Log($"Video source: Camera '{sendCamera.name}' → RT ({videoWidth}x{videoHeight})");
+                        Debug.Log($"Video source: Camera '{sendCamera.name}' → RT ({sendWidth}x{sendHeight})");
                     }
                     else
                     {
@@ -310,15 +340,21 @@ namespace Yachiyo
                         break;
                     }
                     if (string.IsNullOrEmpty(webcamDeviceName))
-                        _webcamTex = new WebCamTexture(videoWidth, videoHeight, videoFps);
+                    {
+                        _webcamTex = new WebCamTexture(webcamWidth, webcamHeight, sendFps);
+                        _webcamTex.Play();
+                        webcamDeviceName = _webcamTex.deviceName;
+                    }
                     else
-                        _webcamTex = new WebCamTexture(webcamDeviceName, videoWidth, videoHeight, videoFps);
-                    _webcamTex.Play();
-                    Debug.Log($"Video source: Webcam '{_webcamTex.deviceName}' → RT ({videoWidth}x{videoHeight})");
+                    {
+                        _webcamTex = new WebCamTexture(webcamDeviceName, webcamWidth, webcamHeight, sendFps);
+                        _webcamTex.Play();
+                    }
+                    Debug.Log($"Video source: Webcam '{webcamDeviceName}' ({webcamWidth}x{webcamHeight}) → RT ({sendWidth}x{sendHeight})");
                     break;
 
                 default:
-                    Debug.Log($"Video source: None, sending blank RT ({videoWidth}x{videoHeight})");
+                    Debug.Log($"Video source: None, sending blank RT ({sendWidth}x{sendHeight})");
                     break;
             }
 
@@ -328,11 +364,11 @@ namespace Yachiyo
             var parameters = sender.GetParameters();
             foreach (var encoding in parameters.encodings)
             {
-                encoding.maxFramerate = (uint)videoFps;
+                encoding.maxFramerate = (uint)sendFps;
             }
             sender.SetParameters(parameters);
 
-            Debug.Log($"Added video track ({videoWidth}x{videoHeight}@{videoFps}fps)");
+            Debug.Log($"Added video track ({sendWidth}x{sendHeight}@{sendFps}fps)");
         }
 
         private RTCConfiguration GetSelectedSdpSemantics()
@@ -454,9 +490,9 @@ namespace Yachiyo
             {
                 sdp = offerDesc.sdp,
                 type = offerDesc.type.ToString().ToLower(),
-                video_fps = videoFps,
-                video_width = videoWidth,
-                video_height = videoHeight
+                video_fps = receiveFps,
+                video_width = receiveWidth,
+                video_height = receiveHeight
             };
 
             string jsonData = JsonUtility.ToJson(offerData);
