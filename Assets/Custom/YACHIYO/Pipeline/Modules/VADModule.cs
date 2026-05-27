@@ -19,25 +19,9 @@ namespace Yachiyo
 
         protected override async Task CustomInit()
         {
-            capturedSignals.Add("vad_start");
-            capturedSignals.Add("vad_stop");
             previousSpeaking = false;
             useVAD = PlayerPrefs.GetInt("useVAD", useVAD ? 1 : 0) == 1;
-        }
-
-        protected override void ProcessMessage(string message)
-        {
-            YYMessage baseMessage = JsonUtility.FromJson<YYMessage>(message);
-            if (baseMessage.signal == "vad_start")
-            {
-                LogInfo("vad_start");
-                voiceDetector.SetVAD(true && useVAD);
-            }
-            else if (baseMessage.signal == "vad_stop")
-            {
-                LogInfo("vad_stop");
-                voiceDetector.SetVAD(false);
-            }
+            voiceDetector.SetVAD(useVAD);
         }
 
         protected override void CustomUpdate()
