@@ -68,7 +68,8 @@ namespace Yachiyo
             }
             else
             {
-                Debug.LogError("No microphone found");
+                Debug.LogWarning("No microphone found");
+                audioBuffer = new float[sampleRate * bufferLength];
             }
             AudioClip empty = WavUtility.emptyClip;
         }
@@ -98,7 +99,8 @@ namespace Yachiyo
             startSample = (startSample % audioBuffer.Length + audioBuffer.Length) % audioBuffer.Length;
             endSample = (endSample % audioBuffer.Length + audioBuffer.Length) % audioBuffer.Length;
 
-            microphoneClip.GetData(audioBuffer, 0);
+            if (microphoneClip != null)
+                microphoneClip.GetData(audioBuffer, 0);
             int length;
             if (startSample <= endSample)
             {
@@ -149,6 +151,7 @@ namespace Yachiyo
                 sum += audioData[i] * audioData[i];
             }
 
+            if (audioData.Length == 0) return 0f;
             float rmsValue = Mathf.Sqrt(sum / audioData.Length);
             return rmsValue;
         }
