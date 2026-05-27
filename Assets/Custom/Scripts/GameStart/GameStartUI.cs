@@ -62,6 +62,7 @@ public class GameStartUI : MonoBehaviour
     public Slider speakingThresholdSlider;
     public Slider silenceThresholdSlider;
     public TMP_Dropdown micDropdown;
+    public TMP_Dropdown webcamDropdown;
     public Slider Display;
     public float current_volumn = 0;
 
@@ -155,6 +156,21 @@ public class GameStartUI : MonoBehaviour
                 int micIndex = Array.IndexOf(devices, currentMic);
                 micDropdown.value = Mathf.Max(0, micIndex);
             }
+            // Populate webcam dropdown
+            if (webcamDropdown != null && WebcamManager.Instance != null)
+            {
+                webcamDropdown.ClearOptions();
+                string[] displayNames = WebcamManager.Instance.GetDeviceDisplayNames();
+                webcamDropdown.AddOptions(new List<string>(displayNames));
+                var camDevices = WebcamManager.Instance.GetAvailableDevices();
+                string currentCam = WebcamManager.Instance.DeviceName;
+                int camIndex = 0;
+                for (int i = 0; i < camDevices.Length; i++)
+                {
+                    if (camDevices[i].name == currentCam) { camIndex = i; break; }
+                }
+                webcamDropdown.value = camIndex;
+            }
             AppSettingPanel.SetActive(true);
         });
         closeAppSetting.onClick.AddListener(() =>
@@ -171,6 +187,20 @@ public class GameStartUI : MonoBehaviour
                 if (selectedMic != MicrophoneManager.Instance.DeviceName)
                 {
                     MicrophoneManager.Instance.SwitchMicrophone(selectedMic);
+                }
+            }
+            // Apply webcam selection
+            if (webcamDropdown != null && webcamDropdown.options.Count > 0 && WebcamManager.Instance != null)
+            {
+                var camDevices = WebcamManager.Instance.GetAvailableDevices();
+                int selectedIdx = webcamDropdown.value;
+                if (selectedIdx < camDevices.Length)
+                {
+                    string selectedCam = camDevices[selectedIdx].name;
+                    if (selectedCam != WebcamManager.Instance.DeviceName)
+                    {
+                        WebcamManager.Instance.SwitchDevice(selectedCam);
+                    }
                 }
             }
 

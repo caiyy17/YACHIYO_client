@@ -37,12 +37,6 @@ namespace Yachiyo
         [Header("Video Source — Camera")]
         [SerializeField] private Camera sendCamera;
 
-        [Header("Video Source — Webcam")]
-        [Tooltip("Leave empty for default device.")]
-        [SerializeField] private string webcamDeviceName;
-        [SerializeField] private int webcamWidth = 640;
-        [SerializeField] private int webcamHeight = 480;
-
         [Header("Stats (Read Only)")]
         [SerializeField] private string sendStats = "-";
         [SerializeField] private string recvStats = "-";
@@ -62,7 +56,6 @@ namespace Yachiyo
         private AudioStreamTrack sendAudioTrack;
         private RenderTexture sendVideoTexture;
         private VideoStreamTrack sendVideoTrack;
-        private WebCamTexture _webcamTex;
 
         // Data channels
         private RTCDataChannel clientDataChannel; // "client-signals" — created by us
@@ -197,9 +190,9 @@ namespace Yachiyo
         private void Update()
         {
             // Blit webcam frames to RT
-            if (_webcamTex != null && _webcamTex.didUpdateThisFrame && sendVideoTexture != null)
+            if (videoSource == VideoSourceMode.Webcam && WebcamManager.Instance != null)
             {
-                Graphics.Blit(_webcamTex, sendVideoTexture);
+                WebcamManager.Instance.BlitTo(sendVideoTexture);
             }
 
             // Debug preview of send texture
@@ -287,23 +280,6 @@ namespace Yachiyo
                     break;
 
                 case VideoSourceMode.Webcam:
-                    if (WebCamTexture.devices.Length == 0)
-                    {
-                        Debug.LogWarning("No webcam found, falling back to blank RT");
-                        break;
-                    }
-                    if (string.IsNullOrEmpty(webcamDeviceName))
-                    {
-                        _webcamTex = new WebCamTexture(webcamWidth, webcamHeight, sendFps);
-                        _webcamTex.Play();
-                        webcamDeviceName = _webcamTex.deviceName;
-                    }
-                    else
-                    {
-                        _webcamTex = new WebCamTexture(webcamDeviceName, webcamWidth, webcamHeight, sendFps);
-                        _webcamTex.Play();
-                    }
-                    Debug.Log($"Video source: Webcam '{webcamDeviceName}' ({webcamWidth}x{webcamHeight}) → RT ({sendWidth}x{sendHeight})");
                     break;
 
                 default:
@@ -518,13 +494,6 @@ namespace Yachiyo
             {
                 sendVideoTrack.Dispose();
                 sendVideoTrack = null;
-            }
-
-            if (_webcamTex != null)
-            {
-                _webcamTex.Stop();
-                Destroy(_webcamTex);
-                _webcamTex = null;
             }
 
             if (sendCamera != null && sendCamera.targetTexture == sendVideoTexture)
