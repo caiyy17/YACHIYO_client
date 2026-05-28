@@ -189,7 +189,7 @@ namespace Yachiyo
 
         private void Update()
         {
-            // Blit webcam frames to RT
+            // Blit video source to send RT
             if (videoSource == VideoSourceMode.Webcam && WebcamManager.Instance != null)
             {
                 WebcamManager.Instance.BlitTo(sendVideoTexture);
@@ -283,6 +283,10 @@ namespace Yachiyo
                     break;
 
                 default:
+                    var prev = RenderTexture.active;
+                    RenderTexture.active = sendVideoTexture;
+                    GL.Clear(true, true, Color.black);
+                    RenderTexture.active = prev;
                     Debug.Log($"Video source: None, sending blank RT ({sendWidth}x{sendHeight})");
                     break;
             }

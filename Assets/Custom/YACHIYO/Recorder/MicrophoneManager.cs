@@ -31,24 +31,71 @@ namespace Yachiyo
         }
 
         /// <summary>
-        /// Get the list of available microphone device names.
+        /// Display names with "None" as first entry. Index matches Get/SwitchByIndex.
         /// </summary>
-        public string[] GetAvailableDevices()
+        public string[] GetDeviceDisplayNames()
         {
-            return Microphone.devices;
+            var devices = Microphone.devices;
+            var names = new string[devices.Length + 1];
+            names[0] = "None";
+            for (int i = 0; i < devices.Length; i++)
+                names[i + 1] = devices[i];
+            return names;
         }
 
         /// <summary>
-        /// Switch to a different microphone by device name.
-        /// Stops the current recording, starts the new one, and resets the buffer.
+        /// Current device index in the display names list (0 = None).
         /// </summary>
-        public void SwitchMicrophone(string deviceName)
+        public int GetCurrentDeviceIndex()
+        {
+            if (string.IsNullOrEmpty(microphone)) return 0;
+            var devices = Microphone.devices;
+            for (int i = 0; i < devices.Length; i++)
+            {
+                if (devices[i] == microphone) return i + 1;
+            }
+            return 0;
+        }
+
+        /// <summary>
+        /// Switch device by display list index (0 = None, 1+ = device).
+        /// </summary>
+        public void SwitchByIndex(int index)
+        {
+            if (index == GetCurrentDeviceIndex()) return;
+            if (index <= 0)
+            {
+                SwitchMicrophone(null);
+            }
+            else
+            {
+                var devices = Microphone.devices;
+                int deviceIdx = index - 1;
+                if (deviceIdx < devices.Length)
+                    SwitchMicrophone(devices[deviceIdx]);
+                else
+                    SwitchMicrophone(null);
+            }
+        }
+
+        private void SwitchMicrophone(string deviceName)
         {
             // stop current recording
             if (isRecording)
             {
                 Microphone.End(microphone);
                 isRecording = false;
+            }
+
+            if (string.IsNullOrEmpty(deviceName))
+            {
+                microphone = null;
+                microphoneClip = AudioClip.Create("silence", sampleRate * bufferLength, 1, sampleRate, false);
+                bufferSize = sampleRate * bufferLength;
+                audioBuffer = new float[bufferSize];
+                bufferPosition = 0;
+                Debug.Log("Microphone disabled (None)");
+                return;
             }
 
             microphone = deviceName;
@@ -69,7 +116,9 @@ namespace Yachiyo
             else
             {
                 Debug.LogWarning("No microphone found");
-                audioBuffer = new float[sampleRate * bufferLength];
+                microphoneClip = AudioClip.Create("silence", sampleRate * bufferLength, 1, sampleRate, false);
+                bufferSize = sampleRate * bufferLength;
+                audioBuffer = new float[bufferSize];
             }
             AudioClip empty = WavUtility.emptyClip;
         }
@@ -88,8 +137,11 @@ namespace Yachiyo
         {
             if (isRecording)
             {
-                int micPosition = Microphone.GetPosition(microphone);
-                bufferPosition = micPosition;
+                bufferPosition = Microphone.GetPosition(microphone);
+            }
+            else
+            {
+                bufferPosition = (bufferPosition + (int)(Time.deltaTime * sampleRate)) % bufferSize;
             }
         }
 

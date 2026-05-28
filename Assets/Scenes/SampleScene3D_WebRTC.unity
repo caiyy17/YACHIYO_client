@@ -201,7 +201,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1228976300}
   m_HandleRect: {fileID: 1228976299}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -4600,9 +4600,6 @@ MonoBehaviour:
   receiveHeight: 720
   receiveFps: 30
   sendCamera: {fileID: 554800421}
-  webcamDeviceName: 
-  webcamWidth: 640
-  webcamHeight: 480
   sendStats: '-'
   recvStats: '-'
   micOffsetMs: 30

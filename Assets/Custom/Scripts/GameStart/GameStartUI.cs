@@ -150,26 +150,15 @@ public class GameStartUI : MonoBehaviour
             if (micDropdown != null)
             {
                 micDropdown.ClearOptions();
-                string[] devices = MicrophoneManager.Instance.GetAvailableDevices();
-                micDropdown.AddOptions(new List<string>(devices));
-                string currentMic = MicrophoneManager.Instance.DeviceName;
-                int micIndex = Array.IndexOf(devices, currentMic);
-                micDropdown.value = Mathf.Max(0, micIndex);
+                micDropdown.AddOptions(new List<string>(MicrophoneManager.Instance.GetDeviceDisplayNames()));
+                micDropdown.value = MicrophoneManager.Instance.GetCurrentDeviceIndex();
             }
             // Populate webcam dropdown
             if (webcamDropdown != null && WebcamManager.Instance != null)
             {
                 webcamDropdown.ClearOptions();
-                string[] displayNames = WebcamManager.Instance.GetDeviceDisplayNames();
-                webcamDropdown.AddOptions(new List<string>(displayNames));
-                var camDevices = WebcamManager.Instance.GetAvailableDevices();
-                string currentCam = WebcamManager.Instance.DeviceName;
-                int camIndex = 0;
-                for (int i = 0; i < camDevices.Length; i++)
-                {
-                    if (camDevices[i].name == currentCam) { camIndex = i; break; }
-                }
-                webcamDropdown.value = camIndex;
+                webcamDropdown.AddOptions(new List<string>(WebcamManager.Instance.GetDeviceDisplayNames()));
+                webcamDropdown.value = WebcamManager.Instance.GetCurrentDeviceIndex();
             }
             AppSettingPanel.SetActive(true);
         });
@@ -181,28 +170,11 @@ public class GameStartUI : MonoBehaviour
             silenceThreshold = ToExp(silenceThresholdSlider.value);
 
             // Apply microphone selection
-            if (micDropdown != null && micDropdown.options.Count > 0)
-            {
-                string selectedMic = micDropdown.options[micDropdown.value].text;
-                if (selectedMic != MicrophoneManager.Instance.DeviceName)
-                {
-                    MicrophoneManager.Instance.SwitchMicrophone(selectedMic);
-                }
-            }
+            if (micDropdown != null)
+                MicrophoneManager.Instance.SwitchByIndex(micDropdown.value);
             // Apply webcam selection
-            if (webcamDropdown != null && webcamDropdown.options.Count > 0 && WebcamManager.Instance != null)
-            {
-                var camDevices = WebcamManager.Instance.GetAvailableDevices();
-                int selectedIdx = webcamDropdown.value;
-                if (selectedIdx < camDevices.Length)
-                {
-                    string selectedCam = camDevices[selectedIdx].name;
-                    if (selectedCam != WebcamManager.Instance.DeviceName)
-                    {
-                        WebcamManager.Instance.SwitchDevice(selectedCam);
-                    }
-                }
-            }
+            if (webcamDropdown != null && WebcamManager.Instance != null)
+                WebcamManager.Instance.SwitchByIndex(webcamDropdown.value);
 
             PlayerPrefs.SetInt("hideUI", hideUI ? 1 : 0);
             PlayerPrefs.SetInt("useVAD", useVAD ? 1 : 0);
